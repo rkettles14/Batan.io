@@ -392,7 +392,7 @@ class Board {
     
     printBoard() {
         console.log(`             ${this.getVertexSymbol(0)}     ${this.getVertexSymbol(1)}     ${this.getVertexSymbol(2)}`);
-        console.log(`            ${this.getEdgeSymbol(1,4) ?? '/'}   ${this.getEdgeSymbol(1,5) ?? '\\'}   ${this.getEdgeSymbol(1,4) ?? '/'}   ${this.getEdgeSymbol(1,5) ?? '\\'}   ${this.getEdgeSymbol(1,4) ?? '/'}   ${this.getEdgeSymbol(1,5) ?? '\\'}`);
+        console.log(`            ${this.getEdgeSymbol(0,3) ?? '/'}   ${this.getEdgeSymbol(0,4) ?? '\\'}   ${this.getEdgeSymbol(1,4) ?? '/'}   ${this.getEdgeSymbol(1,5) ?? '\\'}   ${this.getEdgeSymbol(2,5) ?? '/'}   ${this.getEdgeSymbol(2,6) ?? '\\'}`);
         console.log(`         ${this.getVertexSymbol(3)}     ${this.getVertexSymbol(4)}     ${this.getVertexSymbol(5)}     ${this.getVertexSymbol(6)}`);
         console.log(`          ${this.getEdgeSymbol(3,7) ?? '|'}   ${this.getHexSymbol(0)}  ${this.getEdgeSymbol(4,8) ?? '|'}   ${this.getHexSymbol(1)}  ${this.getEdgeSymbol(5,9) ?? '|'}   ${this.getHexSymbol(2)}  ${this.getEdgeSymbol(6,10) ?? '|'}`);
         console.log(`         ${this.getVertexSymbol(7)}     ${this.getVertexSymbol(8)}     ${this.getVertexSymbol(9)}     ${this.getVertexSymbol(10)}`);
@@ -451,5 +451,7 @@ enum resourceType {
     board.addCity(0, player.blue);
     board.addSettlement(16, player.white);
     board.addSettlement(21, player.white); //invalid move
+    board.addSettlement(1, player.orange);
+    board.addRoad(1, 4, player.orange);
     board.printBoard();
 }

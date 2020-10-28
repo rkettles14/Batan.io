@@ -297,7 +297,7 @@ var Board = (function () {
     Board.prototype.printBoard = function () {
         var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, _18, _19, _20, _21, _22, _23, _24, _25, _26, _27, _28, _29, _30, _31, _32, _33, _34, _35, _36, _37, _38, _39, _40, _41, _42, _43, _44, _45, _46, _47;
         console.log("             " + this.getVertexSymbol(0) + "     " + this.getVertexSymbol(1) + "     " + this.getVertexSymbol(2));
-        console.log("            " + ((_a = this.getEdgeSymbol(1, 4)) !== null && _a !== void 0 ? _a : '/') + "   " + ((_b = this.getEdgeSymbol(1, 5)) !== null && _b !== void 0 ? _b : '\\') + "   " + ((_c = this.getEdgeSymbol(1, 4)) !== null && _c !== void 0 ? _c : '/') + "   " + ((_d = this.getEdgeSymbol(1, 5)) !== null && _d !== void 0 ? _d : '\\') + "   " + ((_e = this.getEdgeSymbol(1, 4)) !== null && _e !== void 0 ? _e : '/') + "   " + ((_f = this.getEdgeSymbol(1, 5)) !== null && _f !== void 0 ? _f : '\\'));
+        console.log("            " + ((_a = this.getEdgeSymbol(0, 3)) !== null && _a !== void 0 ? _a : '/') + "   " + ((_b = this.getEdgeSymbol(0, 4)) !== null && _b !== void 0 ? _b : '\\') + "   " + ((_c = this.getEdgeSymbol(1, 4)) !== null && _c !== void 0 ? _c : '/') + "   " + ((_d = this.getEdgeSymbol(1, 5)) !== null && _d !== void 0 ? _d : '\\') + "   " + ((_e = this.getEdgeSymbol(2, 5)) !== null && _e !== void 0 ? _e : '/') + "   " + ((_f = this.getEdgeSymbol(2, 6)) !== null && _f !== void 0 ? _f : '\\'));
         console.log("         " + this.getVertexSymbol(3) + "     " + this.getVertexSymbol(4) + "     " + this.getVertexSymbol(5) + "     " + this.getVertexSymbol(6));
         console.log("          " + ((_g = this.getEdgeSymbol(3, 7)) !== null && _g !== void 0 ? _g : '|') + "   " + this.getHexSymbol(0) + "  " + ((_h = this.getEdgeSymbol(4, 8)) !== null && _h !== void 0 ? _h : '|') + "   " + this.getHexSymbol(1) + "  " + ((_j = this.getEdgeSymbol(5, 9)) !== null && _j !== void 0 ? _j : '|') + "   " + this.getHexSymbol(2) + "  " + ((_k = this.getEdgeSymbol(6, 10)) !== null && _k !== void 0 ? _k : '|'));
         console.log("         " + this.getVertexSymbol(7) + "     " + this.getVertexSymbol(8) + "     " + this.getVertexSymbol(9) + "     " + this.getVertexSymbol(10));
@@ -355,6 +355,8 @@ var resourceType;
     board.addCity(0, player.blue);
     board.addSettlement(16, player.white);
     board.addSettlement(21, player.white);
+    board.addSettlement(1, player.orange);
+    board.addRoad(1, 4, player.orange);
     board.printBoard();
 }
 //# sourceMappingURL=board.js.map
