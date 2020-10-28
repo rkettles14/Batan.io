@@ -297,7 +297,7 @@ class Board {
     }
 
     private setVertices(){
-
+        //TODO implement
     }
 
     /**

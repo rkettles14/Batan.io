@@ -164,7 +164,6 @@ var Board = (function () {
         }
     };
     Board.prototype.setHexValues = function () {
-        var spiralOrder = [0, 1, 2, 6, 11, 15, 18, 17, 16, 12, 7, 3, 4, 5, 10, 14, 13, 8, 9];
         var outerRing = [0, 1, 2, 6, 11, 15, 18, 17, 16, 12, 7, 3];
         var innerRing = [4, 5, 10, 14, 13, 8];
         var center = 9;
@@ -219,6 +218,8 @@ var Board = (function () {
         else {
             this.hexList[center].value = -1;
         }
+    };
+    Board.prototype.setVertices = function () {
     };
     Board.prototype.initHexagons = function () {
         var hexAmt = 19;
