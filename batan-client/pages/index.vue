@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div>
-      <Logo />
+      <BoardGame />
       <h1 class="title">batan-client</h1>
       <div class="links">
         <a
