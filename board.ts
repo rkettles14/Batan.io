@@ -296,8 +296,25 @@ class Board {
         }
     }
 
-    private setVertices(){
-        //TODO implement
+    /**
+     * Set Vertices owned by each Hex.
+     */
+    private setHexVertices(){
+        for(let i = 0; i < 3; i++){
+            this.hexList[i].vertices = [0+1, 3+i, 4+i, 7+i, 8+i, 12+i];
+        }
+        for(let i = 0; i < 4; i++){
+            this.hexList[i].vertices = [7+i, 11+i, 12+i, 16+i, 17+i, 21+i];
+        }
+        for(let i = 0; i < 5; i++){
+            this.hexList[i].vertices = [16+i, 21+i, 22+i, 27+i, 28+i, 33+i];
+        }
+        for(let i = 0; i < 4; i++){
+            this.hexList[i].vertices = [28+i, 33+i, 34+i, 38+i, 39+i, 43+i];
+        }
+        for(let i = 0; i < 3; i++){
+            this.hexList[i].vertices = [39+1, 43+i, 44+i, 47+i, 48+i, 51+i];
+        }
     }
 
     /**
@@ -311,6 +328,8 @@ class Board {
         }
         this.randomizeHexResources();
         this.setHexValues();
+        this.setHexVertices();
+
     }
 
     private getEdgeSymbol(v: number, w: number){
@@ -413,7 +432,7 @@ class Board {
         console.log(`          ${this.getEdgeSymbol(43,47) ?? '|'}   ${this.getHexSymbol(16)}  ${this.getEdgeSymbol(44,48) ?? '|'}   ${this.getHexSymbol(17)}  ${this.getEdgeSymbol(45,49) ?? '|'}   ${this.getHexSymbol(18)}  ${this.getEdgeSymbol(46,50) ?? '|'}`);
         console.log(`         ${this.getVertexSymbol(47)}     ${this.getVertexSymbol(48)}     ${this.getVertexSymbol(49)}     ${this.getVertexSymbol(50)}`);
         console.log(`            ${this.getEdgeSymbol(47,51) ?? '\\'}   ${this.getEdgeSymbol(48,51) ?? '/'}   ${this.getEdgeSymbol(48,52) ?? '\\'}   ${this.getEdgeSymbol(49,52) ?? '/'}   ${this.getEdgeSymbol(49,53) ?? '\\'}   ${this.getEdgeSymbol(50,53) ?? '/'}`);
-        console.log(`             ${this.getVertexSymbol(51)}     ${this.getVertexSymbol(51)}     ${this.getVertexSymbol(53)}`);
+        console.log(`             ${this.getVertexSymbol(51)}     ${this.getVertexSymbol(52)}     ${this.getVertexSymbol(53)}`);
     }
 
 }
