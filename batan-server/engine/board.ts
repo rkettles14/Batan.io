@@ -15,6 +15,11 @@ class Hex {
     resourceType: resourceType;
     value: number;
     vertices: number [];
+    constructor() {
+        this.resourceType = resourceType.none;
+        this.value = -1;
+        this.vertices = [];
+    }
 }
 
 /**
@@ -159,14 +164,14 @@ class Board {
     }
 
     private addEdge(v: number, w: number) {
-        this.roadsMap.get(v).push([w, player.none]);
-        this.roadsMap.get(w).push([v, player.none]);
+        this.roadsMap.get(v)?.push([w, player.none]);
+        this.roadsMap.get(w)?.push([v, player.none]);
     }
 
     private getEdge(v: number, w: number) {
         let edges = this.roadsMap.get(v);
         if(!edges){
-            return null;
+            return;
         }
         for (let i = 0; i < edges.length; i++)
         {
@@ -175,7 +180,7 @@ class Board {
                 return edge;
             }
         }
-        return null;
+        return;
     }
 
     private setEdge(v: number, w: number, val: player){
@@ -333,11 +338,14 @@ class Board {
     }
 
     private getEdgeSymbol(v: number, w: number){
-        let symbol = player[this.getEdge(v,w)[1]].charAt(0).toLowerCase();
-        if(symbol == "n"){
-            return null
+        let playerColor = this.getEdge(v,w);
+        if(playerColor){
+            let symbol = player[playerColor[1]].charAt(0).toLowerCase();
+            if(symbol == "n"){
+                return null
+            }
+            return symbol;
         }
-        return symbol;
     }
     
     private getVertexSymbol(v: number){
@@ -369,11 +377,13 @@ class Board {
         //check if legal move
         let startVertex = this.roadsMap.get(startVertexId);
         let isAdjacentRoad = false;
-        for(let i = 0; i < startVertex.length; i++)
-        {
-            //check each edge for road belonging to owner
-            if(startVertex[i][1] === owner){
-                isAdjacentRoad = true;
+        if(startVertex) {
+            for(let i = 0; i < startVertex.length; i++)
+            {
+                //check each edge for road belonging to owner
+                if(startVertex[i][1] === owner){
+                    isAdjacentRoad = true;
+                }
             }
         }
 
@@ -393,8 +403,10 @@ class Board {
             this.vertexList[indexId].status = vertexStatus.settlement;
             this.vertexList[indexId].owner = owner;
             let adjacent = this.roadsMap.get(indexId);
-            for(let i = 0; i < adjacent.length; i++){
-                this.vertexList[adjacent[i][0]].status = vertexStatus.blocked;
+            if(adjacent){
+                for(let i = 0; i < adjacent.length; i++){
+                    this.vertexList[adjacent[i][0]].status = vertexStatus.blocked;
+                }
             }
         }
         return;
