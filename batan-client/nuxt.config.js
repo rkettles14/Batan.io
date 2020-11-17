@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 export default {
   // Global page headers (https://go.nuxtjs.dev/config-head)
   head: {
@@ -23,6 +25,7 @@ export default {
   buildModules: [
     // https://go.nuxtjs.dev/typescript
     '@nuxt/typescript-build',
+    '@nuxtjs/dotenv'
   ],
 
   // Modules (https://go.nuxtjs.dev/config-modules)
@@ -35,7 +38,27 @@ export default {
     '@nuxtjs/pwa',
     // https://go.nuxtjs.dev/content
     '@nuxt/content',
+    // https://auth.nuxtjs.org/
+    '@nuxtjs/auth'
   ],
+
+  router: {
+    middleware: ['auth']
+  },
+
+  auth: {
+    redirect: {
+      login: '/',
+      callback: '/lobby'
+    },
+    strategies: {
+      auth0: {
+        domain: process.env.AUTH0_DOMAIN,
+        client_id: process.env.AUTH0_CLIENT_ID,
+        audience: process.env.AUTH0_AUDIENCE
+      }
+    }
+  },
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
   axios: {},
