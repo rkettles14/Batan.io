@@ -7,18 +7,22 @@
       </NuxtLink>
     </div>
     <div v-if="$auth.loggedIn" class="nav-right">
-      <select class="" name="" v-model="activeGame" v-if="games.length > 0">
-        <option v-for="game in games" :key="game">
-          {{ game }}
-        </option>
-      </select>
-      <NuxtLink to="/profile">
-        <img id="profile" :src="$auth.user.picture">
-      </NuxtLink>
-      <button @click.prevent="logout()">Log out</button>
+      <b-dropdown variant="light" right :text="activeGame" :options="games">
+        <b-dropdown-item v-for="game in games" @click="gameSelected(game)">{{ game }}</b-dropdown-item>
+      </b-dropdown>
+
+      <b-dropdown id="profile-btn" right no-caret class="sm" style="background-color: black;">
+        <div slot="button-content">
+          <img id="profile" class="dropdown" :src="$auth.user.picture">
+        </div>
+        <b-dropdown-item :to="'/profile'" >Profile
+        </b-dropdown-item>
+
+        <b-dropdown-item-button @click.prevent="logout()">Log out</b-dropdown-item-button>
+      </b-dropdown>
     </div>
     <div v-else class="nav-right">
-      <button @click.prevent="login()">Sign up or Log in</button>
+      <b-button @click.prevent="login()" size="md" variant="light">Sign up or Log in</b-button>
     </div>
   </nav>
 </template>
@@ -33,8 +37,8 @@ export default {
   },
   data() {
     return {
-      games: ["game 1", "game2 "],   //TODO: move to vuex store
-      activeGame: null
+      games: ["Game 1", "Game 2"],   //TODO: move to vuex store
+      activeGame: ""
     }
   },
   methods: {
@@ -44,16 +48,14 @@ export default {
     logout() {
       this.$auth.logout()
     },
-    gameSelected() {
-    }
-  },
-  watch: {
-    activeGame: function() {
-      // TODO: Update active game in vuex-store
+    gameSelected(game) {
+      this.activeGame=game;
       this.$router.push({
         path: '/game-screen'
       })
     }
+  },
+  watch: {
   },
   mounted() {
     if (this.$auth.loggedIn) {
@@ -71,7 +73,7 @@ export default {
 </script>
 
 <style lang="css" scoped>
-* {
+h1 {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -91,23 +93,25 @@ nav {
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
+  width: 50%;
+  justify-content: flex-end;
+}
+@media (min-width: 1000px) {
+  .nav-right {
+    width: 500px;
+  }
+
 }
 
-.nav-right * {
+.nav-right > * {
   margin-left: 0.5rem;
   margin-right: 0.5rem;
 }
 
-select {
-  font-size: 1.25rem;
-  border-radius: 0.25em;
-  background-color: white;
-}
-
 a {
-  color: white;
-  font-size: 2rem;
-  font-family: Roboto, Ariel, sans-serif;
+  margin: 0;
+  padding: 0;
+  color: black;
 }
 
 a:hover {
@@ -128,11 +132,12 @@ a:hover {
   align-items: center;
   padding-left: 1rem;
   padding-right: 1rem;
+  color: white;
+  font-size: 2rem;
+  font-family: Roboto, Ariel, sans-serif;
 }
 
-button {
-  background-color: #f0f0f0;
-  padding: 0.25rem;
-  border-radius: 0.5rem;
+.dropdown {
+   color: #000!important;
 }
 </style>
