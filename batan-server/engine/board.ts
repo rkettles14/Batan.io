@@ -1,4 +1,4 @@
-//import { vertexStatus, player } from "./enums";
+import { vertexStatus, player, resourceType } from "./enums";
 
 class Vertex {
     id: number;
@@ -15,17 +15,19 @@ class Hex {
     resourceType: resourceType;
     value: number;
     vertices: number [];
+    hasRobber: boolean;
     constructor() {
         this.resourceType = resourceType.none;
         this.value = -1;
         this.vertices = [];
+        this.hasRobber = false;
     }
 }
 
 /**
  * Represents the Game Board
  */
-class Board {
+export class Board {
     roadsMap: Map<number, [number, player][]>; //contains mappings from one vertex to all adjacent pertices. `player` indicates the owner of the road between vertices.
     vertexList: Vertex []; //contains actual vertices with data
     hexList: Hex []; //contains hexagon data
@@ -269,7 +271,8 @@ class Board {
                 this.hexList[outerRing[index]].value = balancedValues[bvIndex];
                 bvIndex++;
             } else {
-                this.hexList[outerRing[index]].value = -1; //if desert, set value to -1
+                this.hexList[outerRing[index]].value = 0; //if desert, set value to 0, init robber
+                this.hexList[outerRing[index]].hasRobber = true;
             }
             index++;
             if(index == outerRing.length){
@@ -285,7 +288,8 @@ class Board {
                 this.hexList[innerRing[index]].value = balancedValues[bvIndex];
                 bvIndex++;
             } else {
-                this.hexList[innerRing[index]].value = -1; //if desert, set value to -1
+                this.hexList[innerRing[index]].value = 0; //if desert, set value to 0, init robber
+                this.hexList[outerRing[index]].hasRobber = true;
             }
             index++;
             if(index == innerRing.length){
@@ -449,40 +453,16 @@ class Board {
 
 }
 
-enum vertexStatus {
-    open,
-    settlement,
-    city,
-    blocked
-}
-
-enum player {
-    none,
-    red,
-    white,
-    blue,
-    orange
-}
-
-enum resourceType {
-    none,
-    sheep,
-    wheat,
-    wood,
-    ore,
-    brick
-}
-
-{//test
-    let board = new Board();
-    board.addSettlement(0,player.blue);
-    board.addSettlement(8,player.red);
-    board.addRoad(8, 12, player.red);
-    board.addRoad(8, 4, player.red);
-    board.addCity(0, player.blue);
-    board.addSettlement(16, player.white);
-    board.addSettlement(21, player.white); //invalid move
-    board.addSettlement(1, player.orange);
-    board.addRoad(1, 4, player.orange);
-    board.printBoard();
-}
+// {//test
+//     let board = new Board();
+//     board.addSettlement(0,player.blue);
+//     board.addSettlement(8,player.red);
+//     board.addRoad(8, 12, player.red);
+//     board.addRoad(8, 4, player.red);
+//     board.addCity(0, player.blue);
+//     board.addSettlement(16, player.white);
+//     board.addSettlement(21, player.white); //invalid move
+//     board.addSettlement(1, player.orange);
+//     board.addRoad(1, 4, player.orange);
+//     board.printBoard();
+// }
