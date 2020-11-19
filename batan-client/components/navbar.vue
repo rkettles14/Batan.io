@@ -15,18 +15,27 @@
       <NuxtLink to="/profile">
         <img id="profile" :src="$auth.user.picture">
       </NuxtLink>
-      <button @click.prevent="logout()">Log out</button>
+      <b-button
+        variant="info"
+        @click.prevent="logout()"
+      ><b-icon-power aria-hidden="true"/>Log Out</b-button>
     </div>
     <div v-else class="nav-right">
-      <button @click.prevent="login()">Sign up or Log in</button>
+      <b-button
+        variant="info"
+        style="color: black;"
+        @click.prevent="login()"
+      ><b-icon-power aria-hiddon="true"/>Sign up/Login</b-button>
     </div>
   </nav>
 </template>
 
 <script>
+import Vue from 'vue'
+import {BootstrapVue, BootstrapVueIcons} from 'bootstrap-vue'
 const axios = require('axios').default; // TODO: Move to store
 
-export default {
+export default Vue.extend({
   name: "Navbar",
   props: {
 
@@ -67,7 +76,9 @@ export default {
       console.log("not logged in")
     }
   }
-}
+});
+Vue.use(BootstrapVue);
+Vue.use(BootstrapVueIcons);
 </script>
 
 <style lang="css" scoped>

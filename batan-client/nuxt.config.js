@@ -39,7 +39,7 @@ export default {
     // https://go.nuxtjs.dev/content
     '@nuxt/content',
     // https://auth.nuxtjs.org/
-    '@nuxtjs/auth'
+    '@nuxtjs/auth',
   ],
 
   router: {
@@ -58,6 +58,9 @@ export default {
         audience: process.env.AUTH0_AUDIENCE
       }
     }
+  },
+  bootstrapVue:{
+    components: []
   },
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)

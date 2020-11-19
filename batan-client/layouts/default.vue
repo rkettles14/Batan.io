@@ -1,16 +1,27 @@
 <template>
-  <div>
-    <Navbar />
-    <Nuxt />
-  </div>
+  <b-container fluid>
+    <b-row>
+      <Navbar />
+    </b-row>
+    <b-row>
+      <b-col class="col-9">
+        <Nuxt />
+      </b-col>
+      <b-col>
+        <Chat />
+      </b-col>
+    </b-row>
+  </b-container>
 </template>
 
 <script>
 import Navbar from "@/components/navbar.vue";
+import Chat from "@/components/Chat.vue";
 
 export default {
   components: {
-    Navbar
+    Navbar,
+    Chat
   }
 }
 </script>
