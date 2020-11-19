@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="">
     <Navbar />
     <Nuxt />
   </div>
@@ -7,10 +7,12 @@
 
 <script>
 import Navbar from "@/components/navbar.vue";
+import Chat from "@/components/Chat.vue";
 
 export default {
   components: {
-    Navbar
+    Navbar,
+    Chat
   }
 }
 </script>

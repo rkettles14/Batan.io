@@ -28,9 +28,11 @@
 </template>
 
 <script>
+import Vue from 'vue'
+import {BootstrapVue, BootstrapVueIcons} from 'bootstrap-vue'
 const axios = require('axios').default; // TODO: Move to store
 
-export default {
+export default Vue.extend({
   name: "Navbar",
   props: {
 
@@ -69,7 +71,9 @@ export default {
       console.log("not logged in")
     }
   }
-}
+});
+Vue.use(BootstrapVue);
+Vue.use(BootstrapVueIcons);
 </script>
 
 <style lang="css" scoped>
@@ -135,9 +139,5 @@ a:hover {
   color: white;
   font-size: 2rem;
   font-family: Roboto, Ariel, sans-serif;
-}
-
-.dropdown {
-   color: #000!important;
 }
 </style>

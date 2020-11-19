@@ -3,6 +3,7 @@
     <div>
       <h2>Game-Screen</h2>
       <BoardGame />
+      <Chat />
     </div>
   </div>
 </template>
