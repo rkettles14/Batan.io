@@ -7,8 +7,7 @@
     </b-row>
     <b-row align-v="center" class="logo-container">
       <b-col>
-        <h1 class="title">//TODO Insert logo here</h1>
-        <!-- <b-img src=""/> -->
+        <b-img src="@/static/batanLogo.png"/>
       </b-col>
     </b-row>
     <b-row align-v="center">
