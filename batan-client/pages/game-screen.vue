@@ -1,24 +1,34 @@
 <template>
-  <div class="container">
-    <div>
-      <h2>Game-Screen</h2>
-      <BoardGame />
-      <Chat />
-    </div>
-  </div>
+  <b-container fluid style="padding: 0; height: 90%">
+    <b-row class="row-1">
+      <b-col cols="8">
+        <GameBoard />
+      </b-col>
+      <b-col>
+        <Chat />
+      </b-col>
+    </b-row>
+    <b-row class="row-2">
+      <b-col cols="8">
+        <GameControls />
+      </b-col>
+      <b-col>
+        <GamePlayerStats />
+      </b-col>
+    </b-row>
+  </b-container>
 </template>
 
 <script lang="ts">
 
 </script>
 
-<style>
-.container {
-  margin: 0 auto;
-  min-height: calc(100vh - 3rem);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
+<style scoped>
+
+.row-1 {
+  height: 80%
+}
+
+.row-2 {
 }
 </style>
