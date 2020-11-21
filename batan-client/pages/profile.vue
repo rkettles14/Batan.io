@@ -1,17 +1,84 @@
 <template>
-  <div class="">
-    <h2>{{ $auth.user.name }}'s Profile Page</h2>
-    <p>{{ JSON.stringify($auth.user) }}</p>
-  </div>
+  <b-container fluid>
+    <b-row>
+      <b-col>
+        <b-list-group>
+
+          <b-list-group-item variant="info" button
+            @click="setDisplayToAccount()"
+          >
+            Account
+          </b-list-group-item>
+
+          <b-list-group-item variant="info" button
+            @click="setDisplayToStats()"
+          >
+            Game Statistics
+          </b-list-group-item>
+          <b-list-group-item variant="info" button
+            @click="setDisplayToSettings"
+          >
+            Settings
+          </b-list-group-item>
+        </b-list-group>
+
+      </b-col>
+      <b-col cols="10">
+        <b-container v-show="showAccount" fluid>
+          <div class="">
+            <h2>{{ $auth.user.name }}'s Profile Page</h2>
+            <p>{{ JSON.stringify($auth.user) }}</p>
+          </div>
+          <ProfileAccount />
+        </b-container>
+
+        <b-container v-show="showStats" fluid>
+          <ProfileGameStats />
+        </b-container>
+
+        <b-container v-show="showSettings" fluid>
+          <ProfileSettings />
+        </b-container>
+      </b-col>
+    </b-row>
+  </b-container>
 </template>
 
 <script lang="ts">
-export default {
+import Vue from "vue";
+
+export default Vue.extend({
   name: "Profile",
   components: {},
+  data() {
+    return {
+      showAccount: true,
+      showStats: false,
+      showSettings: false
+    }
+  },
   mounted() {
+  },
+  methods: {
+    setDisplayToAccount(){
+      this.showAccount = true;
+      this.showStats = false;
+      this.showSettings = false;
+    },
+    setDisplayToStats(){
+      this.showAccount = false;
+      this.showStats = true;
+      this.showSettings = false;
+    },
+    setDisplayToSettings(){
+      this.showAccount = false;
+      this.showStats = false;
+      this.showSettings = true;
+    },
+
+
   }
-}
+});
 </script>
 
 <style lang="css" scoped>

@@ -35,7 +35,9 @@ export default Vue.extend({
   },
   methods: {
     login() {
-      this.$auth.loginWith('auth0');
+      // todo the below line is giving me a warning. Figure out
+      // how to access the auth
+      // this.$auth.loginWith('auth0');
     }
   }
 });
