@@ -8,7 +8,7 @@
     </div>
     <div v-if="$auth.loggedIn" class="nav-right">
       <b-dropdown variant="light" right :text="activeGame" :options="games">
-        <b-dropdown-item v-for="game in games" @click="gameSelected(game)">{{ game }}</b-dropdown-item>
+        <b-dropdown-item v-for="game in games" :key="game" @click="gameSelected(game)">{{ game }}</b-dropdown-item>
       </b-dropdown>
 
       <b-dropdown id="profile-btn" right no-caret class="sm" style="background-color: black;">
@@ -30,7 +30,6 @@
 <script>
 import Vue from 'vue'
 import {BootstrapVue, BootstrapVueIcons} from 'bootstrap-vue'
-const axios = require('axios').default; // TODO: Move to store
 
 export default Vue.extend({
   name: "Navbar",
@@ -39,8 +38,14 @@ export default Vue.extend({
   },
   data() {
     return {
-      games: ["Game 1", "Game 2"],   //TODO: move to vuex store
-      activeGame: ""
+    }
+  },
+  computed: {
+    games() {
+      return Object.keys(this.$store.state.games.games);
+    },
+    activeGame() {
+      return this.$store.state.games.activeGame;
     }
   },
   methods: {
@@ -48,27 +53,26 @@ export default Vue.extend({
       this.$auth.loginWith('auth0');
     },
     logout() {
-      this.$auth.logout()
+      this.$auth.logout();
     },
     gameSelected(game) {
-      this.activeGame=game;
+      this.$store.commit('games/changeGame', game);
       this.$router.push({
         path: '/game-screen'
-      })
+      });
     }
   },
   watch: {
   },
-  mounted() {
+  created() {
     if (this.$auth.loggedIn) {
       // TODO: Add check (profile not loaded), move profile load & state grab to store
       this.$axios.setToken(this.$auth.getToken('auth0'));
       this.$axios.get('http://localhost:3001/').then((response) => {
-        console.log(response);
+        // console.log(response);
       });
-      console.log("sending req")
     } else {
-      console.log("not logged in")
+      // console.log("not logged in")
     }
   }
 });

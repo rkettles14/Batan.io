@@ -40,6 +40,7 @@ export default {
     '@nuxt/content',
     // https://auth.nuxtjs.org/
     '@nuxtjs/auth',
+    'nuxt-socket-io'
   ],
 
   router: {
@@ -65,6 +66,18 @@ export default {
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
   axios: {},
+
+  io: {
+    sockets: [
+      {
+        name: 'game',
+        url: 'http://localhost:3001',
+        default: true,
+        // vuex: { /* see section below */ },
+        // namespaces: { /* see section below */ }
+      }
+    ]
+  },
 
   // Content module configuration (https://go.nuxtjs.dev/config-content)
   content: {},
