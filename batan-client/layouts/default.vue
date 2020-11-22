@@ -1,5 +1,5 @@
 <template>
-  <div class="">
+  <div class="default-container">
     <Navbar />
     <Nuxt />
   </div>
@@ -18,6 +18,10 @@ export default {
 </script>
 
 <style>
+.default-container {
+  height: 100vh;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;

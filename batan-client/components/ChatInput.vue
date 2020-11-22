@@ -13,7 +13,7 @@
             <b-button
                 type="submit"
                 class="col nopadding outline-primary h-100"
-            ><b-img src="@/assets/send.png"
+            ><b-img src="@/static/send.png"
                 class="icon-img"
                 thumbnail center="true"
                 blank-color="transparent"

@@ -1,44 +1,71 @@
 <template>
-  <div class="container">
-    <h1 class="title">Discover Batan</h1>
-  </div>
+  <b-container fluid class="container">
+    <b-row align-v="center">
+      <b-col>
+        <span class="title">Welcome to Batan.io! Create an account to play or sign in!</span>
+      </b-col>
+    </b-row>
+    <b-row align-v="center" class="logo-container">
+      <b-col>
+        <b-img src="@/static/batanLogo.png"/>
+      </b-col>
+    </b-row>
+    <b-row align-v="center">
+      <b-col class="d-flex">
+        <b-button
+          class="link"
+          variant="success"
+          @click.prevent="login()"
+        >
+          Sign Un / Login
+        </b-button>
+      </b-col>
+    </b-row>
+  </b-container>
 </template>
 
 <script lang="ts">
-export default {
-  auth: false
-}
+import Vue from "vue";
+import BootstrapVue from 'bootstrap-vue'
+
+export default Vue.extend({
+  name: "FrontPage",
+  props: {
+
+  },
+  methods: {
+    login() {
+      // todo the below line is giving me a warning. Figure out
+      // how to access the auth
+      // this.$auth.loginWith('auth0');
+    }
+  }
+});
+Vue.use(BootstrapVue);
 </script>
 
 <style>
 .container {
   margin: 0 auto;
   min-height: calc(100vh - 3rem);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
 }
 
 .title {
   font-family: 'Quicksand', 'Source Sans Pro', -apple-system, BlinkMacSystemFont,
     'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   display: block;
+  text-align: center;
   font-weight: 300;
-  font-size: 100px;
+  font-size: 2rem;
   color: #35495e;
   letter-spacing: 1px;
 }
 
-.subtitle {
-  font-weight: 300;
-  font-size: 42px;
-  color: #526488;
-  word-spacing: 5px;
-  padding-bottom: 15px;
+.logo-container {
+  flex-grow: 1;
 }
 
-.links {
-  padding-top: 15px;
+.link {
+  margin: 0 auto;
 }
 </style>
