@@ -28,7 +28,9 @@
 </template>
 
 <script lang="ts">
-export default {
+import Vue from "vue"
+
+export default Vue.extend({
   name: "Lobby",
   components: {},
   data() {
@@ -58,7 +60,7 @@ export default {
       this.showJoinGame = true;
     },
   }
-}
+});
 </script>
 
 <style lang="css" scoped>
