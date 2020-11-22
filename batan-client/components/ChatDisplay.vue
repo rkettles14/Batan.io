@@ -8,7 +8,7 @@
                 class="list-item"
             >
                 <div class="user-img">
-                    <b-avatar :src="$auth.user.picture"/>
+                    <!-- <b-avatar :src="$auth.user.picture"/> -->
                 </div>
                 <div class="msg-content">
                 This is a test
