@@ -3,13 +3,22 @@
     <b-row class="content" align-v="stretch">
       <b-col class="games" cols="8">
         <span class="selectors">
-          <b-button variant="success">Active Games</b-button>
-          <b-button variant="success">Create New Game</b-button>
-          <b-button variant="success">Join Game With Code</b-button>
+          <b-button variant="success" @click="displayActiveGames()">Active Games</b-button>
+          <b-button variant="success" @click="displayCreateGame()">Create New Game</b-button>
+          <b-button variant="success" @click="displayJoinGame()">Join Game With Code</b-button>
         </span>
-        <b-table striped hover :items="items">
-          <!--todo list all existing games-->
-        </b-table>
+
+        <div v-show="showActiveGames">
+          <ActiveGames />
+        </div>
+
+        <div v-show="showCreateGame">
+          <CreateNewGame />
+        </div>
+
+        <div v-show="showJoinGame">
+          <JoinGame />
+        </div>
       </b-col>
       <b-col>
         <Chat />
@@ -24,10 +33,30 @@ export default {
   components: {},
   data() {
     return {
-      items: [
-        {Name: "Example's Game", Players: "3-4", Mode: "Normal"}
-      ]
+      showActiveGames: true,
+      showCreateGame: false,
+      showJoinGame: false,
     }
+  },
+  methods: {
+
+    displayActiveGames() {
+      this.showActiveGames = true;
+      this.showCreateGame = false;
+      this.showJoinGame = false;
+    },
+
+    displayCreateGame() {
+      this.showActiveGames = false;
+      this.showCreateGame = true;
+      this.showJoinGame = false;
+    },
+
+    displayJoinGame() {
+      this.showActiveGames = false;
+      this.showCreateGame = false;
+      this.showJoinGame = true;
+    },
   }
 }
 </script>
