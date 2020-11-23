@@ -29,31 +29,24 @@ export default Vue.extend({
   name: "TestSockets",
   data() {
     return {
-      socket: null
     }
   },
-  mounted() {
-    this.socket = this.$nuxtSocket({
-      name: 'game'
-    });
-    this.socket.on('connect', () => {
-        this.socket
-        .emit('authenticate', { token: this.$auth.getToken('auth0').split(' ')[1] })
-        .on('authenticated', () => {
-          // post-authenticate w/ websocket
-        })
-        .on('unauthorized', (msg) => {
-          console.log(`unauthorized: ${JSON.stringify(msg.data)}`);
-          throw new Error(msg.data.type);
-        })
-    });
+  created() {
   },
   methods: {
     hello() {
-      console.log('emitting socket event')
-      this.socket.emit('hello', {
+      this.$root.gcSock.emit('hello', {
         hi: 'world'
       })
+      // Couldn't get this to work, nuxt-socket-io docs may be outdated
+      // await this.$store.dispatch(
+      //   '$nuxtSocket/emit',
+      //   {
+      //     label: 'gcSock',
+      //     evt: 'hello',
+      //     msg: { hi: 'world' }
+      //   }
+      // )
     }
   }
 })

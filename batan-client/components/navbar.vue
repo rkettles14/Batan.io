@@ -7,6 +7,7 @@
       </NuxtLink>
     </div>
     <div v-if="$auth.loggedIn" class="nav-right">
+      <b-button :to="'/test_sockets'" variant="light">sock test</b-button>
       <b-dropdown variant="light" right :text="activeGame" :options="games">
         <b-dropdown-item v-for="game in games" :key="game" @click="gameSelected(game)">{{ game }}</b-dropdown-item>
       </b-dropdown>
@@ -53,12 +54,44 @@ export default Vue.extend({
       this.$auth.loginWith('auth0');
     },
     logout() {
+      try {
+        this.$root.gcSock.disconnect()
+      } catch (err) {
+        // ignore.. socket already closed
+      }
+
+      // Log out - clearing
       this.$auth.logout();
+
+      // TODO: Clear all local user data (vuex gameboard, chat, localStorage, cookies)..
+      // maybe just refresh page after logout?
     },
     gameSelected(game) {
       this.$store.commit('games/changeGame', game);
       this.$router.push({
         path: '/game-screen'
+      });
+    },
+    initSock() {
+      /*
+      * Initialize socket connection (game-chat shared socket)
+      * Do NOT call if not logged in (access token required), authentication will fail.
+      */
+      this.$root.gcSock = this.$nuxtSocket({
+        name: 'game',
+        persist: 'gcSock',
+        teardown: false
+      });
+      this.$root.gcSock.on('connect', () => {
+          this.$root.gcSock
+          .emit('authenticate', { token: this.$auth.getToken('auth0').split(' ')[1] })
+          .on('authenticated', () => {
+            // post-authenticate w/ websocket
+          })
+          .on('unauthorized', (msg) => {
+            console.log(`unauthorized: ${JSON.stringify(msg.data)}`);
+            throw new Error(msg.data.type);
+          })
       });
     }
   },
@@ -66,13 +99,13 @@ export default Vue.extend({
   },
   created() {
     if (this.$auth.loggedIn) {
-      // TODO: Add check (profile not loaded), move profile load & state grab to store
+      this.initSock();
+
+      // API calls (if needed? this is just an auth test..)
       this.$axios.setToken(this.$auth.getToken('auth0'));
       this.$axios.get('http://localhost:3001/').then((response) => {
-        // console.log(response);
+        console.log(response)
       });
-    } else {
-      // console.log("not logged in")
     }
   }
 });
