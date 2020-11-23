@@ -14,16 +14,8 @@ export const mutations = {
       state.activeGame = new_active_game;
     }
   },
-  add(state, text) {
-    state.list.push({
-      text,
-      done: false
-    })
-  },
-  remove(state, { todo }) {
-    state.list.splice(state.list.indexOf(todo), 1)
-  },
-  toggle(state, todo) {
-    todo.done = !todo.done
+  vuex_test(state, test_content) {
+    console.log('vuex test received');
+    console.log(test_content);
   }
 }

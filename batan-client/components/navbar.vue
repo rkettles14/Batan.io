@@ -77,9 +77,12 @@ export default Vue.extend({
       * Initialize socket connection (game-chat shared socket)
       * Do NOT call if not logged in (access token required), authentication will fail.
       */
+
+      // Persisting in $root rather than using 'persist';
+      // see https://github.com/richardeschloss/nuxt-socket-io/issues/118
       this.$root.gcSock = this.$nuxtSocket({
         name: 'game',
-        persist: 'gcSock',
+        // persist: 'gcSock', // omitting for now
         teardown: false
       });
       this.$root.gcSock.on('connect', () => {
@@ -104,7 +107,7 @@ export default Vue.extend({
       // API calls (if needed? this is just an auth test..)
       this.$axios.setToken(this.$auth.getToken('auth0'));
       this.$axios.get('http://localhost:3001/').then((response) => {
-        console.log(response)
+        // console.log(response)
       });
     }
   }

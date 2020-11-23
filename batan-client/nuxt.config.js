@@ -73,8 +73,11 @@ export default {
         name: 'game',
         url: 'http://localhost:3001',
         default: true,
-        // vuex: { /* see section below */ },
-        // namespaces: { /* see section below */ }
+        vuex: {
+          mutations: [
+            'test_vuex --> games/vuex_test'
+          ]
+        }
       }
     ]
   },
