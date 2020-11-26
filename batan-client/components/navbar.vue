@@ -106,7 +106,7 @@ export default Vue.extend({
 
       // API calls (if needed? this is just an auth test..)
       this.$axios.setToken(this.$auth.getToken('auth0'));
-      this.$axios.get('http://localhost:3001/').then((response) => {
+      this.$axios.get('http://localhost:3001/api/test/hi').then((response) => {
         // console.log(response)
       });
     }
