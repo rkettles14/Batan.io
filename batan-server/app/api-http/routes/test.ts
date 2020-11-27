@@ -7,7 +7,7 @@ export default (app: Router) => {
   route.get('/hi', function (req: Request, res: Response) {
     // Connections to the API are authenticated using Authorization header &
     // Bearer jwt strategy. Access user's UID by req.user.sub
-    console.log(`From https: ${req.user.sub}`);
+    // console.log(`From https: ${req.user.sub}`);
     res.send({ msg: `hi ${req.user.sub}` });
   });
 
