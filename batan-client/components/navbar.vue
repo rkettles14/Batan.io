@@ -100,14 +100,15 @@ export default Vue.extend({
   },
   watch: {
   },
-  created() {
+  mounted() {
+    // created() hook runs server side & client side
     if (this.$auth.loggedIn) {
       this.initSock();
 
       // API calls (if needed? this is just an auth test..)
       this.$axios.setToken(this.$auth.getToken('auth0'));
       this.$axios.get('http://localhost:3001/api/test/hi').then((response) => {
-        // console.log(response)
+        console.log(response)
       });
     }
   }
