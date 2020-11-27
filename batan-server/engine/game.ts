@@ -678,7 +678,7 @@ class Game {
      }
    }
 
-  //TODO implement trade function
+  //TODO implement trade functionality with other players and bank (include harbors)
   trade() { }
 
 

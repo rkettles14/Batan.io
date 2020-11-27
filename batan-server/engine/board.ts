@@ -1,12 +1,14 @@
-import { vertexStatus, player, resourceType } from "./enums";
+import { vertexStatus, player, resourceType, harborType } from "./enums";
 
 class Vertex {
     id: number;
     owner: player;
+    harbor: harborType;
     status: vertexStatus;
-    constructor(id: number, owner: player, status: vertexStatus) {
+    constructor(id: number, owner: player, harbor: harborType, status: vertexStatus) {
         this.id = id;
         this.owner = owner;
+        this.harbor = harbor;
         this.status = status;
     }
 }
@@ -158,11 +160,34 @@ export class Board {
         this.addEdge(49, 52);
         this.addEdge(49, 53);
         this.addEdge(50, 53);
+        this.initHarbors();
+    }
+
+    private initHarbors() {
+        this.vertexList[0].harbor = harborType.threeForOne;
+        this.vertexList[3].harbor = harborType.threeForOne;
+        this.vertexList[1].harbor = harborType.wheat;
+        this.vertexList[5].harbor = harborType.wheat;
+        this.vertexList[10].harbor = harborType.ore;
+        this.vertexList[15].harbor = harborType.ore;
+        this.vertexList[26].harbor = harborType.threeForOne;
+        this.vertexList[32].harbor = harborType.threeForOne;
+        this.vertexList[42].harbor = harborType.sheep;
+        this.vertexList[46].harbor = harborType.sheep;
+        this.vertexList[49].harbor = harborType.threeForOne;
+        this.vertexList[52].harbor = harborType.threeForOne;
+        this.vertexList[51].harbor = harborType.threeForOne;
+        this.vertexList[47].harbor = harborType.threeForOne;
+        this.vertexList[38].harbor = harborType.brick;
+        this.vertexList[33].harbor = harborType.brick;
+        this.vertexList[16].harbor = harborType.wood;
+        this.vertexList[11].harbor = harborType.wood;
+
     }
 
     private addVertex() {
         const id = this.vertexList.length;
-        this.vertexList.push(new Vertex(id, player.none, vertexStatus.open))
+        this.vertexList.push(new Vertex(id, player.none, harborType.none, vertexStatus.open))
         this.roadsMap.set(id, []);
     }
 
@@ -422,7 +447,7 @@ export class Board {
                 if (distaceFromRoot[vertex[0]] < currSum + 1) {
                     distaceFromRoot[vertex[0]] = currSum + 1;
                 }
-                //does that next vertex have a visitor that hasn't been visited?
+                //does that next vertex have a neighbour that hasn't been visited?
                 let neighboursOfNeighbours = this.roadsMap.get(vertex[0]);
                 neighboursOfNeighbours?.forEach(neighbourVertex => {
                     if (!visited[neighbourVertex[0]] && neighbourVertex[1] === owner && (this.vertexList[neighbourVertex[0]].status === vertexStatus.open || this.vertexList[neighbourVertex[0]].status === vertexStatus.blocked || this.vertexList[neighbourVertex[0]].owner === owner)) {

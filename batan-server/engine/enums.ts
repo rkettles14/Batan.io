@@ -29,3 +29,13 @@ export enum developmentType {
   victoryPointCard,
   yearOfPlenty,
 }
+
+export enum harborType {
+  none, 
+  threeForOne,
+  sheep,
+  wheat,
+  wood,
+  ore,
+  brick,
+}
