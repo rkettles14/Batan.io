@@ -38,15 +38,6 @@ export default Vue.extend({
       this.$root.gcSock.emit('hello', {
         hi: 'world'
       })
-      // Couldn't get this to work, nuxt-socket-io docs may be outdated
-      // await this.$store.dispatch(
-      //   '$nuxtSocket/emit',
-      //   {
-      //     label: 'gcSock',
-      //     evt: 'hello',
-      //     msg: { hi: 'world' }
-      //   }
-      // )
     }
   }
 })

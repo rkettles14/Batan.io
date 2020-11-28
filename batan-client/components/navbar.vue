@@ -64,7 +64,6 @@ export default Vue.extend({
       this.$auth.logout();
 
       // TODO: Clear all local user data (vuex gameboard, chat, localStorage, cookies)..
-      // maybe just refresh page after logout?
     },
     gameSelected(game) {
       this.$store.commit('games/changeGame', game);
