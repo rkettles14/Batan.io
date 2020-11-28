@@ -15,7 +15,7 @@
                 class="col nopadding outline-primary h-100"
             ><b-img src="@/static/send.png"
                 class="icon-img"
-                thumbnail center="true"
+                thumbnail center
                 blank-color="transparent"
             /></b-button>
         </b-form>

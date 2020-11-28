@@ -25,7 +25,8 @@
     "core-js": "^3.6.5",
     "install": "^0.13.0",
     "nanoid": "^2.1.11",
-    "nuxt": "^2.14.6"
+    "nuxt": "^2.14.6",
+    "nuxt-socket-io": "^1.1.12"
   },
   "devDependencies": {
     "@ava/babel": "^1.0.1",
