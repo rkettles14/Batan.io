@@ -1,5 +1,4 @@
 export default (io, socket) => {
-  // console.log(`From socket: ${socket.decoded_token.sub}`);
 
   socket.emit('test_vuex', {vuex_test: 'hi from vuex'});
 
