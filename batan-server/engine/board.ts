@@ -333,8 +333,8 @@ export class Board {
      * Set Vertices owned by each Hex.
      */
     private setHexVertices() {
-        for (let i = 0, j = 0; i < 3; i++, j++) {
-            this.hexList[i].vertices = [0 + j, 3 + j, 4 + j, 7 + j, 8 + j, 12 + j];
+        for (let i = 0; i < 3; i++) {
+            this.hexList[i].vertices = [0 + i, 3 + i, 4 + i, 7 + i, 8 + i, 12 + i];
         }
         for (let i = 3, j = 0; i < 7; i++, j++) {
             this.hexList[i].vertices = [7 + j, 11 + j, 12 + j, 16 + j, 17 + j, 22 + j];
@@ -352,7 +352,7 @@ export class Board {
 
     /**
      * Initializes hexagons.
-     * Hexagons are ordered from 0-19 statring from the top left and moving left to right, up to downs.
+     * Hexagons are ordered from 0-19 statring from the top left and moving left to right, up to down.
      */
     private initHexagons() {
         let hexAmt = 19;

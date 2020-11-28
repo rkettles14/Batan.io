@@ -326,7 +326,7 @@ class Game {
   }
 
   /**
-   * Take a random resource form player2 and gives it to player1
+   * Take a random resource from player2 and gives it to player1
    * @param player1 recieves resource.
    * @param player2 loses resource.
    */
@@ -354,6 +354,40 @@ class Game {
       let randomResource = player2TotalResources[randomIndex];
       this.players[player1Index].updatePlayerResources(true, randomResource, 1);
       this.players[player2Index].updatePlayerResources(false, randomResource, 1);
+    }
+  }
+
+  /**
+   * Takes random resources from a player and returns them to the bank
+   * @param player 
+   * @param amount 
+   */
+  private discardRandomResources(player: player, amount: number){
+    let playerIndex = this.getPlayerIndexByEnum(player);
+    let playerTotalResources: resourceType[] = [];
+    for (let i = 0; i < this.players[playerIndex].resources.brick; i++) {
+      playerTotalResources.push(resourceType.brick);
+    }
+    for (let i = 0; i < this.players[playerIndex].resources.ore; i++) {
+      playerTotalResources.push(resourceType.ore);
+    }
+    for (let i = 0; i < this.players[playerIndex].resources.sheep; i++) {
+      playerTotalResources.push(resourceType.sheep);
+    }
+    for (let i = 0; i < this.players[playerIndex].resources.wheat; i++) {
+      playerTotalResources.push(resourceType.wheat);
+    }
+    for (let i = 0; i < this.players[playerIndex].resources.wood; i++) {
+      playerTotalResources.push(resourceType.wood);
+    }
+    if (playerTotalResources.length > 0) {
+      for (let i = 0; i < amount; i++) {
+        const randomIndex = Math.floor(Math.random() * playerTotalResources.length);
+        let randomResource = playerTotalResources.splice(randomIndex, 1).pop();
+        if(randomResource){
+          this.takeResources(player, randomResource, 1);
+        }
+      }
     }
   }
 
@@ -417,36 +451,42 @@ class Game {
       }
   }
 
+  rollDice(){
+    const die1 = Math.floor(Math.random() * 6) + 1;
+    const die2 = Math.floor(Math.random() * 6) + 1;
+    const diceRoll = die1 + die2;
+    return diceRoll;
+  }
+
   /**
    * Represents a player rolling the game dice. 
    * @param user 
    * @param roll 
    */
-  rollDice(user: player/*, roll: number*/) { //TODO remove second param when not testing
-    const die1 = Math.floor(Math.random() * 6) + 1;
-    const die2 = Math.floor(Math.random() * 6) + 1;
-    const diceRoll = die1 + die2;
-    //for testing: 
-    //const diceRoll = roll;
+  beginTurn(user: player) { 
+    const diceRoll = this.rollDice();
+    //emit dice roll for front end animation?
 
     console.log(`${player[user]} rolled a ${diceRoll}!`);
 
     if (diceRoll === 7) {
-      this.moveRobberAndSteal(user);
-
       //discard if more than 7
       this.players.forEach((player) => {
         let totalResources = player.resources.brick + player.resources.ore + player.resources.sheep + player.resources.wheat + player.resources.wood;
         if (totalResources >= 7) {
-          //TODO emit to user... this will be handled with sockets later ... need to ensure correct number discarded
+          // Removed due to time constraints.
+          /*
           let reply = this.getUserInput(`Please discard ${Math.floor(totalResources/2)} resources\n`);
           let r = reply.split(";");
           r.forEach((element: string) => {
             var resourceAndNumber = element.split(" ");
             this.takeResources(player.name, this.resourceStringToEnum(resourceAndNumber[0]), parseInt(resourceAndNumber[1]))
           });
+          */
+          this.discardRandomResources(player.name, Math.floor(totalResources/2));
         }
       })
+      this.moveRobberAndSteal(user);
     } else {
       //give resources to players
       this.board.hexList.forEach((hex) => {
@@ -639,7 +679,7 @@ class Game {
    /**
     * Awards the largest army owner. If no one has an army larger than 2, largest army is not awarded.
     */
-   awardLargestArmy(){
+   private awardLargestArmy(){
     let largestArmyLength: number;
     if (this.largestArmyOwner != player.none) {
        largestArmyLength = 2;
@@ -691,7 +731,7 @@ class Game {
 }
 
 {
-  let game = new Game();
+  //let game = new Game();
   // game.board.addSettlement(23, player.red);
   // game.board.printBoard();
   // game.rollDice(player.red, 9);
