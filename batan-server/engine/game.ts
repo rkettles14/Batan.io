@@ -1,5 +1,5 @@
 import { Board } from "./board";
-import { developmentType, player, resourceType, vertexStatus } from "./enums";
+import { developmentType, harborType, player, resourceType, vertexStatus } from "./enums";
 
 class Player {
   name: player;
@@ -54,7 +54,7 @@ class Player {
    * Returns the number of a particular resource possessed by the player
    * @param resource
    */
-  getPlayerResource(resource: resourceType){
+  getPlayerResource(resource: resourceType) {
     if (resource === resourceType.brick) {
       return this.resources.brick;
     } else if (resource === resourceType.ore) {
@@ -362,7 +362,7 @@ class Game {
    * @param player 
    * @param amount 
    */
-  private discardRandomResources(player: player, amount: number){
+  private discardRandomResources(player: player, amount: number) {
     let playerIndex = this.getPlayerIndexByEnum(player);
     let playerTotalResources: resourceType[] = [];
     for (let i = 0; i < this.players[playerIndex].resources.brick; i++) {
@@ -384,7 +384,7 @@ class Game {
       for (let i = 0; i < amount; i++) {
         const randomIndex = Math.floor(Math.random() * playerTotalResources.length);
         let randomResource = playerTotalResources.splice(randomIndex, 1).pop();
-        if(randomResource){
+        if (randomResource) {
           this.takeResources(player, randomResource, 1);
         }
       }
@@ -395,24 +395,24 @@ class Game {
    * Draws a random development card from the bank and gives it to the player
    * @param owner 
    */
-  private drawRandomDevelopmentCard(owner: player){
+  private drawRandomDevelopmentCard(owner: player) {
     let allDevCards: developmentType[] = [];
-    for(let i = 0; i < this.bank.developmentCards.knight; i++){
+    for (let i = 0; i < this.bank.developmentCards.knight; i++) {
       allDevCards.push(developmentType.knight)
-    } 
-    for(let i = 0; i < this.bank.developmentCards.monopoly; i++){
+    }
+    for (let i = 0; i < this.bank.developmentCards.monopoly; i++) {
       allDevCards.push(developmentType.monopoly)
-    } 
-    for(let i = 0; i < this.bank.developmentCards.roadBuilder; i++){
+    }
+    for (let i = 0; i < this.bank.developmentCards.roadBuilder; i++) {
       allDevCards.push(developmentType.roadBuilder)
-    } 
-    for(let i = 0; i < this.bank.developmentCards.victoryPointCard; i++){
+    }
+    for (let i = 0; i < this.bank.developmentCards.victoryPointCard; i++) {
       allDevCards.push(developmentType.victoryPointCard)
-    } 
-    for(let i = 0; i < this.bank.developmentCards.yearOfPlenty; i++){
+    }
+    for (let i = 0; i < this.bank.developmentCards.yearOfPlenty; i++) {
       allDevCards.push(developmentType.yearOfPlenty)
-    } 
-    if(allDevCards.length > 0){
+    }
+    if (allDevCards.length > 0) {
       const randomIndex = Math.floor(Math.random() * allDevCards.length);
       let randomDevCard = allDevCards[randomIndex];
       this.giveDevCard(owner, randomDevCard);
@@ -421,37 +421,37 @@ class Game {
 
   private moveRobberAndSteal(user: player) {
     //move robber
-      //TODO emit to player who rolled
-      let playerReply: string = this.getUserInput(`${player[user]}, where would you like to place the robber?\n`);
-      let hexId = parseInt(playerReply);
-      let affectedPlayers = this.board.moveRobber(hexId);
+    //TODO emit to player who rolled
+    let playerReply: string = this.getUserInput(`${player[user]}, where would you like to place the robber?\n`);
+    let hexId = parseInt(playerReply);
+    let affectedPlayers = this.board.moveRobber(hexId);
 
-      //steal resource
-      if (affectedPlayers.length > 0) {
-        let affectedPlayersString = "";
-        affectedPlayers.forEach(element => {
-          affectedPlayersString.concat(player[element] + " ");
-        })
-        //TODO emit to player who rolled
-        playerReply = this.getUserInput("Who would you like to steal from? " + affectedPlayersString + '\n');
-        let victim = player.none;
-        if (playerReply === "blue") {
-          victim = player.blue;
-        }
-        if (playerReply === "orange") {
-          victim = player.orange;
-        }
-        if (playerReply === "red") {
-          victim = player.red;
-        }
-        if (playerReply === "white") {
-          victim = player.white;
-        }
-        this.stealResource(user, victim);
+    //steal resource
+    if (affectedPlayers.length > 0) {
+      let affectedPlayersString = "";
+      affectedPlayers.forEach(element => {
+        affectedPlayersString.concat(player[element] + " ");
+      })
+      //TODO emit to player who rolled
+      playerReply = this.getUserInput("Who would you like to steal from? " + affectedPlayersString + '\n');
+      let victim = player.none;
+      if (playerReply === "blue") {
+        victim = player.blue;
       }
+      if (playerReply === "orange") {
+        victim = player.orange;
+      }
+      if (playerReply === "red") {
+        victim = player.red;
+      }
+      if (playerReply === "white") {
+        victim = player.white;
+      }
+      this.stealResource(user, victim);
+    }
   }
 
-  rollDice(){
+  rollDice() {
     const die1 = Math.floor(Math.random() * 6) + 1;
     const die2 = Math.floor(Math.random() * 6) + 1;
     const diceRoll = die1 + die2;
@@ -463,7 +463,7 @@ class Game {
    * @param user 
    * @param roll 
    */
-  beginTurn(user: player) { 
+  beginTurn(user: player) {
     const diceRoll = this.rollDice();
     //emit dice roll for front end animation?
 
@@ -483,7 +483,7 @@ class Game {
             this.takeResources(player.name, this.resourceStringToEnum(resourceAndNumber[0]), parseInt(resourceAndNumber[1]))
           });
           */
-          this.discardRandomResources(player.name, Math.floor(totalResources/2));
+          this.discardRandomResources(player.name, Math.floor(totalResources / 2));
         }
       })
       this.moveRobberAndSteal(user);
@@ -548,12 +548,12 @@ class Game {
       let neighbours = this.board.roadsMap.get(vertexId);
       let neighbourRoadCounts = new Array(4).fill(0);
       neighbours?.forEach(neighbour => {
-        if(neighbour[1] !== player.none && neighbour[1] !== buyer){
+        if (neighbour[1] !== player.none && neighbour[1] !== buyer) {
           neighbourRoadCounts[neighbour[1]]++;
         }
       })
-      for(let i = 0; i < neighbourRoadCounts.length; i++){
-        if(neighbourRoadCounts[i] >= 2){
+      for (let i = 0; i < neighbourRoadCounts.length; i++) {
+        if (neighbourRoadCounts[i] >= 2) {
           this.players[this.getPlayerIndexByEnum(i)].longestRoad = this.board.getPlayerLongestRoad(i);
           this.awardLongestRoad();
         }
@@ -591,10 +591,10 @@ class Game {
    * Purchases a development card and gives it to the buyer.
    * @param buyer 
    */
-  purchaseDevelopmentCard(buyer: player) { 
+  purchaseDevelopmentCard(buyer: player) {
     let playerIndex = this.getPlayerIndexByEnum(buyer);
     let playerResources = this.players[playerIndex].resources;
-    if(playerResources.wheat >= 1 && playerResources.sheep >= 1 && playerResources.ore >= 1){
+    if (playerResources.wheat >= 1 && playerResources.sheep >= 1 && playerResources.ore >= 1) {
       this.takeResources(buyer, resourceType.wheat, 1);
       this.takeResources(buyer, resourceType.sheep, 1);
       this.takeResources(buyer, resourceType.ore, 1);
@@ -613,12 +613,12 @@ class Game {
   playDevelopmentCard(player: player, devCard: developmentType) { //move the robber and steal from a player, add one to your army
     this.takeDevCard(player, devCard)
     let playerIndex = this.getPlayerIndexByEnum(player);
-    if(devCard === developmentType.knight){
+    if (devCard === developmentType.knight) {
       this.moveRobberAndSteal(player);
       this.players[playerIndex].armies++;
       this.awardLargestArmy();
     }
-    else if(devCard === developmentType.monopoly){ //steal all of a particular resource from the other players
+    else if (devCard === developmentType.monopoly) { //steal all of a particular resource from the other players
       //TODO emit to player
       let playerReply = this.getUserInput("What resource would you like to take?\n");
       let targetResource = this.resourceStringToEnum(playerReply);
@@ -630,13 +630,13 @@ class Game {
       })
       this.players[playerIndex].updatePlayerResources(true, targetResource, count);
     }
-    else if(devCard === developmentType.roadBuilder){ //build two free roads if you have the pieces
-      for(let i = 0; i < 2; i ++) {
+    else if (devCard === developmentType.roadBuilder) { //build two free roads if you have the pieces
+      for (let i = 0; i < 2; i++) {
         let roadsPlayed = this.players[playerIndex].roadsPlayed;
-        if(roadsPlayed < 15){
+        if (roadsPlayed < 15) {
           //TODO emit to player
           let playerReply = this.getUserInput("Where would you like to place a road? (start, end)\n");
-          let targetVertices = playerReply.split(','); 
+          let targetVertices = playerReply.split(',');
           this.board.addRoad(targetVertices[0], targetVertices[1], player);
           this.players[playerIndex].roadsPlayed++;
           this.players[playerIndex].longestRoad = this.board.getPlayerLongestRoad(player);
@@ -644,10 +644,10 @@ class Game {
         }
       }
     }
-    else if(devCard === developmentType.victoryPointCard){ //add a victory point
+    else if (devCard === developmentType.victoryPointCard) { //add a victory point
       this.players[playerIndex].vpDevCardsPlayed++;
     }
-    else if(devCard === developmentType.yearOfPlenty){ //take any two resource from the bank
+    else if (devCard === developmentType.yearOfPlenty) { //take any two resource from the bank
       //TODO emit to user
       let playerReply = this.getUserInput("What resources would you like? (resource1, resource2)\n");
       let resources = playerReply.split(',');
@@ -656,70 +656,101 @@ class Game {
       this.giveResources(player, firstResource, 1);
       this.giveResources(player, secondResource, 1);
     }
-   }
+  }
 
-   /**
-    * Awards the longest road owner. If no one has a road longer than 4, longest road is not awarded.
-    */
-   awardLongestRoad(){
-     let longestRoadLength: number;
-     if (this.longestRoadOwner != player.none) {
-        longestRoadLength = 4;
+  /**
+   * Awards the longest road owner. If no one has a road longer than 4, longest road is not awarded.
+   */
+  awardLongestRoad() {
+    let longestRoadLength: number;
+    if (this.longestRoadOwner != player.none) {
+      longestRoadLength = 4;
+    }
+    else {
+      longestRoadLength = this.players[this.getPlayerIndexByEnum(this.longestRoadOwner)].longestRoad;
+    }
+    this.players.forEach(player => {
+      if (player.longestRoad > longestRoadLength) {
+        this.longestRoadOwner = player.name;
       }
-      else {
-        longestRoadLength = this.players[this.getPlayerIndexByEnum(this.longestRoadOwner)].longestRoad;
-      }
-      this.players.forEach(player => {
-         if (player.longestRoad > longestRoadLength) {
-            this.longestRoadOwner = player.name;
-         }
-       })
-   }
+    })
+  }
 
-   /**
-    * Awards the largest army owner. If no one has an army larger than 2, largest army is not awarded.
-    */
-   private awardLargestArmy(){
+  /**
+   * Awards the largest army owner. If no one has an army larger than 2, largest army is not awarded.
+   */
+  private awardLargestArmy() {
     let largestArmyLength: number;
     if (this.largestArmyOwner != player.none) {
-       largestArmyLength = 2;
-     }
-     else {
-       largestArmyLength = this.players[this.getPlayerIndexByEnum(this.largestArmyOwner)].armies;
-     }
-     this.players.forEach(player => {
-        if (player.armies > largestArmyLength) {
-           this.largestArmyOwner = player.name;
-        }
-      })
+      largestArmyLength = 2;
+    }
+    else {
+      largestArmyLength = this.players[this.getPlayerIndexByEnum(this.largestArmyOwner)].armies;
+    }
+    this.players.forEach(player => {
+      if (player.armies > largestArmyLength) {
+        this.largestArmyOwner = player.name;
+      }
+    })
   }
 
 
-   /**
-    * Calculates the victory points of the given player. This should be called at the end of each turn to determine a winner.
-    * @param player
-    */
-   calculateVictoryPoints(player: player){
-     let playerIndex = this.getPlayerIndexByEnum(player);
-     let vp = 0;
-     vp += this.players[playerIndex].settlementsPlayed;
-     vp += this.players[playerIndex].citiesPlayed * 2;
-     if(this.longestRoadOwner === player){
-       vp += 2;
-     }
-     if(this.largestArmyOwner === player){
-       vp += 2;
-     }
-     vp += this.players[playerIndex].vpDevCardsPlayed;
+  /**
+   * Calculates the victory points of the given player. This should be called at the end of each turn to determine a winner.
+   * @param player
+   */
+  calculateVictoryPoints(player: player) {
+    let playerIndex = this.getPlayerIndexByEnum(player);
+    let vp = 0;
+    vp += this.players[playerIndex].settlementsPlayed;
+    vp += this.players[playerIndex].citiesPlayed * 2;
+    if (this.longestRoadOwner === player) {
+      vp += 2;
+    }
+    if (this.largestArmyOwner === player) {
+      vp += 2;
+    }
+    vp += this.players[playerIndex].vpDevCardsPlayed;
 
-     this.players[playerIndex].victoryPoints = vp;
-     if(vp >= 10){
-       this.winner === player; //game ends. congrats.
-     }
-   }
+    this.players[playerIndex].victoryPoints = vp;
+    if (vp >= 10) {
+      this.winner === player; //game ends. congrats.
+    }
+  }
 
-  //TODO implement trade functionality with other players and bank (include harbors)
-  trade() { }
+  /**
+   * Trades resources with the bank. This is a 4:1 trade if no harbors are owned, 
+   * 3:1 if the threeForOne harbor is owned, and 2:1 if given resource harbor is owned.
+   * @param player 
+   * @param resourceToBank 
+   * @param resourceFromBank 
+   */
+  tradeWithBank(player: player, resourceToBank: resourceType, resourceFromBank: resourceType) {
+    let playerIndex = this.getPlayerIndexByEnum(player);
+    let resourceHarborOwned = false;
+    let threeForOneHarborOwned = false;
+    if (resourceToBank !== resourceType.none) {
+      this.board.vertexList.forEach(vertex => {
+        let harborResource = this.resourceStringToEnum(harborType[vertex.harbor]);
+        if (vertex.owner === player && harborResource === resourceToBank) {
+          resourceHarborOwned = true;
+        }
+        if (vertex.owner === player && vertex.harbor === harborType.threeForOne) {
+          threeForOneHarborOwned = true;
+        }
+      })
+
+      let requiredNumberOfResources = resourceHarborOwned ? 2 : threeForOneHarborOwned ? 3 : 4;
+      let playerResourceCount = this.players[playerIndex].getPlayerResource(resourceToBank) ?? 0;
+      if (playerResourceCount >= requiredNumberOfResources) {
+        this.takeResources(player, resourceToBank, requiredNumberOfResources);
+        this.giveResources(player, resourceFromBank, 1);
+      }
+      else {
+        console.log("You don't have enough resources for this!");
+      }
+    }
+  }
 
 
 
