@@ -21,3 +21,21 @@ export enum resourceType {
   ore,
   brick,
 }
+
+export enum developmentType {
+  knight,
+  monopoly,
+  roadBuilder,
+  victoryPointCard,
+  yearOfPlenty,
+}
+
+export enum harborType {
+  none, 
+  threeForOne,
+  sheep,
+  wheat,
+  wood,
+  ore,
+  brick,
+}
