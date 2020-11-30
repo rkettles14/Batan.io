@@ -78,6 +78,16 @@ export default {
             'test_vuex --> games/vuex_test'
           ]
         }
+      },
+      {
+        name: 'chat',
+        url: 'http://localhost:3001',
+        default: false,
+        vuex: {
+          mutations: [
+
+          ]
+        }
       }
     ]
   },

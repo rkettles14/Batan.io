@@ -21,7 +21,7 @@
         </b-form>
     </b-container>    
 </template>
-<script lang="ts">
+<script>
 import Vue from 'vue'
 import {BootstrapVue} from 'bootstrap-vue'
 
@@ -46,8 +46,26 @@ export default Vue.extend({
       };
     },
     watch: {
-        msg: function() {
-            let re = RegExp(':[\w-]*:');
+    },
+    mounted() {
+        if(this.$root.chatsocket === undefined || this.$root.chatsocket === null){
+            console.log("warning - chat socket is not initialized");
+        }
+    },
+    methods: {
+        send() {
+            replaceEmojies();
+            this.$root.chatsocket.emit("message", {
+                chatid: 1,
+                user: this.$auth.name,
+                msg: this.$data.msg,
+
+            });
+            this.$data.msg = "";
+        },
+
+        replaceEmojies() {
+            const re = RegExp(':[\w-]*:');
             let result = this.$data.msg.matchAll(re);
             console.log(result);
             if(result != null){
@@ -60,12 +78,6 @@ export default Vue.extend({
                     }
                 }
             }
-        }
-    },
-    methods: {
-        send() {
-            //todo hook up to backend with socket.io
-            this.$data.msg = "";
         },
     }
 });
