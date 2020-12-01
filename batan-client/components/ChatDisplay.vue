@@ -4,20 +4,22 @@
             class="message-display"
         >
             <b-list-group-item
+                v-for="message in messages"
+                :key="message.userName + message.timestamp"
                 variant="secondary"
                 class="list-item"
             >
                 <div class="user-img">
-                    <!-- <b-avatar :src="$auth.user.picture"/> -->
+                    <b-avatar :src="message.userImgUrl"/>
                 </div>
                 <div class="msg-content">
-                This is a test
+                    {{message.content}}
                 </div>
             </b-list-group-item>
         </b-list-group>
     </b-container>
 </template>
-<script lang="ts">
+<script>
 import Vue from 'vue'
 import {BootstrapVue, BootstrapVueIcons} from 'bootstrap-vue'
 
@@ -25,11 +27,8 @@ export default Vue.extend({
     name: "ChatDisplay",
     data() {
         return {
-        //todo add all the messages
+            messages: this.$store.state.chat.chats['lobby']//todo determine which chat room you're in
         };
-    },
-    created: function () {
-        //todo socket stuff to listen for messages
     }
 });
 Vue.use(BootstrapVue);

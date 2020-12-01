@@ -85,7 +85,7 @@ export default {
         default: false,
         vuex: {
           mutations: [
-
+            'message --> chat/onMessage'
           ]
         }
       }

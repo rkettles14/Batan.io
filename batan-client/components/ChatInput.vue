@@ -23,7 +23,6 @@
 </template>
 <script>
 import Vue from 'vue'
-import {BootstrapVue} from 'bootstrap-vue'
 
 const emojiMap = new Map([
     [':smile:', String.fromCodePoint(0x1F601)],
@@ -37,39 +36,67 @@ const emojiMap = new Map([
 
 export default Vue.extend({
     name: "ChatInput",
-    props: {
 
-    },
     data() {
       return {
           msg: ""
       };
     },
-    watch: {
-    },
+
     mounted() {
-        if(this.$root.chatsocket === undefined || this.$root.chatsocket === null){
-            console.log("warning - chat socket is not initialized");
+        if(this.$auth.loggedIn) {
+            this.initChatSocket();
         }
     },
-    methods: {
-        send() {
-            replaceEmojies();
-            this.$root.chatsocket.emit("message", {
-                chatid: 1,
-                user: this.$auth.name,
-                msg: this.$data.msg,
 
+    methods: {
+        initChatSocket() {
+            this.$root.chatSocket = this.$nuxtSocket({
+                name: 'chat',
+                teardown: false
+            });
+            this.$root.chatSocket.on('connect', () => {
+                this.$root.chatSocket
+                    .emit('authenticate', { token: this.$auth.getToken('auth0').split(' ')[1] })
+                    .on('authenticated', () => {
+                        // post-authenticate w/ websocket
+                    })
+                    .on('unauthorized', (msg) => {
+                        console.log(`unauthorized: ${JSON.stringify(msg.data)}`);
+                        throw new Error(msg.data.type);
+                    });
+            });
+        },
+
+        send() {
+            if(this.$root.chatSocket === undefined){
+                console.log("WARNING - chat socket is not initialized");
+                return;
+            }
+            if(!this.$auth.loggedIn){
+                console.log("WARNING - attempting to send msg without being logged in");
+                return;
+            }
+            if(this.$data.msg === ""){
+                return;
+            }
+
+            this.replaceEmojies();
+            this.$root.chatSocket.emit("message", {
+                chatId: "lobby", //todo determine which chat you're in
+                userName: this.$auth.user.name,
+                userImgUrl: this.$auth.user.picture,
+                content: this.$data.msg,
             });
             this.$data.msg = "";
         },
 
         replaceEmojies() {
-            const re = RegExp(':[\w-]*:');
+            const re = ':[\w-]*:';
             let result = this.$data.msg.matchAll(re);
+
             console.log(result);
             if(result != null){
-                console.log("here!");
                 for(let emoji of result){
                     if(emoji[0] in emojiMap){
                         let utf_emoji = emojiMap.get(emoji[0]);
@@ -81,9 +108,8 @@ export default Vue.extend({
         },
     }
 });
-
-Vue.use(BootstrapVue);
 </script>
+
 <style scoped>
 .chat-input-container {
     height: 2rem;
