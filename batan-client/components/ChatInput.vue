@@ -93,7 +93,7 @@ export default Vue.extend({
 
         replaceEmojies(content) {
             const re = /:[\w-]*:/;
-            let result = [...content.match(re)];
+            let result = content.match(re);
 
             if(result != null){
                 for(let emoji of result){
