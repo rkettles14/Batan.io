@@ -1,62 +1,62 @@
 <template>
-    <div class='container'>
+    <b-container class='board-background'>
         <ol class='even'>
             <Hex class='spacer'></Hex>
-            <Hex></Hex>
-            <Hex></Hex>
-            <Hex></Hex>
-            <Hex></Hex>
+            <Hex class ='harbor'></Hex>
+            <Hex class ='harbor'></Hex>
+            <Hex class ='harbor'></Hex>
+            <Hex class ='harbor'></Hex>
         </ol>
         <ol class ='odd'>
             <Hex class='spacer'></Hex>
+            <Hex class ='harbor'></Hex>
             <Hex></Hex>
+            <Hex ></Hex>
             <Hex></Hex>
-            <Hex></Hex>
-            <Hex></Hex>
-            <Hex></Hex>
+            <Hex class ='harbor'></Hex>
         </ol>
         <ol class='even'>
+            <Hex class ='harbor'></Hex>
             <Hex></Hex>
             <Hex></Hex>
             <Hex></Hex>
             <Hex></Hex>
-            <Hex></Hex>
-            <Hex></Hex>
+            <Hex class ='harbor'></Hex>
         </ol>
         <ol class ='odd'>
+            <Hex class ='harbor'></Hex>
             <Hex></Hex>
             <Hex></Hex>
             <Hex></Hex>
             <Hex></Hex>
             <Hex></Hex>
-            <Hex></Hex>
-            <Hex></Hex>
+            <Hex class ='harbor'></Hex>
         </ol>
         <ol class ='even'>
+            <Hex class ='harbor'></Hex>
             <Hex></Hex>
             <Hex></Hex>
             <Hex></Hex>
             <Hex></Hex>
-            <Hex></Hex>
-            <Hex></Hex>
+            <Hex class ='harbor'></Hex>
         </ol>
         <ol class ='odd'>
             <Hex class='spacer'></Hex>
+            <Hex class ='harbor'></Hex>
             <Hex></Hex>
             <Hex></Hex>
             <Hex></Hex>
-            <Hex></Hex>
-            <Hex></Hex>
+            <Hex class ='harbor'></Hex>
         </ol>
         <ol class='even'>
             <Hex class='spacer'></Hex>
-            <Hex></Hex>
-            <Hex></Hex>
-            <Hex></Hex>
-            <Hex></Hex>
+            <Hex class ='harbor'></Hex>
+            <Hex class ='harbor'></Hex>
+            <Hex class ='harbor'></Hex>
+            <Hex class ='harbor'></Hex>
         </ol>
 
-    </div>    
+    </b-container>    
 </template>
 
 <script lang="ts">
@@ -76,12 +76,8 @@ export default Vue.extend({
 
 <style scoped>
 
-.container {
-  box-sizing: content-box;
-  position: relative;
-  width: 1300px; 
-  border: 1px solid black;
-  line-height: 1.3;
+.board-background {
+  background: black;
 }
 
 ol.even {
@@ -93,6 +89,7 @@ ol.even {
 ol.odd {
   position: relative;
   width: 100%;
+  margin: auto; 
   margin-bottom: -50px;
 }
 </style>
