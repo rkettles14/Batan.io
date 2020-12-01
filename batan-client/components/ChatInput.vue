@@ -81,30 +81,31 @@ export default Vue.extend({
                 return;
             }
 
-            this.replaceEmojies();
+            const content = this.replaceEmojies(this.$data.msg);
             this.$root.chatSocket.emit("message", {
                 chatId: this.$root.chatId,
                 userName: this.$auth.user.name,
                 userImgUrl: this.$auth.user.picture,
-                content: this.$data.msg,
+                content: content
             });
             this.$data.msg = "";
         },
 
-        replaceEmojies() {
-            const re = ':[\w-]*:';
-            let result = this.$data.msg.matchAll(re);
+        replaceEmojies(content) {
+            const re = /:[\w-]*:/;
+            let result = [...content.match(re)];
 
-            console.log(result);
             if(result != null){
                 for(let emoji of result){
-                    if(emoji[0] in emojiMap){
-                        let utf_emoji = emojiMap.get(emoji[0]);
+                    if(emojiMap.has(emoji)){
+                        let utf_emoji = emojiMap.get(emoji);
                         if(utf_emoji === undefined) continue;
-                        this.$data.msg.replaceAll(emoji[0], utf_emoji);
+                        content = content.replaceAll(emoji, utf_emoji);
                     }
                 }
             }
+
+            return content;
         },
     }
 });
