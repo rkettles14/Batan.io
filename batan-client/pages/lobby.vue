@@ -42,9 +42,8 @@ export default Vue.extend({
   },
 
   created() {
-    this.$root.chatId = "lobby";
+    this.$store.commit("chat/changeToChatRoom", "lobby");
   },
-
   methods: {
 
     displayActiveGames() {

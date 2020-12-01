@@ -24,6 +24,10 @@ function log(msg: Message) {
     console.log("msg: " + msg.content);
 }
 
+function log_brief(msg: Message) {
+    console.log("MSG - chat: " + msg.chatId + " user: " + msg.userName);
+}
+
 export default (io: Server, socket: Socket) => {
     socket.on("chat/message", (message: Message) => {
         if(message === null || message === undefined){
@@ -32,7 +36,7 @@ export default (io: Server, socket: Socket) => {
         }
 
         message.timestamp = new Date(Date.now()).toUTCString();
-        log(message);
+        log_brief(message);
         io.emit("chat/message", message); //todo maybe only send to those that are a part of the same game
         //todo store the message?
     });

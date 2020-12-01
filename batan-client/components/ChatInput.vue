@@ -9,6 +9,7 @@
                 v-model="msg"
                 type="text"
                 placeholder="Type Message Here"
+                autocomplete="off"
             />
             <b-button
                 type="submit"
@@ -34,12 +35,13 @@ const emojiMap = new Map([
     //todo add some more choice emojis
 ]);
 
+let chatId = "";
 export default Vue.extend({
     name: "ChatInput",
 
     data() {
       return {
-          msg: ""
+          msg: "",
       };
     },
 
@@ -59,7 +61,7 @@ export default Vue.extend({
 
             const content = this.replaceEmojies(this.$data.msg);
             this.$root.socket.emit("chat/message", {
-                chatId: this.$root.chatId,
+                chatId: this.$store.state.chat.currentChatId,
                 userName: this.$auth.user.name,
                 userImgUrl: this.$auth.user.picture,
                 content: content

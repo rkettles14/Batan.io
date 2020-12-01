@@ -4,7 +4,7 @@
             class="message-display"
         >
             <b-list-group-item
-                v-for="message in messages"
+                v-for="message in $store.state.chat.currentChat"
                 :key="message.userName + message.timestamp"
                 variant="secondary"
                 class="list-item"
@@ -27,7 +27,6 @@ export default Vue.extend({
     name: "ChatDisplay",
     data() {
         return {
-            messages: this.$store.state.chat.chats[this.$root.chatId]
         };
     }
 });

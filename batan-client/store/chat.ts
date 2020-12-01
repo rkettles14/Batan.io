@@ -2,6 +2,8 @@ export const state = () => ({
     chats: {
         'lobby': []
     },
+    currentChatId: "",
+    currentChat: []
 });
 
 export const mutations = {
@@ -12,6 +14,14 @@ export const mutations = {
         }
         if(message.chatId in state.chats){
             state.chats[message.chatId].push(message);
+        }
+    },
+    changeToChatRoom(state: any, chatId: string) {
+        if(chatId in state.chats){
+            state.currentChatId = chatId;
+            state.currentChat = state.chats[chatId];
+        } else {
+            console.log("WARNING - Trying to switch to non existant chat");
         }
     },
     createChatRoom(state: any, chatId: string) {
