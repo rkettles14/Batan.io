@@ -24,9 +24,6 @@ import Vue from "vue";
 
 export default Vue.extend({
   name: "GameScreen",
-  created() {
-    this.$root.chatId = this.$store.state.games.activeGame;
-  }
 });
 
 </script>
