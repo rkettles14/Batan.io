@@ -43,33 +43,9 @@ export default Vue.extend({
       };
     },
 
-    mounted() {
-        if(this.$auth.loggedIn) {
-            this.initChatSocket();
-        }
-    },
-
     methods: {
-        initChatSocket() {
-            this.$root.chatSocket = this.$nuxtSocket({
-                name: 'chat',
-                teardown: false
-            });
-            this.$root.chatSocket.on('connect', () => {
-                this.$root.chatSocket
-                    .emit('authenticate', { token: this.$auth.getToken('auth0').split(' ')[1] })
-                    .on('authenticated', () => {
-                        // post-authenticate w/ websocket
-                    })
-                    .on('unauthorized', (msg) => {
-                        console.log(`unauthorized: ${JSON.stringify(msg.data)}`);
-                        throw new Error(msg.data.type);
-                    });
-            });
-        },
-
         send() {
-            if(this.$root.chatSocket === undefined){
+            if(this.$root.socket === undefined){
                 console.log("WARNING - chat socket is not initialized");
                 return;
             }
@@ -82,7 +58,7 @@ export default Vue.extend({
             }
 
             const content = this.replaceEmojies(this.$data.msg);
-            this.$root.chatSocket.emit("message", {
+            this.$root.socket.emit("chat/message", {
                 chatId: this.$root.chatId,
                 userName: this.$auth.user.name,
                 userImgUrl: this.$auth.user.picture,

@@ -25,11 +25,7 @@ function log(msg: Message) {
 }
 
 export default (io: Server, socket: Socket) => {
-    socket.on("join", () => {
-        console.log("Somebody joined");
-    });
-
-    socket.on("message", (message: Message) => {
+    socket.on("chat/message", (message: Message) => {
         if(message === null || message === undefined){
             console.log("Warning - received a null/undefined message");
             return;
@@ -37,7 +33,7 @@ export default (io: Server, socket: Socket) => {
 
         message.timestamp = new Date(Date.now()).toUTCString();
         log(message);
-        io.emit("message", message);
+        io.emit("chat/message", message); //todo maybe only send to those that are a part of the same game
         //todo store the message?
     });
 }

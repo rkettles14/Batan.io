@@ -70,25 +70,16 @@ export default {
   io: {
     sockets: [
       {
-        name: 'game',
+        name: 'client-socket',
         url: 'http://localhost:3001',
         default: true,
         vuex: {
           mutations: [
-            'test_vuex --> games/vuex_test'
+            'test_vuex --> games/vuex_test',
+            'chat/message --> chat/onMessage'
           ]
         }
       },
-      {
-        name: 'chat',
-        url: 'http://localhost:3001',
-        default: false,
-        vuex: {
-          mutations: [
-            'message --> chat/onMessage'
-          ]
-        }
-      }
     ]
   },
 
