@@ -9,6 +9,7 @@
                 v-model="msg"
                 type="text"
                 placeholder="Type Message Here"
+                autocomplete="off"
             />
             <b-button
                 type="submit"
@@ -21,9 +22,8 @@
         </b-form>
     </b-container>    
 </template>
-<script lang="ts">
+<script>
 import Vue from 'vue'
-import {BootstrapVue} from 'bootstrap-vue'
 
 const emojiMap = new Map([
     [':smile:', String.fromCodePoint(0x1F601)],
@@ -35,43 +35,60 @@ const emojiMap = new Map([
     //todo add some more choice emojis
 ]);
 
+let chatId = "";
 export default Vue.extend({
     name: "ChatInput",
-    props: {
 
-    },
     data() {
       return {
-          msg: ""
+          msg: "",
       };
     },
-    watch: {
-        msg: function() {
-            let re = RegExp(':[\w-]*:');
-            let result = this.$data.msg.matchAll(re);
-            console.log(result);
+
+    methods: {
+        send() {
+            if(this.$root.socket === undefined){
+                console.log("WARNING - chat socket is not initialized");
+                return;
+            }
+            if(!this.$auth.loggedIn){
+                console.log("WARNING - attempting to send msg without being logged in");
+                return;
+            }
+            if(this.$data.msg === ""){
+                return;
+            }
+
+            const content = this.replaceEmojies(this.$data.msg);
+            this.$root.socket.emit("chat/message", {
+                chatId: this.$store.state.chat.currentChatId,
+                userName: this.$auth.user.name,
+                userImgUrl: this.$auth.user.picture,
+                content: content
+            });
+            this.$data.msg = "";
+        },
+
+        replaceEmojies(content) {
+            const re = /:[\w-]*:/;
+            let result = content.match(re);
+
             if(result != null){
-                console.log("here!");
                 for(let emoji of result){
-                    if(emoji[0] in emojiMap){
-                        let utf_emoji = emojiMap.get(emoji[0]);
+                    if(emojiMap.has(emoji)){
+                        let utf_emoji = emojiMap.get(emoji);
                         if(utf_emoji === undefined) continue;
-                        this.$data.msg.replaceAll(emoji[0], utf_emoji);
+                        content = content.replaceAll(emoji, utf_emoji);
                     }
                 }
             }
-        }
-    },
-    methods: {
-        send() {
-            //todo hook up to backend with socket.io
-            this.$data.msg = "";
+
+            return content;
         },
     }
 });
-
-Vue.use(BootstrapVue);
 </script>
+
 <style scoped>
 .chat-input-container {
     height: 2rem;

@@ -27,7 +27,7 @@
   </b-container>
 </template>
 
-<script lang="ts">
+<script>
 import Vue from "vue"
 
 export default Vue.extend({
@@ -39,6 +39,10 @@ export default Vue.extend({
       showCreateGame: false,
       showJoinGame: false,
     }
+  },
+
+  created() {
+    this.$store.commit("chat/changeToChatRoom", "lobby");
   },
   methods: {
 

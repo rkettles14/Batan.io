@@ -11,6 +11,9 @@ export default Vue.extend({
     name: "GameBoard",
     props: {
 
+    },
+    created() {
+        this.$store.commit("chat/changeToChatRoom", this.$store.state.games.activeGame);
     }
 });
 </script>
