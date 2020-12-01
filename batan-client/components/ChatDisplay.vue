@@ -27,7 +27,7 @@ export default Vue.extend({
     name: "ChatDisplay",
     data() {
         return {
-            messages: this.$store.state.chat.chats['lobby']//todo determine which chat room you're in
+            messages: this.$store.state.chat.chats[this.$root.chatId]
         };
     }
 });

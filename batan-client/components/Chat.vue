@@ -12,6 +12,18 @@
     </b-container>
 </template>
 
+<script>
+import Vue from 'vue'
+export default Vue.extend({
+    name: "Chat",
+    created() {
+        if(this.$root.chatId !== "lobby"){
+            this.$store.commit("chat/createChatRoom", this.$store.state.games.activeGame);
+        }
+    }    
+})
+</script>
+
 <style scoped>
 .chat-container {
     display: flex;

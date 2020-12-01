@@ -13,7 +13,12 @@ export const mutations = {
         if(message.chatId in state.chats){
             state.chats[message.chatId].push(message);
         }
+    },
+    createChatRoom(state: any, chatId: string) {
+        if(chatId in state.chats){
+            return;
+        }
+        state.chats[chatId] = [];
     }
-    //todo add ability to create a new chat room based on the active games
     //todo once game has finished, maybe remove the chat room?
 };

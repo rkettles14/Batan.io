@@ -83,7 +83,7 @@ export default Vue.extend({
 
             this.replaceEmojies();
             this.$root.chatSocket.emit("message", {
-                chatId: "lobby", //todo determine which chat you're in
+                chatId: this.$root.chatId,
                 userName: this.$auth.user.name,
                 userImgUrl: this.$auth.user.picture,
                 content: this.$data.msg,
