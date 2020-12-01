@@ -10,13 +10,14 @@
     </b-row>
     <b-row class="row-2">
       <b-col cols="8">
-        <GameControls />
+        <Dice/>
       </b-col>
       <b-col>
         <GamePlayerStats />
       </b-col>
     </b-row>
   </b-container>
+
 </template>
 
 <script lang="ts">
