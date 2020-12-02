@@ -11,6 +11,14 @@
         </b-row>
     </b-container>
 </template>
+
+<script>
+import Vue from 'vue'
+export default Vue.extend({
+    name: "Chat",
+})
+</script>
+
 <style scoped>
 .chat-container {
     display: flex;

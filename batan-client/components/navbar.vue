@@ -55,7 +55,7 @@ export default Vue.extend({
     },
     logout() {
       try {
-        this.$root.gcSock.disconnect()
+        this.$root.socket.disconnect()
       } catch (err) {
         // ignore.. socket already closed
       }
@@ -67,6 +67,8 @@ export default Vue.extend({
     },
     gameSelected(game) {
       this.$store.commit('games/changeGame', game);
+      this.$store.commit("chat/createChatRoom", this.$store.state.games.activeGame);
+      this.$store.commit("chat/changeToChatRoom", this.$store.state.games.activeGame);
       this.$router.push({
         path: '/game-screen'
       });
@@ -79,13 +81,13 @@ export default Vue.extend({
 
       // Persisting in $root rather than using 'persist';
       // see https://github.com/richardeschloss/nuxt-socket-io/issues/118
-      this.$root.gcSock = this.$nuxtSocket({
-        name: 'game',
-        // persist: 'gcSock', // omitting for now
+      this.$root.socket = this.$nuxtSocket({
+        name: 'client-socket',
+        // persist: 'socket', // omitting for now
         teardown: false
       });
-      this.$root.gcSock.on('connect', () => {
-          this.$root.gcSock
+      this.$root.socket.on('connect', () => {
+          this.$root.socket
           .emit('authenticate', { token: this.$auth.getToken('auth0').split(' ')[1] })
           .on('authenticated', () => {
             // post-authenticate w/ websocket

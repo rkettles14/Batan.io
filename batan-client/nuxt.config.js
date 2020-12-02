@@ -9,7 +9,10 @@ export default {
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       { hid: 'description', name: 'description', content: '' },
     ],
-    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
+    link: [
+      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400&display=swap'}
+    ],
   },
 
   // Global CSS (https://go.nuxtjs.dev/config-css)
@@ -70,15 +73,16 @@ export default {
   io: {
     sockets: [
       {
-        name: 'game',
+        name: 'client-socket',
         url: 'http://localhost:3001',
         default: true,
         vuex: {
           mutations: [
-            'test_vuex --> games/vuex_test'
+            'test_vuex --> games/vuex_test',
+            'chat/message --> chat/onMessage'
           ]
         }
-      }
+      },
     ]
   },
 

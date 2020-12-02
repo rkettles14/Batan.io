@@ -35,7 +35,7 @@ export default Vue.extend({
   },
   methods: {
     hello() {
-      this.$root.gcSock.emit('hello', {
+      this.$root.socket.emit('hello', {
         hi: 'world'
       })
     }
