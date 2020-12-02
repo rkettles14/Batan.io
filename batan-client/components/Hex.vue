@@ -1,5 +1,19 @@
 <template>
-        <li class = 'hex' v-bind:style='hexObject'>
+        <li class = 'hex' v-bind:class='[{"atmosphere": isAtmosphere}, {"spacer": isSpacer}]'>
+          <div v-if="!isAtmosphere && !isSpacer">
+            <Road class='tr'></Road>
+            <Road class='tl'></Road>
+            <Road class ='l'></Road>
+            <div v-if="hexId == 11 || hexId == 15 || hexId == 16 || hexId == 17 || hexId == 18">
+              <Road :hex-id='assignHexID()' class='br'></Road>
+            </div>
+            <div v-if="hexId == 7 || hexId == 12 || hexId == 16 || hexId == 17 || hexId == 18">
+              <Road class ='bl'></Road>
+            </div>
+            <div v-if="hexId == 2 || hexId == 6 || hexId == 11 || hexId == 15 || hexId == 18">
+              <Road class ='r'></Road>
+            </div>
+          </div>
         </li>  
 </template>
 
@@ -8,67 +22,32 @@ import Vue from 'vue';
 console.log('bruh');
 
 export default Vue.extend({
-  data(){
-    return {
-      hexObject: {
-        width: 75 + 'px' as String,
-        height: 75 * 1.7 + 'px' as String
-      },
-      windowWidth: 0 as number
+    props: {
+        hexId: Number,
+        isAtmosphere: {
+          type: Boolean,
+          default: false
+        },
+        isSpacer: {
+          type: Boolean,
+          default: false
+        }
+    },
+    created() {
+    },
+    methods: {
+      assignHexID() {
+        return this.hexId;
+      }
     }
-  },
-  created() {
-    if (process.browser){
-      window.addEventListener("resize", this.myEventHandler);
-      this.windowWidth = window.innerWidth;
-      this.myEventHandler();
-    }
-  },
-  destroyed() {
-    if(process.browser){
-      window.removeEventListener("resize", this.myEventHandler);
-    }
-  },
-  methods: {
-    myEventHandler() {
-      // your code for handling resize...
-      this.windowWidth = window.innerWidth;
-      let hexWidth: number = 0;
-
-      if(this.windowWidth < 576) {
-          hexWidth = 30;
-      }
-      else if( 768 > this.windowWidth && this.windowWidth >= 576){
-          hexWidth = 40;
-      }
-      else if( 992 > this.windowWidth && this.windowWidth >= 768){
-          hexWidth = 50;
-      }
-      else if(1200 > this.windowWidth && this.windowWidth >= 992){
-          hexWidth = 55;
-      }
-      else if(this.windowWidth >= 1200){
-          hexWidth = 30;
-      }
-
-
-      console.log(this.windowWidth);
-
-      this.hexObject.width = hexWidth + 'px';
-      this.hexObject.height = hexWidth * 1.7 + 'px';
-
-
-    }
-  }
-    
 })
 </script>
 
 <style scoped>
+
+
 .hex {
     position: relative;
-    margin-right: 2vw;
-    margin-top: 6vh;
     border-radius: 2px;
     background: #ccc;
     background-color: rgb(204, 204, 204);
@@ -96,15 +75,88 @@ export default Vue.extend({
   transform: rotate(-60deg);
 }
 
+.brick {
+  background: red;
+}
+
+.lumber {
+  background: brown;
+}
+
+.wool {
+  background: grey;
+}
+
+.grain{
+  background: yellow;
+}
+
+.ore{
+  background: purple;
+}
+
+.empty{
+  background:white;
+}
+
 .spacer {
     background: transparent;
 }
 
-.harbor {
+.atmosphere {
   background: #0099ff;
 }
-.harbor:hover {
-  background: #00bbff;
+
+@media screen and (min-width: 0px){
+  .hex {
+    width: 20px;
+    height: 20px;
+  }
+  .hex.left {
+    margin-left: 20vw;
+  }
+}
+
+@media screen and (min-width: 576px){
+  .hex {
+    width: 30px;
+    height: 30px;
+  }
+}
+
+@media screen and (min-width: 768px){
+  .hex {
+    width: 30px;
+    height: 30px;
+  }
+}
+
+@media screen and (min-width: 1000px){
+  .hex {
+    width: 40px;
+    height: 68px;
+    margin-top: 50px;
+    margin-right: auto;
+    margin-left: 40px;
+  }
+
+    .hex.left {
+    margin-left: 5vw;
+  }
+}
+
+@media screen and (min-width: 1500px){
+  .hex {
+    width: 50px;
+    height: 85px;
+    margin-top: 50px;
+    margin-right: auto;
+    margin-left: 50px;
+  }
+
+    .hex.left {
+    margin-left: 15vw;
+  }
 }
 
 </style>
