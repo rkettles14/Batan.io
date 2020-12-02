@@ -142,7 +142,7 @@ class Player {
   }
 }
 
-class Game {
+export default class Game {
   winner: player;
   board: Board;
   players: Player[];

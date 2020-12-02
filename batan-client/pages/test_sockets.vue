@@ -2,8 +2,8 @@
 
 <template lang="html">
 <div class="">
-  <b-button @click.prevent="" size="md" variant="dark">New game</b-button>
-  <b-button @click.prevent="" size="md" variant="dark">Join game</b-button>
+  <b-button @click.prevent="newGame('game name here')" size="md" variant="dark">New game</b-button>
+  <b-button @click.prevent="joinGame(0)" size="md" variant="dark">Join game</b-button>
   <b-button @click.prevent="" size="md" variant="dark">Delete game</b-button>
   <br>  <br>
   <b-button @click.prevent="hello()" size="md" variant="dark">game/move</b-button>
@@ -38,6 +38,12 @@ export default Vue.extend({
       this.$root.socket.emit('hello', {
         hi: 'world'
       })
+    },
+    newGame(game_name) {
+      this.$root.socket.emit('game/newGame', {game_name: game_name});
+    },
+    joinGame(game_id) {
+      this.$root.socket.emit('game/joinGame', {game_id: game_id});
     }
   }
 })
