@@ -10,7 +10,7 @@
     </b-row>
     <b-row class="row-2">
       <b-col cols="8">
-        <GameControls />
+        <ResourceCards />
       </b-col>
       <b-col>
         <GamePlayerStats />
@@ -26,9 +26,9 @@
 <style scoped>
 
 .row-1 {
-  height: 80%
+  height: 80%;
 }
-
 .row-2 {
+  height: 20%;
 }
 </style>
