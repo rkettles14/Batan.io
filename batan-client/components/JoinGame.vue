@@ -1,5 +1,6 @@
 <template>
     <b-container fluid>
+        <h2>Join Game</h2>
         <b-form>
             <div class="form-element">
                 <label>Game Code:</label>

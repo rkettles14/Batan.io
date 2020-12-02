@@ -1,7 +1,7 @@
 <template>
     <b-container fluid>
         <!--todo query active games and put them here-->
-        <h1>Active games table goes here</h1>
+        <h2>Active Games</h2>
         <b-table striped hover :items="items">
           <!--todo list all existing games-->
         </b-table>

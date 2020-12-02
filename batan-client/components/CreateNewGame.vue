@@ -1,5 +1,6 @@
 <template>
     <b-container fluid>
+        <h2>Create Game</h2>
         <b-form @submit.prevent="send">
             <div class="form-element">
                 <label>Game Name:</label>
