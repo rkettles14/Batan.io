@@ -5,7 +5,6 @@ function update_game_clients(io, game_id, event, data) {
   let game = gameState.games.get(game_id);
   game.players.forEach((player_info, uid) => {
     socketState.online.get(uid).forEach((socketid) => {
-      console.log(`Sending to ${socketid}`)
       io.to(socketid).emit(event, data);
     });
   });
@@ -23,7 +22,6 @@ export default (io, socket) => {
 
   socket.on('game/newGame', (data) => {
     let newGame = gameState.newGame(socket.decoded_token.sub, data.game_name);
-    console.log(newGame);
     io.emit('game/created', {
       game_id: newGame.game_id,
       game_name: newGame.game_name,
