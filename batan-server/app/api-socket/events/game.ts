@@ -1,11 +1,12 @@
 import socketState from '../../state/socket';
 import gameState from '../../state/game';
 
-function update_game_clients(game_id, event, data) {
+function update_game_clients(io, game_id, event, data) {
   let game = gameState.games.get(game_id);
   game.players.forEach((player_info, uid) => {
-    socketState.players.get(uid).forEach((socket) => {
-      socket.emit(event, data);
+    socketState.online.get(uid).forEach((socketid) => {
+      console.log(`Sending to ${socketid}`)
+      io.to(socketid).emit(event, data);
     });
   });
 }
@@ -53,7 +54,7 @@ export default (io, socket) => {
 
   socket.on('game/startGame', (data) => {
     if (gameState.adminStartGame(socket.decoded_token.sub, data.game_id)) {
-      update_game_clients(data.game_id, 'game/started', {game_id: data.game_id})
+      update_game_clients(io, data.game_id, 'game/started', {game_id: data.game_id})
     } else {
       socket.emit('game/actionFailed', {description: "Failed to start game"})
     }
