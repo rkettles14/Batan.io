@@ -1,6 +1,15 @@
 import socketState from '../../state/socket';
 import gameState from '../../state/game';
 
+function update_game_clients(game_id, event, data) {
+  let game = gameState.games.get(game_id);
+  game.players.forEach((player_info, uid) => {
+    socketState.players.get(uid).forEach((socket) => {
+      socket.emit(event, data);
+    });
+  });
+}
+
 export default (io, socket) => {
   // Inform player of all games currently available:
   gameState.games.forEach((game) => {
@@ -38,7 +47,15 @@ export default (io, socket) => {
         num_players: joinedGame.players.size
       });  // event to inform lobby (every logged in user) of game's existence
     } else {
-      // failed to join game
+      socket.emit('game/actionFailed', {description: "Failed to join game"})
+    }
+  });
+
+  socket.on('game/startGame', (data) => {
+    if (gameState.adminStartGame(socket.decoded_token.sub, data.game_id)) {
+      update_game_clients(data.game_id, 'game/started', {game_id: data.game_id})
+    } else {
+      socket.emit('game/actionFailed', {description: "Failed to start game"})
     }
   });
 

@@ -58,6 +58,9 @@ export default {
     }
   },
   adminBootPlayer(user_id, game_id, playerIdToBoot) {
+    /*
+    * Remove a player from unstarted game, or set to skip their turn if game started
+    */
 
   },
   adminSetGameRules(user_id, game_id, rule, args) {
@@ -73,13 +76,24 @@ export default {
     /*
     * Set started to true; shuffle players & begin initial placement before turns
     */
-
+    if (this.games.has(game_id)) {
+      let game = this.games.get(game_id);
+      if (game.game_owner === user_id && !game.started && game.players.size <= 4 && game.players.size >= 2 ) {
+        // TODO: Shuffle players (turns)
+        game.started = true;
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
   },
   chColor(user_id, game_id, color) {
     /* (non-critical)
     *  If game_id has not started, set user_id to color if available
     */
-    
+
   },
   playRollDice(user_id, game_id) {
     /*
