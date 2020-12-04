@@ -6,7 +6,7 @@
   <b-button @click.prevent="joinGame(0)" size="md" variant="dark">Join game</b-button>
   <b-button @click.prevent="startGame(0)" size="md" variant="dark">Start game</b-button>
   <br>  <br>
-  <b-button @click.prevent="hello()" size="md" variant="dark">game/move</b-button>
+  <b-button @click.prevent="endTurn(0)" size="md" variant="dark">end turn</b-button>
   <b-button @click.prevent="" size="md" variant="dark">game/trade_outgoing</b-button>
   <br>  <br>
   <p>game/board</p>
@@ -34,10 +34,8 @@ export default Vue.extend({
   created() {
   },
   methods: {
-    hello() {
-      this.$root.socket.emit('hello', {
-        hi: 'world'
-      })
+    endTurn(game_id) {
+      this.$root.socket.emit('game/endTurn', {game_id: game_id})
     },
     newGame(game_name) {
       this.$root.socket.emit('game/newGame', {game_name: game_name});

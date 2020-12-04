@@ -1,6 +1,7 @@
+// Handles permissions, turns & multiple games & sockets per user
 import Game from '../../engine/game';
 
-let nextGameID = 0;  // TODO: Needs to come from db so new server start doesn't reset
+let nextGameID = 0;  // TODO: Needs to come from db so new server start doesn't reset old games
 
 export default {
   players: new Map(),
@@ -14,10 +15,8 @@ export default {
       game_name: game_name,
       game_owner: user_id,
       started: false,
-      turn_state: {
-        init_placement: 0,
-        turn_num: 0
-      },
+      turn_num: -1,
+      order: [],
       players: new Map(),
       gameObj: new Game
     });
@@ -79,8 +78,18 @@ export default {
     if (this.games.has(game_id)) {
       let game = this.games.get(game_id);
       if (game.game_owner === user_id && !game.started && game.players.size <= 4 && game.players.size >= 2 ) {
-        // TODO: Shuffle players (turns)
+
+        // shuffle function lifted from: https://javascript.info/task/shuffle
+        function shuffle(array) {
+          for (let i = array.length - 1; i > 0; i--) {
+            let j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+          }
+        }
+
         game.started = true;
+        game.order = Array.from(game.players.keys());
+        shuffle(game.order);
         return true;
       } else {
         return false;
@@ -128,9 +137,72 @@ export default {
     */
 
   },
-  playEndTurn(user_id, game_id) {
+  playEndTurn(user_id, game_id, end_turn_callback) {
     /*
     * Player ends their turn (if it is their turn)
+    */
+    let game = this.games.get(game_id);
+    if (game.order[this.whosTurn(game_id)] === user_id) {
+      this.nextTurn(game_id, game.turn_num, end_turn_callback);
+      console.log("Ended turn!");
+    } else {
+      console.log("Not your turn!");
+    }
+  },
+  nextTurn(game_id, expected_turn, callback) {
+    /*
+    * Sets current turn to next player if turn is expected_turn
+    * This allows for turn timeouts to only incremement the turn if they trigger
+    * before their turn is ended
+    *
+    * Calls callback with 'next turn' object
+    */
+    let game = this.games.get(game_id);
+    if (game.turn_num === expected_turn) {
+      game.turn_num += 1;
+
+      let end_turn_time = new Date();
+      end_turn_time.setSeconds(end_turn_time.getSeconds() + 180)
+
+      setTimeout(() => {
+        this.nextTurn(game_id, game.turn_num, callback);
+      }, 180000);
+
+      let turnStartData = {
+        turn_type: "normal",
+        current_player: this.whosTurn(game_id),
+        turn_over_time: end_turn_time.toISOString()
+      }
+
+      if (game.turn_num < game.players.size*2) {
+        turnStartData.turn_type = "init";
+      }
+      callback(turnStartData);
+    }
+  },
+  whosTurn(game_id) {
+    /*
+    * Returns the uid of the player who's turn it is currently in game_id
+    */
+    let game = this.games.get(game_id);
+    if (game.turn_num < game.players.size*2) {
+      // in init stage (fwd, then backward)
+      let player_num = game.turn_num % game.players.size;
+      if (game.turn_num >= game.players.size) {
+        player_num = game.players.size - player_num - 1;
+      }
+      return player_num;
+    } else {
+      // normal turn
+      return game.turn_num % game.players.size;
+    }
+  },
+  endGame(game_id){
+    /*
+    * Save results to database,
+    * alert players game no longer active,
+    * rm from player's active games list
+    * rm from global available games list
     */
 
   }

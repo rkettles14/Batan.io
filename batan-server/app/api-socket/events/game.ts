@@ -10,8 +10,21 @@ function update_game_clients(io, game_id, event, data) {
   });
 }
 
+function send_active_game(io, game_id) {
+  let game = gameState.games.get(game_id);
+  game.players.forEach((player_info, uid) => {
+    let seq_num = game.order.indexOf(uid);
+    socketState.online.get(uid).forEach((socketid) => {
+      io.to(socketid).emit('game/activeGame', {
+        game_id: game_id,
+        sequence_num: seq_num
+      });
+    });
+  });
+}
+
 export default (io, socket) => {
-  // Inform player of all games currently available:
+  // Inform player of all games currently available globally..
   gameState.games.forEach((game) => {
     socket.emit('game/created', {
       game_id: game.game_id,
@@ -19,6 +32,13 @@ export default (io, socket) => {
       num_players: game.players.size
     });
   });
+
+  // Send all active games that user is a part of..
+  if (gameState.players.has(socket.decoded_token.sub)) {
+    gameState.players.get(socket.decoded_token.sub).forEach((game_id) => {
+      send_active_game(io, game_id);
+    });
+  }
 
   socket.on('game/newGame', (data) => {
     let newGame = gameState.newGame(socket.decoded_token.sub, data.game_name);
@@ -52,10 +72,18 @@ export default (io, socket) => {
 
   socket.on('game/startGame', (data) => {
     if (gameState.adminStartGame(socket.decoded_token.sub, data.game_id)) {
-      update_game_clients(io, data.game_id, 'game/started', {game_id: data.game_id})
+      send_active_game(io, data.game_id);
+      gameState.nextTurn(data.game_id, -1, update_game_clients.bind(null, io, data.game_id, 'game/turnStart'));
     } else {
       socket.emit('game/actionFailed', {description: "Failed to start game"})
     }
   });
+
+  socket.on('game/endTurn', (data) => {
+    gameState.playEndTurn(socket.decoded_token.sub,
+      data.game_id,
+      update_game_clients.bind(null, io, data.game_id, 'game/turnStart'));
+  })
+
 
 }
