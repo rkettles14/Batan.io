@@ -8,8 +8,9 @@
     </div>
     <div v-if="$auth.loggedIn" class="nav-right">
       <b-button :to="'/test_sockets'" variant="light">sock test</b-button>
-      <b-dropdown variant="light" right :text="activeGame" :options="games">
-        <b-dropdown-item v-for="game in games" :key="game" @click="gameSelected(game)">{{ game }}</b-dropdown-item>
+
+      <b-dropdown v-if="active_game != ''" variant="light" right :text="active_game.game_name" :options="games">
+        <b-dropdown-item v-for="game in games" :key="game.game_id" @click="gameSelected(game)">{{ game.game_name }}</b-dropdown-item>
       </b-dropdown>
 
       <b-dropdown id="profile-btn" right no-caret class="sm" style="background-color: black;">
@@ -43,10 +44,10 @@ export default Vue.extend({
   },
   computed: {
     games() {
-      return Object.keys(this.$store.state.games.games);
+      return Object.values(this.$store.state.games.active_games);
     },
-    activeGame() {
-      return this.$store.state.games.activeGame;
+    active_game() {
+      return this.$store.state.games.active_game;
     }
   },
   methods: {
@@ -67,8 +68,8 @@ export default Vue.extend({
     },
     gameSelected(game) {
       this.$store.commit('games/changeGame', game);
-      this.$store.commit("chat/createChatRoom", this.$store.state.games.activeGame);
-      this.$store.commit("chat/changeToChatRoom", this.$store.state.games.activeGame);
+      this.$store.commit("chat/createChatRoom", this.$store.state.games.active_game.game_name);
+      this.$store.commit("chat/changeToChatRoom", this.$store.state.games.active_game.game_name);
       this.$router.push({
         path: '/game-screen'
       });
