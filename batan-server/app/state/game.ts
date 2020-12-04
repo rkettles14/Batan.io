@@ -1,5 +1,7 @@
 // Handles permissions, turns & multiple games & sockets per user
 import Game from '../../engine/game';
+import { vertexStatus, player, resourceType, developmentType, harborType } from '../../engine/enums';
+
 
 let nextGameID = 0;  // TODO: Needs to come from db so new server start doesn't reset old games
 
@@ -16,13 +18,14 @@ export default {
       game_owner: user_id,
       started: false,
       turn_num: -1,
+      end_turn_time: null,
       order: [],
       players: new Map(),
       gameObj: new Game
     });
 
     this.games.get(nextGameID).players.set(user_id, {
-      order: 0
+      color: 0
     });
 
     if (this.players.has(user_id)){
@@ -41,7 +44,7 @@ export default {
       let game = this.games.get(game_id);
       if (!game.started && game.players.size < 4 && !game.players.has(user_id)) {
         game.players.set(user_id, {
-          order: game.players.size
+          color: game.players.size
         });
         if (this.players.has(user_id)){
           this.players.get(user_id).push(game.game_id);
@@ -168,17 +171,54 @@ export default {
         this.nextTurn(game_id, game.turn_num, callback);
       }, 180000);
 
-      let turnStartData = {
-        turn_type: "normal",
-        current_player: this.whosTurn(game_id),
-        turn_over_time: end_turn_time.toISOString()
-      }
+      game.end_turn_time = end_turn_time.toISOString();
 
-      if (game.turn_num < game.players.size*2) {
-        turnStartData.turn_type = "init";
-      }
+      let turnStartData = this.get_full_game_info(game_id);
+
       callback(turnStartData);
     }
+  },
+  get_full_game_info(game_id){
+    let game = this.games.get(game_id);
+
+    let scores = []
+    for (let player_num in game.order) {
+      let player = game.gameObj.players[player_num];
+      let dc = player.developmentCards;
+      let p_scores = {
+        name: player.name,
+        victoryPoints: player.victoryPoints,
+        developmentCards: dc.knight + dc.victoryPointCard + dc.roadBuilder + dc.yearOfPlenty + dc.monopoly,
+        settlementsPlayed: player.settlementsPlayed,
+        citiesPlayed: player.citiesPlayed,
+        roadsPlayed: player.roadsPlayed,
+        longestRoad: player.longestRoad,
+        armies: player.armies,
+        vpDevCardsPlayed: player.vpDevCardsPlayed
+      }
+      scores.push(p_scores);
+    }
+
+    let dc = game.gameObj.bank.developmentCards;
+    let turnStartData = {
+      game_id: game_id,
+      turn: {
+        type: "normal",
+        player: this.whosTurn(game_id),
+        over_at: game.end_turn_time
+      },
+      board: JSON.stringify(game.gameObj.board, game.gameObj.replacer),
+      score: scores,
+      bank: {
+        resources: JSON.stringify(game.gameObj.bank.resources, game.gameObj.replacer),
+        developmentCards: dc.knight + dc.victoryPointCard + dc.roadBuilder + dc.yearOfPlenty + dc.monopoly
+      }
+    }
+
+    if (game.turn_num < game.players.size*2) {
+      turnStartData.turn.type = "init";
+    }
+    return turnStartData;
   },
   whosTurn(game_id) {
     /*
