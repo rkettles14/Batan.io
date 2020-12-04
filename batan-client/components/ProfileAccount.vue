@@ -1,17 +1,76 @@
 <template>
     <b-container fluid>
-        <!--todo add user account management-->
-        <h1>Account management goes here</h1>
+        <div class="user-container">
+            <b-avatar :src="$auth.user.picture" size="10rem"/>
+            <div class="user-info">
+                <h3>User Name: {{$auth.user.name}}</h3>
+                <h3>Nickname: {{$auth.user.nickname}}</h3>
+                <h3>Email: {{$auth.user.email}}</h3>
+            </div>
+        </div>
+        <hr>
+        <b-card>
+            <p>If you want us to delete all your information from our records,
+                press the button below. This action is irreversible, permanent
+                and cannot be undone. By clicking the button, you agree that
+                we're allowed to nuke all your sweet sweet progress in our
+                lovely game and are required to delete any personal information
+                that we have saved in our database. This nuke action will be
+                swift and just so be sure before you press this button
+            </p>
+            <b-button variant="danger" @click.prevent="showDelete">Delete All Your Information</b-button>
+            <b-card v-show="showOverlay" class="warning-container">
+                <h3 class="warning">Are you sure?!?!?</h3>
+                <b-button variant="danger" @click.prevent="deleteAccountInformation">Yes. Nuke it!</b-button>
+            </b-card>
+        </b-card>
     </b-container>    
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 export default Vue.extend({
-    name: "ProfileAccount"
-})
+    name: "ProfileAccount",
+    data() {
+        return {
+            showOverlay: false,
+        };
+    },
+    methods: {
+        showDelete() {
+            this.$data.showOverlay = true;
+        },
+        deleteAccountInformation() {
+            //todo contact server and delete the user's stuff
+        }
+    }
+});
 </script>
 
 <style scoped>
+.user-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: left;
+    align-content: center;
+    border: solid black 1px;
+    border-radius: 5px;
+    padding: 5px;
+}
 
+.user-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-left: 20px;
+}
+
+.warning-container {
+    margin: 1rem;
+}
+
+.warning {
+    color: orange;
+}
 </style>

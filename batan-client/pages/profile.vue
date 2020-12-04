@@ -25,10 +25,6 @@
       </b-col>
       <b-col cols="10">
         <b-container v-show="showAccount" fluid>
-          <div class="">
-            <h2>{{ $auth.user.name }}'s Profile Page</h2>
-            <p>{{ JSON.stringify($auth.user) }}</p>
-          </div>
           <ProfileAccount />
         </b-container>
 
