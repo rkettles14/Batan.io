@@ -144,9 +144,9 @@ export default {
     let game = this.games.get(game_id);
     if (game.order[this.whosTurn(game_id)] === user_id) {
       this.nextTurn(game_id, game.turn_num, end_turn_callback);
-      console.log("Ended turn!");
+      return true;
     } else {
-      console.log("Not your turn!");
+      return false;
     }
   },
   nextTurn(game_id, expected_turn, callback) {

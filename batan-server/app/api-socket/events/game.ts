@@ -81,10 +81,14 @@ export default (io, socket) => {
   });
 
   socket.on('game/endTurn', (data) => {
-    gameState.playEndTurn(socket.decoded_token.sub,
+    if (!gameState.playEndTurn(socket.decoded_token.sub,
       data.game_id,
-      update_game_clients.bind(null, io, data.game_id, 'game/turnStart'));
-  })
+      update_game_clients.bind(null, io, data.game_id, 'game/turnStart'))) {
+        socket.emit('game/actionFailed', {description: "It's not your turn!"})
+      }
+  });
+
+
 
 
 }
