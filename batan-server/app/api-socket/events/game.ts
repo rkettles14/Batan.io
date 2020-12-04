@@ -64,7 +64,7 @@ export default (io, socket) => {
         game_id: joinedGame.game_id,
         game_name: joinedGame.game_name,
         num_players: joinedGame.players.size
-      });  // event to inform lobby (every logged in user) of game's existence
+      });  // overwrite prev. game of this id client-side
     } else {
       socket.emit('game/actionFailed', {description: "Failed to join game"})
     }
