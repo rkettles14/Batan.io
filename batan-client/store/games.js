@@ -36,6 +36,16 @@ export const mutations = {
   },
   turnStart(state, data) {
     console.log(data);
+  },
+  reviver(key, value) {
+    if (typeof value === 'object' && value !== null) {
+      if (value.dataType === 'Map') {
+        return new Map(value.value)
+      }
+    }
+    return value
+  },
+  parseJson(str) {
+    return JSON.parse(str, this.reviver)
   }
-
 }

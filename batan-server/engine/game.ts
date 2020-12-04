@@ -752,6 +752,21 @@ export default class Game {
     }
   }
 
+  private replacer(this: any, key: any, value: any) {
+    const obj = this[key];
+    if (obj instanceof Map) {
+      return {
+        dataType: 'Map',
+        value: Array.from(obj.entries())
+      };
+    } else {
+      return value;
+    }
+  }
+
+  toJsonString() {
+    return JSON.stringify(this, this.replacer);
+  }
 
 
   //temporary, only used for testing
