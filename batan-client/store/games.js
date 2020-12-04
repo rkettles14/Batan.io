@@ -1,31 +1,27 @@
-var game_mock = {
-  "game 1": {"id": "longUID", "board": {}},
-  "game 2": {"id": "longUID2", "board": {}}
-}
+import Vue from 'vue'
 
 export const state = () => ({
-  games: game_mock,
-  available_games: new Map(),
-  active_games: new Map(),
-  activeGame: "game 1"
+  available_games: {},
+  active_games: {},
+  active_game: ''
 })
 
 export const mutations = {
   changeGame(state, new_active_game) {
-    if (Object.keys(state.games).includes(new_active_game)){
-      state.activeGame = new_active_game;
+    if (Object.keys(state.active_games).includes(String(new_active_game.game_id))){
+      state.active_game = new_active_game;
     }
-  },
-  vuex_test(state, test_content) {
-    console.log('vuex test received');
-    console.log(test_content);
   },
   created(state, game) {
     // Updates available_games by overwriting game
-    state.available_games.set(game.game_id, game);
+    Vue.set(state.available_games, game.game_id, game);
+    console.log(state.available_games);
   },
   active(state, game) {
-    state.active_games.set(game.game_id, game);
+    Vue.set(state.active_games, game.game_id, game);
+    if (state.active_game == '') {
+      state.active_game = game;
+    }
     console.log(state.active_games);
   },
   joined(state, game) {

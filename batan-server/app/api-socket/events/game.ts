@@ -17,6 +17,7 @@ function send_active_game(io, game_id) {
     socketState.online.get(uid).forEach((socketid) => {
       io.to(socketid).emit('game/activeGame', {
         game_id: game_id,
+        game_name: game.game_name,
         sequence_num: seq_num
       });
     });
