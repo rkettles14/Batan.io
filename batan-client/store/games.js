@@ -1,5 +1,18 @@
 import Vue from 'vue'
 
+function reviver(key, value) {
+  if (typeof value === 'object' && value !== null) {
+    if (value.dataType === 'Map') {
+      return new Map(value.value)
+    }
+  }
+  return value
+}
+
+function parseJson(str) {
+  return JSON.parse(str, reviver)
+}
+
 export const state = () => ({
   available_games: {},
   active_games: {},
@@ -15,14 +28,16 @@ export const mutations = {
   created(state, game) {
     // Updates available_games by overwriting game
     Vue.set(state.available_games, game.game_id, game);
-    console.log(state.available_games);
   },
   active(state, game) {
+    // TODO: Permit partial updates -- Challenge: potentially complex w/ Vue reactivity
+    game.game_info.board = parseJson(game.game_info.board);
+    // The below line may be needed in case Map in obj is not updated reactively by Vue
+    // game.game_info.board.roadsMap = Object.fromEntries(game.game_info.board.roadsMap);
     Vue.set(state.active_games, game.game_id, game);
     if (state.active_game == '') {
       state.active_game = game;
     }
-    console.log(state.active_games);
   },
   joined(state, game) {
     // courtesy notice, no action taken until game is started
@@ -37,15 +52,5 @@ export const mutations = {
   turnStart(state, data) {
     console.log(data);
   },
-  reviver(key, value) {
-    if (typeof value === 'object' && value !== null) {
-      if (value.dataType === 'Map') {
-        return new Map(value.value)
-      }
-    }
-    return value
-  },
-  parseJson(str) {
-    return JSON.parse(str, this.reviver)
-  }
+
 }

@@ -12,13 +12,16 @@ function update_game_clients(io, game_id, event, data) {
 
 function send_active_game(io, game_id) {
   let game = gameState.games.get(game_id);
+  let game_full_info = gameState.get_full_game_info(game_id);
+
   game.players.forEach((player_info, uid) => {
-    let seq_num = game.order.indexOf(uid);
+    let player_info = gameState.get_player_info(game_id, game.order.indexOf(uid));
     socketState.online.get(uid).forEach((socketid) => {
       io.to(socketid).emit('game/activeGame', {
         game_id: game_id,
         game_name: game.game_name,
-        sequence_num: seq_num
+        game_info: game_full_info,
+        player_info: player_info
       });
     });
   });
@@ -73,17 +76,14 @@ export default (io, socket) => {
 
   socket.on('game/startGame', (data) => {
     if (gameState.adminStartGame(socket.decoded_token.sub, data.game_id)) {
-      send_active_game(io, data.game_id);
-      gameState.nextTurn(data.game_id, -1, update_game_clients.bind(null, io, data.game_id, 'game/turnStart'));
+      gameState.nextTurn(data.game_id, -1, send_active_game.bind(null, io, data.game_id));
     } else {
       socket.emit('game/actionFailed', {description: "Failed to start game"})
     }
   });
 
   socket.on('game/endTurn', (data) => {
-    if (!gameState.playEndTurn(socket.decoded_token.sub,
-      data.game_id,
-      update_game_clients.bind(null, io, data.game_id, 'game/turnStart'))) {
+    if (!gameState.playEndTurn(socket.decoded_token.sub, data.game_id, send_active_game.bind(null, io, data.game_id))) {
         socket.emit('game/actionFailed', {description: "It's not your turn!"})
       }
   });

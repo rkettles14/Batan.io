@@ -140,13 +140,13 @@ export default {
     */
 
   },
-  playEndTurn(user_id, game_id, end_turn_callback) {
+  playEndTurn(user_id, game_id, callback) {
     /*
     * Player ends their turn (if it is their turn)
     */
     let game = this.games.get(game_id);
     if (game.order[this.whosTurn(game_id)] === user_id) {
-      this.nextTurn(game_id, game.turn_num, end_turn_callback);
+      this.nextTurn(game_id, game.turn_num, callback);
       return true;
     } else {
       return false;
@@ -157,8 +157,6 @@ export default {
     * Sets current turn to next player if turn is expected_turn
     * This allows for turn timeouts to only incremement the turn if they trigger
     * before their turn is ended
-    *
-    * Calls callback with 'next turn' object
     */
     let game = this.games.get(game_id);
     if (game.turn_num === expected_turn) {
@@ -172,10 +170,7 @@ export default {
       }, 180000);
 
       game.end_turn_time = end_turn_time.toISOString();
-
-      let turnStartData = this.get_full_game_info(game_id);
-
-      callback(turnStartData);
+      callback();
     }
   },
   get_full_game_info(game_id){
@@ -219,6 +214,12 @@ export default {
       turnStartData.turn.type = "init";
     }
     return turnStartData;
+  },
+  get_player_info(game_id, player_num) {
+    let game = this.games.get(game_id);
+    return {
+      sequence_num: player_num
+    }
   },
   whosTurn(game_id) {
     /*
