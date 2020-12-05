@@ -13,7 +13,7 @@
           <b-list-group-item variant="info" button
             @click="setDisplayToStats()"
           >
-            Game Statistics
+            Statistics
           </b-list-group-item>
           <b-list-group-item variant="info" button
             @click="setDisplayToSettings"
