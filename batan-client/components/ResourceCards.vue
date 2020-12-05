@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-container fluid>
+    <b-container fluid style="margin-top: 10px;">
       <b-row>
         <b-col>
           <div v-on:click="addResource(brick)" class="resourceCard" id="brickCell" :style="{background: brick.color}">
@@ -75,6 +75,7 @@ export default Vue.extend({
 </script>
 <style>
 .resourceCard {
+  margin: -12px;
   height: 20vh;
   border-style: solid;
   border-color: black;
