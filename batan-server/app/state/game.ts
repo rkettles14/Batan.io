@@ -217,7 +217,9 @@ export default {
   },
   get_player_info(game_id, player_num) {
     let game = this.games.get(game_id);
+    let player = game.gameObj.players[player_num];
     return {
+      ...player,
       sequence_num: player_num
     }
   },
