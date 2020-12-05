@@ -13,45 +13,27 @@
             </div>
 
             <div class="form-element">
-                <label>Number of Players:</label>
-                <b-form-input
-                    v-model="numPlayers"
-                    type="number"
-                    autocomplete="off"
-                    default=3
-                    min="2"
-                    max="5"
-                />
-            </div>
-
-            <div class="form-element">
-                <label>Game Description (optional):</label>
-                <b-form-input
-                    v-model="description"
-                    type="text"
-                    autocomplete="off"
-                />
-            </div>
-
-            <div class="form-element">
-                <b-button
-                    type="submit"
-                    variant="success"
-                >
-                Create Game
+                    <b-button
+                        type="submit"
+                        variant="success"
+                    >
+                    <b-overlay :show=showOverlay variant="success">
+                        Create Game
+                    </b-overlay>
                 </b-button>
             </div>
         </b-form>
     </b-container>    
 </template>
 
-<script lang="ts">
+<script>
 import Vue from 'vue'
 export default Vue.extend({
     name: "CreateNewGame",
     data() {
         return {
             name: "",
+            showOverlay: false,
             numPlayers: 2,
             description: "",
         };
@@ -59,7 +41,17 @@ export default Vue.extend({
 
     methods: {
         send() {
-            //todo send the new game request to server
+            if(this.$data.name === ""){
+                //Do nothing
+                console.log("If you're doing this intentionally, STOP IT!");
+                return; 
+            }
+
+            this.$root.socket.emit("game/newGame", {game_name: this.$data.name});
+            this.$data.showOverlay = true;
+            this.$root.socket.on("game/joined", (game) => {
+                window.$nuxt.$router.push("/game-screen");
+            });
         }
     }
 });
