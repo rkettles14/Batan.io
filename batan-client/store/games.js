@@ -16,8 +16,9 @@ function parseJson(str) {
 export const state = () => ({
   available_games: {},
   active_games: {},
-  active_game: ''
-})
+  active_game: '',
+  awaiting_game_creation: false,
+});
 
 export const mutations = {
   changeGame(state, new_active_game) {
