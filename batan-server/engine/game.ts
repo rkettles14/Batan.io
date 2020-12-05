@@ -752,7 +752,7 @@ export default class Game {
     }
   }
 
-  private replacer(this: any, key: any, value: any) {
+  replacer(this: any, key: any, value: any) {
     const obj = this[key];
     if (obj instanceof Map) {
       return {
