@@ -22,7 +22,12 @@
                     </b-overlay>
                 </b-button>
             </div>
+
         </b-form>
+        <b-list-group-item>
+        </b-list-group-item>
+            <!--todo Add a table of games waiting to be started-->
+            <!--todo Each game needs at least one other player to start it-->
     </b-container>    
 </template>
 
