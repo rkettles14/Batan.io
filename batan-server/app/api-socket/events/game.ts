@@ -16,14 +16,16 @@ function send_active_game(io, game_id) {
 
   game.players.forEach((player_info, uid) => {
     let player_info = gameState.get_player_info(game_id, game.order.indexOf(uid));
-    socketState.online.get(uid).forEach((socketid) => {
-      io.to(socketid).emit('game/activeGame', {
-        game_id: game_id,
-        game_name: game.game_name,
-        game_info: game_full_info,
-        player_info: player_info
-      });
-    });
+    if (socketState.online.has(uid)) {
+      socketState.online.get(uid).forEach((socketid) => {
+        io.to(socketid).emit('game/activeGame', {
+          game_id: game_id,
+          game_name: game.game_name,
+          game_info: game_full_info,
+          player_info: player_info
+        });
+      });      
+    }
   });
 }
 
