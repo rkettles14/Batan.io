@@ -223,6 +223,13 @@ export default {
       sequence_num: player_num
     }
   },
+  get_status(game_id) {
+    return "active" // TODO: return something useful..
+  },
+  get_owner_sequence_num(game_id) {
+    let game = this.games.get(game_id);
+    return game.order.indexOf(game.game_owner);
+  },
   whosTurn(game_id) {
     /*
     * Returns the uid of the player who's turn it is currently in game_id

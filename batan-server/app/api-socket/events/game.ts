@@ -13,17 +13,24 @@ function update_game_clients(io, game_id, event, data) {
 function send_active_game(io, game_id) {
   let game = gameState.games.get(game_id);
   let game_full_info = gameState.get_full_game_info(game_id);
+  let game_status = gameState.get_status(game_id);
+  let game_owner = gameState.get_owner_sequence_num(game_id);
 
   game.players.forEach((player_info, uid) => {
     let player_info = gameState.get_player_info(game_id, game.order.indexOf(uid));
-    socketState.online.get(uid).forEach((socketid) => {
-      io.to(socketid).emit('game/activeGame', {
-        game_id: game_id,
-        game_name: game.game_name,
-        game_info: game_full_info,
-        player_info: player_info
+    if (socketState.online.has(uid)) {
+      socketState.online.get(uid).forEach((socketid) => {
+        io.to(socketid).emit('game/activeGame', {
+          game_id: game_id,
+          game_name: game.game_name,
+          status: game_status,
+          owner: game_owner,
+          game_info: game_full_info,
+          player_info: player_info,
+          alerts: 0   // TODO: This represents whether to alert player of actions required by them (e.g. it is their turn)
+        });
       });
-    });
+    }
   });
 }
 
@@ -33,6 +40,7 @@ export default (io, socket) => {
     socket.emit('game/created', {
       game_id: game.game_id,
       game_name: game.game_name,
+      owner: game.game_owner,
       num_players: game.players.size
     });
   });
@@ -49,6 +57,7 @@ export default (io, socket) => {
     io.emit('game/created', {
       game_id: newGame.game_id,
       game_name: newGame.game_name,
+      owner: newGame.game_owner,
       num_players: newGame.players.size
     });  // event to inform lobby (every logged in user) of game's existence
     socket.emit('game/joined', {
@@ -67,6 +76,7 @@ export default (io, socket) => {
       io.emit('game/created', {
         game_id: joinedGame.game_id,
         game_name: joinedGame.game_name,
+        owner: joinedGame.game_owner,
         num_players: joinedGame.players.size
       });  // overwrite prev. game of this id client-side
     } else {

@@ -95,7 +95,7 @@ export default Vue.extend({
           })
           .on('unauthorized', (msg) => {
             console.log(`unauthorized: ${JSON.stringify(msg.data)}`);
-            throw new Error(msg.data.type);
+            this.logout();
           })
       });
     }
