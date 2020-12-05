@@ -1,5 +1,5 @@
 <template>
-        <div>
+        <div v-on:click='selectRoad'>
         </div>  
 </template>
 
@@ -9,10 +9,16 @@ console.log('bruh');
 
 export default Vue.extend({
     props: {
-        hexId: Number
+        hexId: Number,
+        vertices: Array
     },
     created(){
-        console.log(this.hexId);
+       
+    },
+    methods: {
+      selectRoad: function(){
+        console.log('road clicked');
+      }
     }
 })
 </script>
@@ -20,15 +26,16 @@ export default Vue.extend({
 <style scoped>
 * {
   border-radius: 3px;
-  background-color: lightgrey;
+  background-color: transparent;
   position: absolute;
   width: 9px;
   height: 50px;
-  z-index: 150;
+  z-index: 100;
+  pointer-events: all;
 }
 
 *:hover {
-  filter: brightness(150%);
+  background: lightgrey;
 }
 
 .tr {

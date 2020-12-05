@@ -119,7 +119,9 @@ export default Vue.extend({
         }
     },
     created() {
-        this.$store.commit("chat/changeToChatRoom", this.$store.state.games.activeGame);    
+        this.$store.commit("chat/changeToChatRoom", this.$store.state.games.activeGame);
+        
+        var board = this.$store.state.games['game 1'];
 
         var oreHex = {
             resourceType: 'ore'
@@ -190,11 +192,15 @@ ol.even {
   position: relative;
   left: 50px;
   margin-bottom: -50px;
+  z-index: 2;
+  pointer-events: none;
 }
 ol.odd {
   position: relative;
   margin: auto; 
   margin-bottom: -50px;
+  z-index: 2;
+  pointer-events: none;
 }
 </style>
 

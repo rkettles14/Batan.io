@@ -1,6 +1,21 @@
 <template>
         <li class = 'hex' v-bind:class='[{"atmosphere": isAtmosphere}, {"spacer": isSpacer}]'>
           <div v-if="!isAtmosphere && !isSpacer">
+            <Settlement class= "t" :settlement-id='setSettlementId'></Settlement>
+            <Settlement class= "tl" :settlement-id='setSettlementId'></Settlement>
+            <div v-if="hexId == 2 || hexId == 6 || hexId == 11 || hexId == 15 || hexId == 18">
+              <Settlement class= "tr" :settlement-id='setSettlementId'></Settlement>
+            </div>
+            <div v-if="hexId == 16 || hexId == 17 || hexId == 18">
+              <Settlement class= "b" :settlement-id='setSettlementId'></Settlement>
+            </div>
+            <div v-if="hexId == 11 || hexId == 15 || hexId == 18">
+              <Settlement class= "br" :settlement-id='setSettlementId'></Settlement>
+            </div> 
+            <div v-if="hexId == 7 || hexId == 12 || hexId == 16 || hexId == 17 || hexId == 18">
+              <Settlement class= "bl" :settlement-id='setSettlementId'></Settlement>
+            </div>
+
             <Road class='tr'></Road>
             <Road class='tl'></Road>
             <Road class ='l'></Road>
@@ -38,6 +53,15 @@ export default Vue.extend({
     methods: {
       assignHexID() {
         return this.hexId;
+      },
+      setSettlementId() {
+        var switchVar = this.hexId;
+        switch(switchVar) {
+          case 0:
+            break;
+          case 1:
+            break;
+        }
       }
     }
 })
@@ -55,6 +79,8 @@ export default Vue.extend({
     display: inline-block;
     transition: all 150ms ease-in-out;
     top: 0; bottom: 0; right: 0; left: 0;
+    pointer-events: all;
+    z-index: 0;
 }
 .hex:before, .hex:after {
   position: absolute;
@@ -76,23 +102,23 @@ export default Vue.extend({
 }
 
 .brick {
-  background: red;
+  background: #ff8800;
 }
 
 .lumber {
-  background: brown;
+  background: rgb(94, 255, 0);
 }
 
 .wool {
-  background: grey;
+  background: rgb(255, 1, 242);
 }
 
 .grain{
-  background: yellow;
+  background: #ffe700;
 }
 
 .ore{
-  background: purple;
+  background: rgb(155, 4, 255);
 }
 
 .empty{
@@ -104,7 +130,7 @@ export default Vue.extend({
 }
 
 .atmosphere {
-  background: #0099ff;
+  background: #00ffea;
 }
 
 @media screen and (min-width: 0px){
