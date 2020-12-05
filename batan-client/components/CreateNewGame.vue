@@ -24,10 +24,24 @@
             </div>
 
         </b-form>
-        <b-list-group-item>
-        </b-list-group-item>
-            <!--todo Add a table of games waiting to be started-->
-            <!--todo Each game needs at least one other player to start it-->
+        <!--todo only show the div if there are items to be shown-->
+        <div>
+            <hr>
+            <br>
+            <h2>Games Pending Start</h2>
+            <ul class="list-container">
+                <!--todo make reactive to all the games that the player
+                    has created but not started-->
+                <li class="card-li">
+                    <div class="card-sub-item">
+                        <h3>Game Name</h3>
+                        <b-button variant="success" @click.prevent="start">Start Game</b-button>
+                    </div>
+                    <!--todo show all of the players that have joined this particular game-->
+                </li>
+            </ul>
+        </div>
+
     </b-container>    
 </template>
 
@@ -54,9 +68,13 @@ export default Vue.extend({
 
             this.$root.socket.emit("game/newGame", {game_name: this.$data.name});
             this.$data.showOverlay = true;
-            this.$root.socket.on("game/joined", (game) => {
-                window.$nuxt.$router.push("/game-screen");
+            this.$root.socket.on("game/created", (game) => {
+                this.$data.showOverlay = false;
             });
+        },
+
+        start() {
+            //todo implement
         }
     }
 });
@@ -65,5 +83,24 @@ export default Vue.extend({
 <style scoped>
 .form-element {
     margin: 2%;
+}
+
+.list-container {
+    list-style-type: none;
+}
+
+.card-li {
+    border: black 1px solid;
+    border-radius: 5px;
+    margin: 5px;
+    padding: 1.5rem;
+    display: flex;
+}
+
+.card-sub-item {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
 }
 </style>
