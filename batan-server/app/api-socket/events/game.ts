@@ -10,6 +10,26 @@ function update_game_clients(io, game_id, event, data) {
   });
 }
 
+function send_created_game(io, game_id) {
+  let game = gameState.games.get(game_id);
+
+  socketState.online.forEach((player_info, uid) => {
+    let is_owner = (game.game_owner === uid);
+    let is_joined = Array.from(game.players.keys()).includes(uid);
+    if (socketState.online.has(uid)) {
+      socketState.online.get(uid).forEach((socketid) => {
+        io.to(socketid).emit('game/created', {
+          game_id: game.game_id,
+          game_name: game.game_name,
+          owner: is_owner,
+          joined: is_joined,
+          num_players: game.players.size
+        });
+      });
+    }
+  });
+}
+
 function send_active_game(io, game_id) {
   let game = gameState.games.get(game_id);
   let game_full_info = gameState.get_full_game_info(game_id);
@@ -37,12 +57,7 @@ function send_active_game(io, game_id) {
 export default (io, socket) => {
   // Inform player of all games currently available globally..
   gameState.games.forEach((game) => {
-    socket.emit('game/created', {
-      game_id: game.game_id,
-      game_name: game.game_name,
-      owner: game.game_owner,
-      num_players: game.players.size
-    });
+    send_created_game(io, game.game_id);
   });
 
   // Send all active games that user is a part of..
@@ -54,12 +69,7 @@ export default (io, socket) => {
 
   socket.on('game/newGame', (data) => {
     let newGame = gameState.newGame(socket.decoded_token.sub, data.game_name);
-    io.emit('game/created', {
-      game_id: newGame.game_id,
-      game_name: newGame.game_name,
-      owner: newGame.game_owner,
-      num_players: newGame.players.size
-    });  // event to inform lobby (every logged in user) of game's existence
+    send_created_game(io, newGame.game_id);
     socket.emit('game/joined', {
       game_id: newGame.game_id,
       game_name: newGame.game_name
@@ -73,12 +83,7 @@ export default (io, socket) => {
         game_id: joinedGame.game_id,
         game_name: joinedGame.game_name
       });
-      io.emit('game/created', {
-        game_id: joinedGame.game_id,
-        game_name: joinedGame.game_name,
-        owner: joinedGame.game_owner,
-        num_players: joinedGame.players.size
-      });  // overwrite prev. game of this id client-side
+      send_created_game(io, joinedGame.game_id);
     } else {
       socket.emit('game/actionFailed', {description: "Failed to join game"})
     }
