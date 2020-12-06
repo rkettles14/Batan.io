@@ -7,7 +7,7 @@
   <b-button @click.prevent="startGame(0)" size="md" variant="dark">Start game</b-button>
   <br>  <br>
   <b-button @click.prevent="endTurn(0)" size="md" variant="dark">end turn</b-button>
-  <b-button @click.prevent="" size="md" variant="dark">game/trade_outgoing</b-button>
+  <b-button @click.prevent="placeStuff(0)" size="md" variant="dark">place</b-button>
   <br>  <br>
   <p>game/board</p>
   <p>game/player</p>
@@ -34,6 +34,16 @@ export default Vue.extend({
   created() {
   },
   methods: {
+    placeStuff(game_id) {
+      this.$root.socket.emit('game/playInitPlacement', {
+        game_id: game_id,
+        settlement: 0,
+        road: {
+          start: 0,
+          end: 1
+        }
+      })
+    },
     endTurn(game_id) {
       this.$root.socket.emit('game/endTurn', {game_id: game_id})
     },

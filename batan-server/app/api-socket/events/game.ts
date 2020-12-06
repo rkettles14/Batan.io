@@ -97,6 +97,14 @@ export default (io, socket) => {
     }
   });
 
+  socket.on('game/playInitPlacement', (data) => {
+    if (gameState.playInitPlacement(socket.decoded_token.sub, data.game_id, data.settlement, data.road)) {
+      send_active_game(io, data.game_id);
+    } else {
+      socket.emit('game/actionFailed', {description: "Couldn't place settlement.. reason unknown for now"})
+    }
+  });
+
   socket.on('game/endTurn', (data) => {
     if (!gameState.playEndTurn(socket.decoded_token.sub, data.game_id, send_active_game.bind(null, io, data.game_id))) {
         socket.emit('game/actionFailed', {description: "It's not your turn!"})
