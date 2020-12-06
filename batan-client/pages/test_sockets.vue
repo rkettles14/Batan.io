@@ -30,6 +30,10 @@
     </b-col>
   </b-row>
   <b-button @click.prevent="placeStuff(0)" size="md" variant="dark">place</b-button>
+  <b-button @click.prevent="buySettlement(0)" size="md" variant="dark">buy settle</b-button>
+  <b-button @click.prevent="buyCity(0)" size="md" variant="dark">buy city</b-button>
+  <b-button @click.prevent="buyRoad(0)" size="md" variant="dark">buy road</b-button>
+  <b-button @click.prevent="buyDev(0)" size="md" variant="dark">buy dev</b-button>
   <br>  <br>
   <b-button @click.prevent="rollDice(0)" size="md" variant="dark">roll dice</b-button>
   <p>{{ dice }}</p>
@@ -74,6 +78,30 @@ export default Vue.extend({
     },
     rollDice(game_id) {
       this.$root.socket.emit('game/rollDice', {game_id: game_id});
+    },
+    buySettlement(game_id) {
+      this.$root.socket.emit('game/buySettlement', {
+        game_id: game_id,
+        location: Number(this.settlementVertex),
+      })
+    },
+    buyRoad(game_id) {
+      this.$root.socket.emit('game/buyRoad', {
+        game_id: game_id,
+        start: Number(this.roadStartVert),
+        end: Number(this.roadEndVert)
+      })
+    },
+    buyCity(game_id) {
+      this.$root.socket.emit('game/buyCity', {
+        game_id: game_id,
+        location: Number(this.settlementVertex),
+      })
+    },
+    buyDev(game_id) {
+      this.$root.socket.emit('game/buyDevCard', {
+        game_id: game_id
+      })
     },
     placeStuff(game_id) {
       this.$root.socket.emit('game/playInitPlacement', {

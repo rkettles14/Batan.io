@@ -174,22 +174,22 @@ export default {
     }
     return false;
   },
-  playPurchaseRoad(user_id, game_id, location) {
+  playPurchaseRoad(user_id, game_id, start, end) {
     /*
     * Player to purchase a road at location if possible (determined by engine)
     */
     let game = this.games.get(game_id);
     if (game.order[this.whosTurn(game_id)] === user_id) {
       if (game.turn_phase === "build") {
-        // Do stuff
-
+        purchaseRoad(start, end, this.whosTurn(game_id));
+        return true;
       } else {
         console.log("Not in build phase");
       }
     } else {
       console.log("Not your turn");
     }
-
+    return false;
   },
   playPurchaseSettlement(user_id, game_id, location) {
     /*
@@ -199,14 +199,15 @@ export default {
     let game = this.games.get(game_id);
     if (game.order[this.whosTurn(game_id)] === user_id) {
       if (game.turn_phase === "build") {
-        // Do stuff
-
+        game.gameObj.purchaseSettlement(location, this.whosTurn(game_id));
+        return true;
       } else {
         console.log("Not in build phase");
       }
     } else {
       console.log("Not your turn");
     }
+    return false;
   },
   playPurchaseCity(user_id, game_id, location) {
     /*
@@ -215,15 +216,15 @@ export default {
     let game = this.games.get(game_id);
     if (game.order[this.whosTurn(game_id)] === user_id) {
       if (game.turn_phase === "build") {
-        // Do stuff
-
+        game.gameObj.purchaseCity(location, this.whosTurn(game_id));
+        return true;
       } else {
         console.log("Not in build phase");
       }
     } else {
       console.log("Not your turn");
     }
-
+    return false;
   },
   playPurchaseDevCard(user_id, game_id) {
     /*
@@ -232,14 +233,15 @@ export default {
     let game = this.games.get(game_id);
     if (game.order[this.whosTurn(game_id)] === user_id) {
       if (game.turn_phase === "build") {
-        // Do stuff
-
+        purchaseDevelopmentCard(this.whosTurn(game_id));
+        return true;
       } else {
         console.log("Not in build phase");
       }
     } else {
       console.log("Not your turn");
     }
+    return false;
   },
   playDevCard(user_id, game_id, devcard) {
     /*
