@@ -115,7 +115,7 @@ export default {
     let game = this.games.get(game_id);
     if (game.order[this.whosTurn(game_id)] === user_id) {
       if (game.turn_phase === "build") {
-        let player_num = this.whosTurn(game_id) + 1;
+        let player_num = this.whosTurn(game_id);
         if (game.turn_num < game.order.length) {
           // First round of placement -- player should have 1 settlement + 1 road max
           if (game.gameObj.players[this.whosTurn(game_id)].settlementsPlayed < 1 && game.gameObj.players[this.whosTurn(game_id)].roadsPlayed < 1) {
