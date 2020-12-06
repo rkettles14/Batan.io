@@ -1,8 +1,8 @@
 <template>
-  <b-container fluid style="padding: 0; height: 90%">
+  <b-container fluid style="height: 90%">
     <b-row class="row-1">
       <b-col cols="8">
-        <GameBoard />
+        <GameBoard  />
       </b-col>
       <b-col>
         <Chat />

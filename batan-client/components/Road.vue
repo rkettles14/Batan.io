@@ -1,5 +1,5 @@
 <template>
-        <div v-on:click='selectRoad'>
+        <div v-on:click='selectRoad' :class='playerOwner'>
         </div>  
 </template>
 
@@ -9,8 +9,29 @@ console.log('bruh');
 
 export default Vue.extend({
     props: {
-        hexId: Number,
-        vertices: Array
+        roadObject: Array
+    },
+    computed:{
+      playerOwner: function(){
+        var player = this.roadObject[1];
+        switch(player) {
+          case 0:
+            return 'none';
+            break;
+          case 1:
+            return 'red';
+            break;
+          case 2:
+            return 'white';
+            break;
+          case 3:
+            return 'blue';
+            break;
+          case 4:
+            return 'orange';
+            break;
+        }
+      }
     },
     created(){
        
@@ -26,7 +47,6 @@ export default Vue.extend({
 <style scoped>
 * {
   border-radius: 3px;
-  background-color: transparent;
   position: absolute;
   width: 9px;
   height: 50px;
@@ -34,7 +54,27 @@ export default Vue.extend({
   pointer-events: all;
 }
 
-*:hover {
+.none {
+  background-color: transparent;
+}
+
+.red {
+  background-color: red;
+}
+
+.white{
+  background-color: white;
+}
+
+.blue{
+  background-color: blue;
+}
+
+.orange{
+  background-color: orange;
+}
+
+.none:hover {
   background: lightgrey;
 }
 
