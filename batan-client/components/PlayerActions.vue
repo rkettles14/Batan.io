@@ -3,13 +3,13 @@
     <b-container fluid style="margin-top: 10px">
       <b-row>
         <b-col>
-          <div v-on:click="beginTrade" class="trade">
+          <div v-on:click="beginTrading" class="trade">
             <h3>Trade</h3>
             <img src="@/static/Trade.png" class="actionIcon">
           </div>
         </b-col>
         <b-col>
-          <div v-on:click="beginPurchase" class="purchase">
+          <div v-on:click="beginPurchasing" class="purchase">
             <h3>Purchase</h3>
             <img src="@/static/Buy.png" class="actionIcon">
           </div>
@@ -42,24 +42,24 @@ export default Vue.extend({
   },
   mounted() {},
   methods: {
-    beginPurchase(): void {
+    beginPurchasing(): void {
       console.log("purchasing a thing");
       this.purchasing = true;
       this.$emit('purchasing');
     },
 
-    endPurchase(): void {
+    endPurchasing(): void {
         this.purchasing = false;
     },
 
-    beginTrade(): void {
+    beginTrading(): void {
       console.log("trading a thing");
       this.trading = true;
       this.$emit('trading');
     },
 
-    endTrade(): void {
-        this.purchasing = false;
+    endTrading(): void {
+        this.trading = false;
     },
 
     endTurn(): void{

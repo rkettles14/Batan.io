@@ -19,7 +19,7 @@
         <Dice/>
       </b-col>
       <b-col cols="3" @click="displayDice()" v-if="showPurchase">
-        <h1>Purchase component goes here</h1>
+        <PurchaseOptions />
       </b-col>
       <b-col cols="4">
         <GamePlayerStats />

@@ -72,8 +72,6 @@ export default Vue.extend({
     this.diceCanvas.canvas.style.height ='100%';
     this.diceCanvas.canvas.width = this.diceCanvas.canvas.offsetWidth;
     this.diceCanvas.canvas.height = this.diceCanvas.canvas.offsetHeight;
-    console.log("width offset is: " + this.diceCanvas.canvas.offsetWidth);
-
     this.resetDisplay()
     this.displayDice(this.redDice)
     this.displayDice(this.yellowDice)
