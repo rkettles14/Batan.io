@@ -140,45 +140,45 @@ export default (io, socket) => {
     /*
     * game/buySettlement
     */
-    if (gameState.playPurchaseSettlement(socket.decoded_token.sub, data.game_id, data.location) {
+    if (gameState.playPurchaseSettlement(socket.decoded_token.sub, data.game_id, data.location)) {
       send_active_game(io, data.game_id);
     } else {
       socket.emit('game/actionFailed', {description: "Unknown failure game/buySettlement"});
     }
-  }
+  });
 
   socket.on('game/buyCity', (data) => {
     /*
     * game/buyCity
     */
-    if (gameState.playPurchaseCity (socket.decoded_token.sub, data.game_id, data.location) {
+    if (gameState.playPurchaseCity (socket.decoded_token.sub, data.game_id, data.location)) {
       send_active_game(io, data.game_id);
     } else {
       socket.emit('game/actionFailed', {description: "Unknown failure game/buyCity"});
     }
-  }
+  });
 
   socket.on('game/buyRoad', (data) => {
     /*
     * game/buyRoad
     */
-    if (gameState.playPurchaseRoad (socket.decoded_token.sub, data.game_id, data.start, data.end) {
+    if (gameState.playPurchaseRoad (socket.decoded_token.sub, data.game_id, data.start, data.end)) {
       send_active_game(io, data.game_id);
     } else {
       socket.emit('game/actionFailed', {description: "Unknown failure game/buyRoad"});
     }
-  }
+  });
 
   socket.on('game/buyDevCard', (data) => {
     /*
     * game/buyDevCard
     */
-    if (gameState.playPurchaseDevCard (socket.decoded_token.sub, data.game_id) {
+    if (gameState.playPurchaseDevCard (socket.decoded_token.sub, data.game_id)) {
       send_active_game(io, data.game_id);
     } else {
       socket.emit('game/actionFailed', {description: "Unknown failure game/buyDevCard"});
     }
-  }
+  });
 
   socket.on('game/endTurn', (data) => {
     if (!gameState.playEndTurn(socket.decoded_token.sub, data.game_id, send_active_game.bind(null, io, data.game_id))) {
