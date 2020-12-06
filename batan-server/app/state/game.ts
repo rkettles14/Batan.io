@@ -18,6 +18,8 @@ export default {
       game_owner: user_id,
       started: false,
       turn_num: -1,
+      turn_phase: "roll",
+      dice: 0,
       end_turn_time: null,
       order: [],
       players: new Map(),
@@ -107,50 +109,190 @@ export default {
     */
 
   },
+  playInitPlacement(user_id, game_id, settlement, road) {
+    /*
+    * Player to place settlement & road (for game setup)
+    */
+    let game = this.games.get(game_id);
+    if (game.order[this.whosTurn(game_id)] === user_id) {
+      if (game.turn_phase === "build") {
+        let player_num = this.whosTurn(game_id);
+        if (game.turn_num < game.order.length) {
+          // First round of placement -- player should have 1 settlement + 1 road max
+          if (game.gameObj.players[this.whosTurn(game_id)].settlementsPlayed < 1 && game.gameObj.players[this.whosTurn(game_id)].roadsPlayed < 1) {
+            // place settlement first.. hacky workaround since players don't have resources to buy things yet..
+            game.gameObj.board.addSettlement(settlement, player_num);
+            game.gameObj.players[player_num].settlementsPlayed++;
+            game.gameObj.board.addRoad(road.start, road.end, player_num);
+            game.gameObj.players[player_num].roadsPlayed++;
+            game.gameObj.players[player_num].victoryPoints++;
+            return true;
+          } else {
+            console.log("Too many settlements/roads placed already");
+          }
+        } else if (game.turn_num < game.order.length*2) {
+          // 2nd round of placement -- player should have 2 settlement + 2 road max
+          if (game.gameObj.players[this.whosTurn(game_id)].settlementsPlayed < 2 && game.gameObj.players[this.whosTurn(game_id)].roadsPlayed < 2) {
+            // place settlement first.. hacky workaround since players don't have resources to buy things yet..
+            game.gameObj.board.addSettlement(settlement, player_num);
+            game.gameObj.players[player_num].settlementsPlayed++;
+            game.gameObj.board.addRoad(road.start, road.end, player_num);
+            game.gameObj.players[player_num].roadsPlayed++;
+            game.gameObj.players[player_num].victoryPoints++;
+            return true;
+          } else {
+            console.log("Too many settlements/roads placed already");
+          }
+        }
+      } else {
+        console.log("Not in build phase");
+      }
+    } else {
+      console.log("Not your turn");
+    }
+    return false;
+  },
   playRollDice(user_id, game_id) {
     /*
     * Player to roll dice if it is start of their turn
     */
+    let game = this.games.get(game_id);
+    if (game.order[this.whosTurn(game_id)] === user_id) {
+      if (game.turn_phase === "roll") {
+        game.dice = game.gameObj.beginTurn();
+        if (game.dice == 7) {
+          game.turn_phase = "robber";
+        } else {
+          game.turn_phase = "build";
+        }
+        return true;
+      } else {
+        console.log("Not in roll phase");
+      }
+    } else {
+      console.log("Not your turn");
+    }
+    return false;
   },
-  playPurchaseRoad(user_id, game_id, location) {
+  playPurchaseRoad(user_id, game_id, start, end) {
     /*
     * Player to purchase a road at location if possible (determined by engine)
     */
+    let game = this.games.get(game_id);
+    if (game.order[this.whosTurn(game_id)] === user_id) {
+      if (game.turn_phase === "build") {
+        purchaseRoad(start, end, this.whosTurn(game_id));
+        return true;
+      } else {
+        console.log("Not in build phase");
+      }
+    } else {
+      console.log("Not your turn");
+    }
+    return false;
   },
   playPurchaseSettlement(user_id, game_id, location) {
     /*
     * Player to purchase a settlement at location if possible (determined by engine)
     */
+
+    let game = this.games.get(game_id);
+    if (game.order[this.whosTurn(game_id)] === user_id) {
+      if (game.turn_phase === "build") {
+        game.gameObj.purchaseSettlement(location, this.whosTurn(game_id));
+        return true;
+      } else {
+        console.log("Not in build phase");
+      }
+    } else {
+      console.log("Not your turn");
+    }
+    return false;
   },
   playPurchaseCity(user_id, game_id, location) {
     /*
     * Player to purchase a city at location if possible (determined by engine)
     */
-
+    let game = this.games.get(game_id);
+    if (game.order[this.whosTurn(game_id)] === user_id) {
+      if (game.turn_phase === "build") {
+        game.gameObj.purchaseCity(location, this.whosTurn(game_id));
+        return true;
+      } else {
+        console.log("Not in build phase");
+      }
+    } else {
+      console.log("Not your turn");
+    }
+    return false;
   },
   playPurchaseDevCard(user_id, game_id) {
     /*
     * Player to purchase dev card if possible (determined by engine)
     */
-
+    let game = this.games.get(game_id);
+    if (game.order[this.whosTurn(game_id)] === user_id) {
+      if (game.turn_phase === "build") {
+        purchaseDevelopmentCard(this.whosTurn(game_id));
+        return true;
+      } else {
+        console.log("Not in build phase");
+      }
+    } else {
+      console.log("Not your turn");
+    }
+    return false;
   },
   playDevCard(user_id, game_id, devcard) {
     /*
     * Player to play devcard if possible (determined by engine)
     */
+    let game = this.games.get(game_id);
+    if (game.order[this.whosTurn(game_id)] === user_id) {
+      if (game.turn_phase === "build") {
+        // Do stuff
 
+      } else {
+        console.log("Not in build phase");
+      }
+    } else {
+      console.log("Not your turn");
+    }
   },
-  playEndTurn(user_id, game_id, callback) {
+  playMoveRobber(user_id, game_id, location) {
     /*
-    * Player ends their turn (if it is their turn)
+    * Player to move robber & steal a card
     */
     let game = this.games.get(game_id);
     if (game.order[this.whosTurn(game_id)] === user_id) {
-      this.nextTurn(game_id, game.turn_num, callback);
-      return true;
+      if (game.turn_phase === "robber") {
+        // Do stuff
+        game.gameObj.moveRobberAndSteal(this.whosTurn(game_id), location);
+        return true;
+      } else {
+        console.log("Not in build phase");
+      }
     } else {
-      return false;
+      console.log("Not your turn");
     }
+    return false;
+  },
+  playEndTurn(user_id, game_id, callback) {
+    /*
+    * Player ends their turn (if it is their turn && they are in build phase)
+    */
+    let game = this.games.get(game_id);
+    if (game.order[this.whosTurn(game_id)] === user_id) {
+      if (game.turn_phase === "build") {
+        this.nextTurn(game_id, game.turn_num, callback);
+        return true;
+      } else {
+        console.log("Not in build phase");
+      }
+    } else {
+      console.log("Not your turn");
+    }
+    return false;
   },
   nextTurn(game_id, expected_turn, callback) {
     /*
@@ -161,6 +303,13 @@ export default {
     let game = this.games.get(game_id);
     if (game.turn_num === expected_turn) {
       game.turn_num += 1;
+
+      if (game.turn_num < game.order.length*2) {
+        game.turn_phase = "build";
+      } else {
+        game.turn_phase = "roll";
+        game.dice = 0;
+      }
 
       let end_turn_time = new Date();
       end_turn_time.setSeconds(end_turn_time.getSeconds() + 180)
@@ -200,7 +349,9 @@ export default {
       turn: {
         type: "normal",
         player: this.whosTurn(game_id),
-        over_at: game.end_turn_time
+        over_at: game.end_turn_time,
+        phase: game.turn_phase,
+        dice: game.dice
       },
       board: JSON.stringify(game.gameObj.board, game.gameObj.replacer),
       score: scores,

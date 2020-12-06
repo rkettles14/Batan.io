@@ -97,6 +97,89 @@ export default (io, socket) => {
     }
   });
 
+  socket.on('game/playInitPlacement', (data) => {
+    /*
+    *
+    * data.settlement : number (vertex to attempt to place settlement)
+    * data.road : {
+    *     start: Number (this.roadStartVert),
+    *     end: Number (this.roadEndVert)
+    * }
+    */
+    if (gameState.playInitPlacement(socket.decoded_token.sub, data.game_id, data.settlement, data.road)) {
+      send_active_game(io, data.game_id);
+    } else {
+      socket.emit('game/actionFailed', {description: "Couldn't place settlement.. reason unknown for now"})
+    }
+  });
+
+  socket.on('game/rollDice', (data) => {
+    /*
+    * trigger roll dice event. Rolled dice value updated in active_games
+    */
+    if (gameState.playRollDice(socket.decoded_token.sub, data.game_id)) {
+      send_active_game(io, data.game_id);
+    } else {
+      socket.emit('game/actionFailed', {description: "Couldn't roll dice.. reason unknown for now"})
+    }
+  });
+
+  socket.on('game/moveRobber', (data) => {
+    /*
+    *
+    * data.location : number (hexId of location to move robber to)
+    */
+    if (gameState.playMoveRobber(socket.decoded_token.sub, data.game_id, data.location)) {
+      send_active_game(io, data.game_id);
+    } else {
+      socket.emit('game/actionFailed', {description: "Couldn't move robber.. reason unknown for now"})
+    }
+  });
+
+  socket.on('game/buySettlement', (data) => {
+    /*
+    * game/buySettlement
+    */
+    if (gameState.playPurchaseSettlement(socket.decoded_token.sub, data.game_id, data.location)) {
+      send_active_game(io, data.game_id);
+    } else {
+      socket.emit('game/actionFailed', {description: "Unknown failure game/buySettlement"});
+    }
+  });
+
+  socket.on('game/buyCity', (data) => {
+    /*
+    * game/buyCity
+    */
+    if (gameState.playPurchaseCity (socket.decoded_token.sub, data.game_id, data.location)) {
+      send_active_game(io, data.game_id);
+    } else {
+      socket.emit('game/actionFailed', {description: "Unknown failure game/buyCity"});
+    }
+  });
+
+  socket.on('game/buyRoad', (data) => {
+    /*
+    * game/buyRoad
+    */
+    if (gameState.playPurchaseRoad (socket.decoded_token.sub, data.game_id, data.start, data.end)) {
+      send_active_game(io, data.game_id);
+    } else {
+      socket.emit('game/actionFailed', {description: "Unknown failure game/buyRoad"});
+    }
+  });
+
+  socket.on('game/buyDevCard', (data) => {
+    /*
+    * game/buyDevCard
+    */
+    if (gameState.playPurchaseDevCard (socket.decoded_token.sub, data.game_id)) {
+      send_active_game(io, data.game_id);
+    } else {
+      socket.emit('game/actionFailed', {description: "Unknown failure game/buyDevCard"});
+    }
+  });
+
   socket.on('game/endTurn', (data) => {
     if (!gameState.playEndTurn(socket.decoded_token.sub, data.game_id, send_active_game.bind(null, io, data.game_id))) {
         socket.emit('game/actionFailed', {description: "It's not your turn!"})

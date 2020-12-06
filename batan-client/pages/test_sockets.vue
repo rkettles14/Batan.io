@@ -6,8 +6,41 @@
   <b-button @click.prevent="joinGame(0)" size="md" variant="dark">Join game</b-button>
   <b-button @click.prevent="startGame(0)" size="md" variant="dark">Start game</b-button>
   <br>  <br>
+
+  <b-row>
+    <b-col sm="3">
+      <label>settlement vertex</label>
+    </b-col>
+    <b-col sm="9">
+      <b-form-input :type="`number`" v-model="settlementVertex"></b-form-input>
+    </b-col>
+  </b-row>
+  <b-row>
+    <b-col sm="3">
+      <label>road start vert</label>
+    </b-col>
+    <b-col sm="3">
+      <b-form-input :type="`number`" v-model="roadStartVert"></b-form-input>
+    </b-col>
+    <b-col sm="3">
+      <label>road end vert</label>
+    </b-col>
+    <b-col sm="3">
+      <b-form-input :type="`number`" v-model="roadEndVert"></b-form-input>
+    </b-col>
+  </b-row>
+  <b-button @click.prevent="placeStuff(0)" size="md" variant="dark">place</b-button>
+  <b-button @click.prevent="buySettlement(0)" size="md" variant="dark">buy settle</b-button>
+  <b-button @click.prevent="buyCity(0)" size="md" variant="dark">buy city</b-button>
+  <b-button @click.prevent="buyRoad(0)" size="md" variant="dark">buy road</b-button>
+  <b-button @click.prevent="buyDev(0)" size="md" variant="dark">buy dev</b-button>
+  <br>  <br>
+  <b-button @click.prevent="rollDice(0)" size="md" variant="dark">roll dice</b-button>
+  <p>{{ dice }}</p>
+  <br>  <br>
+  <b-button @click.prevent="moveRobber(0)" size="md" variant="dark">mv robber</b-button>
+  <br>  <br>
   <b-button @click.prevent="endTurn(0)" size="md" variant="dark">end turn</b-button>
-  <b-button @click.prevent="" size="md" variant="dark">game/trade_outgoing</b-button>
   <br>  <br>
   <p>game/board</p>
   <p>game/player</p>
@@ -29,13 +62,59 @@ export default Vue.extend({
   name: "TestSockets",
   data() {
     return {
+      settlementVertex: 0,
+      roadStartVert: 0,
+      roadEndVert: 1
     }
   },
   created() {
   },
   methods: {
+    moveRobber(game_id) {
+      this.$root.socket.emit('game/moveRobber', {
+        game_id: game_id,
+        location: 1
+      });
+    },
+    rollDice(game_id) {
+      this.$root.socket.emit('game/rollDice', {game_id: game_id});
+    },
+    buySettlement(game_id) {
+      this.$root.socket.emit('game/buySettlement', {
+        game_id: game_id,
+        location: Number(this.settlementVertex),
+      })
+    },
+    buyRoad(game_id) {
+      this.$root.socket.emit('game/buyRoad', {
+        game_id: game_id,
+        start: Number(this.roadStartVert),
+        end: Number(this.roadEndVert)
+      })
+    },
+    buyCity(game_id) {
+      this.$root.socket.emit('game/buyCity', {
+        game_id: game_id,
+        location: Number(this.settlementVertex),
+      })
+    },
+    buyDev(game_id) {
+      this.$root.socket.emit('game/buyDevCard', {
+        game_id: game_id
+      })
+    },
+    placeStuff(game_id) {
+      this.$root.socket.emit('game/playInitPlacement', {
+        game_id: game_id,
+        settlement: Number(this.settlementVertex),
+        road: {
+          start: Number(this.roadStartVert),
+          end: Number(this.roadEndVert)
+        }
+      })
+    },
     endTurn(game_id) {
-      this.$root.socket.emit('game/endTurn', {game_id: game_id})
+      this.$root.socket.emit('game/endTurn', {game_id: game_id});
     },
     newGame(game_name) {
       this.$root.socket.emit('game/newGame', {game_name: game_name});
