@@ -98,6 +98,14 @@ export default (io, socket) => {
   });
 
   socket.on('game/playInitPlacement', (data) => {
+    /*
+    *
+    * data.settlement : number (vertex to attempt to place settlement)
+    * data.road : {
+    *     start: Number (this.roadStartVert),
+    *     end: Number (this.roadEndVert)
+    * }
+    */
     if (gameState.playInitPlacement(socket.decoded_token.sub, data.game_id, data.settlement, data.road)) {
       send_active_game(io, data.game_id);
     } else {
@@ -106,10 +114,25 @@ export default (io, socket) => {
   });
 
   socket.on('game/rollDice', (data) => {
+    /*
+    * trigger roll dice event. Rolled dice value updated in active_games
+    */
     if (gameState.playRollDice(socket.decoded_token.sub, data.game_id)) {
       send_active_game(io, data.game_id);
     } else {
       socket.emit('game/actionFailed', {description: "Couldn't roll dice.. reason unknown for now"})
+    }
+  });
+
+  socket.on('game/moveRobber', (data) => {
+    /*
+    *
+    * data.location : number (hexId of location to move robber to)
+    */
+    if (gameState.playMoveRobber(socket.decoded_token.sub, data.game_id, data.location)) {
+      send_active_game(io, data.game_id);
+    } else {
+      socket.emit('game/actionFailed', {description: "Couldn't move robber.. reason unknown for now"})
     }
   });
 

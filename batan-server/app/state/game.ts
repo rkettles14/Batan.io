@@ -159,7 +159,6 @@ export default {
     let game = this.games.get(game_id);
     if (game.order[this.whosTurn(game_id)] === user_id) {
       if (game.turn_phase === "roll") {
-        // Roll dice & return dice roll info + effects to all users..
         game.dice = game.gameObj.beginTurn();
         if (game.dice == 7) {
           game.turn_phase = "robber";
@@ -257,6 +256,24 @@ export default {
     } else {
       console.log("Not your turn");
     }
+  },
+  playMoveRobber(user_id, game_id, location) {
+    /*
+    * Player to move robber & steal a card
+    */
+    let game = this.games.get(game_id);
+    if (game.order[this.whosTurn(game_id)] === user_id) {
+      if (game.turn_phase === "robber") {
+        // Do stuff
+        game.gameObj.moveRobberAndSteal(this.whosTurn(game_id), location);
+        return true;
+      } else {
+        console.log("Not in build phase");
+      }
+    } else {
+      console.log("Not your turn");
+    }
+    return false;
   },
   playEndTurn(user_id, game_id, callback) {
     /*

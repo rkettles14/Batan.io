@@ -12,7 +12,7 @@
       <label>settlemnet vertex</label>
     </b-col>
     <b-col sm="9">
-      <b-form-input :type="number" v-model="settlementVertex"></b-form-input>
+      <b-form-input :type="`number`" v-model="settlementVertex"></b-form-input>
     </b-col>
   </b-row>
   <b-row>
@@ -20,18 +20,21 @@
       <label>road start vert</label>
     </b-col>
     <b-col sm="3">
-      <b-form-input :type="number" v-model="roadStartVert"></b-form-input>
+      <b-form-input :type="`number`" v-model="roadStartVert"></b-form-input>
     </b-col>
     <b-col sm="3">
       <label>road end vert</label>
     </b-col>
     <b-col sm="3">
-      <b-form-input :type="number" v-model="roadEndVert"></b-form-input>
+      <b-form-input :type="`number`" v-model="roadEndVert"></b-form-input>
     </b-col>
   </b-row>
   <b-button @click.prevent="placeStuff(0)" size="md" variant="dark">place</b-button>
   <br>  <br>
   <b-button @click.prevent="rollDice(0)" size="md" variant="dark">roll dice</b-button>
+  <p>{{ dice }}</p>
+  <br>  <br>
+  <b-button @click.prevent="moveRobber(0)" size="md" variant="dark">mv robber</b-button>
   <br>  <br>
   <b-button @click.prevent="endTurn(0)" size="md" variant="dark">end turn</b-button>
   <br>  <br>
@@ -63,6 +66,12 @@ export default Vue.extend({
   created() {
   },
   methods: {
+    moveRobber(game_id) {
+      this.$root.socket.emit('game/moveRobber', {
+        game_id: game_id,
+        location: 1
+      });
+    },
     rollDice(game_id) {
       this.$root.socket.emit('game/rollDice', {game_id: game_id});
     },
