@@ -9,7 +9,7 @@
 
   <b-row>
     <b-col sm="3">
-      <label>settlemnet vertex</label>
+      <label>settlement vertex</label>
     </b-col>
     <b-col sm="9">
       <b-form-input :type="`number`" v-model="settlementVertex"></b-form-input>
