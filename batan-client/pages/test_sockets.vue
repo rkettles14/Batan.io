@@ -28,9 +28,10 @@
     <b-col sm="3">
       <b-form-input :type="number" v-model="roadEndVert"></b-form-input>
     </b-col>
-
   </b-row>
   <b-button @click.prevent="placeStuff(0)" size="md" variant="dark">place</b-button>
+  <br>  <br>
+  <b-button @click.prevent="rollDice(0)" size="md" variant="dark">roll dice</b-button>
   <br>  <br>
   <b-button @click.prevent="endTurn(0)" size="md" variant="dark">end turn</b-button>
   <br>  <br>
@@ -62,6 +63,9 @@ export default Vue.extend({
   created() {
   },
   methods: {
+    rollDice(game_id) {
+      this.$root.socket.emit('game/rollDice', {game_id: game_id});
+    },
     placeStuff(game_id) {
       this.$root.socket.emit('game/playInitPlacement', {
         game_id: game_id,
@@ -73,7 +77,7 @@ export default Vue.extend({
       })
     },
     endTurn(game_id) {
-      this.$root.socket.emit('game/endTurn', {game_id: game_id})
+      this.$root.socket.emit('game/endTurn', {game_id: game_id});
     },
     newGame(game_name) {
       this.$root.socket.emit('game/newGame', {game_name: game_name});

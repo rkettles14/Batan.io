@@ -19,6 +19,7 @@ export default {
       started: false,
       turn_num: -1,
       turn_phase: "roll",
+      dice: 0,
       end_turn_time: null,
       order: [],
       players: new Map(),
@@ -159,15 +160,20 @@ export default {
     if (game.order[this.whosTurn(game_id)] === user_id) {
       if (game.turn_phase === "roll") {
         // Roll dice & return dice roll info + effects to all users..
-
-        game.turn_phase = "build";
+        game.dice = game.gameObj.beginTurn();
+        if (game.dice == 7) {
+          game.turn_phase = "robber";
+        } else {
+          game.turn_phase = "build";
+        }
+        return true;
       } else {
         console.log("Not in roll phase");
       }
     } else {
       console.log("Not your turn");
     }
-
+    return false;
   },
   playPurchaseRoad(user_id, game_id, location) {
     /*
@@ -283,6 +289,7 @@ export default {
         game.turn_phase = "build";
       } else {
         game.turn_phase = "roll";
+        game.dice = 0;
       }
 
       let end_turn_time = new Date();
@@ -324,7 +331,8 @@ export default {
         type: "normal",
         player: this.whosTurn(game_id),
         over_at: game.end_turn_time,
-        phase: game.turn_phase
+        phase: game.turn_phase,
+        dice: game.dice
       },
       board: JSON.stringify(game.gameObj.board, game.gameObj.replacer),
       score: scores,

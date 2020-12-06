@@ -467,8 +467,6 @@ export default class Game {
     const diceRoll = this.rollDice();
     //emit dice roll for front end animation?
 
-    console.log(`${player[user]} rolled a ${diceRoll}!`);
-
     if (diceRoll === 7) {
       //discard if more than 7
       this.players.forEach((player) => {
@@ -486,7 +484,6 @@ export default class Game {
           this.discardRandomResources(player.name, Math.floor(totalResources / 2));
         }
       })
-      this.moveRobberAndSteal(user);
     } else {
       //give resources to players
       this.board.hexList.forEach((hex) => {
@@ -501,6 +498,7 @@ export default class Game {
         }
       });
     }
+    return diceRoll;
   }
 
   /**

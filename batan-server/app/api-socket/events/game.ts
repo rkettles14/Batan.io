@@ -105,6 +105,14 @@ export default (io, socket) => {
     }
   });
 
+  socket.on('game/rollDice', (data) => {
+    if (gameState.playRollDice(socket.decoded_token.sub, data.game_id)) {
+      send_active_game(io, data.game_id);
+    } else {
+      socket.emit('game/actionFailed', {description: "Couldn't roll dice.. reason unknown for now"})
+    }
+  });
+
   socket.on('game/endTurn', (data) => {
     if (!gameState.playEndTurn(socket.decoded_token.sub, data.game_id, send_active_game.bind(null, io, data.game_id))) {
         socket.emit('game/actionFailed', {description: "It's not your turn!"})
