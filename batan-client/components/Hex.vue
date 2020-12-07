@@ -1,43 +1,44 @@
 <template>
         <li class = 'hex' v-bind:class='[{"atmosphere": isAtmosphere}, {"spacer": isSpacer}]'>
           <div v-if="!isAtmosphere && !isSpacer">
-            <Settlement class= "t" :settlement-id='setSettlementId'></Settlement>
-            <Settlement class= "tl" :settlement-id='setSettlementId'></Settlement>
+            <Settlement class= "t" :settlement='tSettlement'></Settlement>
+            <Settlement class= "tl" :settlement='tlSettlement'></Settlement>
             <div v-if="hexId == 2 || hexId == 6 || hexId == 11 || hexId == 15 || hexId == 18">
-              <Settlement class= "tr" :settlement-id='setSettlementId'></Settlement>
+              <Settlement class= "tr" :settlement='trSettlement'></Settlement>
             </div>
-            <div v-if="hexId == 16 || hexId == 17 || hexId == 18">
-              <Settlement class= "b" :settlement-id='setSettlementId'></Settlement>
+            <div v-if="hexId == 7 || hexId == 12 || hexId == 16 || hexId == 17 || hexId == 18">
+              <Settlement class= "bl" :settlement='blSettlement'></Settlement>
             </div>
             <div v-if="hexId == 11 || hexId == 15 || hexId == 18">
-              <Settlement class= "br" :settlement-id='setSettlementId'></Settlement>
+              <Settlement class= "br" :settlement='brSettlement'></Settlement>
             </div> 
-            <div v-if="hexId == 7 || hexId == 12 || hexId == 16 || hexId == 17 || hexId == 18">
-              <Settlement class= "bl" :settlement-id='setSettlementId'></Settlement>
+            <div v-if="hexId == 16 || hexId == 17 || hexId == 18">
+              <Settlement class= "b" :settlement='bSettlement'></Settlement>
             </div>
 
-            <Road class='tr'></Road>
-            <Road class='tl'></Road>
-            <Road class ='l'></Road>
+            <Road class='tr' :road-object='trRoad'></Road>
+            <Road class='tl' :road-object='tlRoad'></Road>
+            <Road class ='l' :road-object='lRoad'></Road>
             <div v-if="hexId == 11 || hexId == 15 || hexId == 16 || hexId == 17 || hexId == 18">
-              <Road :hex-id='assignHexID()' class='br'></Road>
+              <Road class='br' :road-object='brRoad'></Road>
             </div>
             <div v-if="hexId == 7 || hexId == 12 || hexId == 16 || hexId == 17 || hexId == 18">
-              <Road class ='bl'></Road>
+              <Road class ='bl' :road-object='blRoad'></Road>
             </div>
             <div v-if="hexId == 2 || hexId == 6 || hexId == 11 || hexId == 15 || hexId == 18">
-              <Road class ='r'></Road>
+              <Road class ='r' :road-object='rRoad'></Road>
             </div>
           </div>
         </li>  
 </template>
 
-<script lang="ts">
+<script>
 import Vue from 'vue';
 console.log('bruh');
 
 export default Vue.extend({
-    props: {
+  props: {
+        hexObject: Object,
         hexId: Number,
         isAtmosphere: {
           type: Boolean,
@@ -47,23 +48,127 @@ export default Vue.extend({
           type: Boolean,
           default: false
         }
+  },
+  computed: {
+    trRoad: function(){
+      var roadsMap = this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].game_info.board.roadsMap;
+      var vertexBegin = this.hexObject.vertices[0];
+      var vertexEnd = this.hexObject.vertices[2];
+      var temp = roadsMap.get(vertexBegin);
+      var road;
+      temp.forEach((edge) => {
+        if(edge[0] == vertexEnd)
+          road = edge;
+      });
+      return road;
     },
-    created() {
+    tlRoad: function(){
+      var roadsMap = this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].game_info.board.roadsMap;
+      var vertexBegin = this.hexObject.vertices[0];
+      var vertexEnd = this.hexObject.vertices[1];
+      var temp = roadsMap.get(vertexBegin);
+      var road;
+      temp.forEach((edge) => {
+        if(edge[0] == vertexEnd)
+          road = edge;
+      });
+      return road;
     },
-    methods: {
-      assignHexID() {
-        return this.hexId;
-      },
-      setSettlementId() {
-        var switchVar = this.hexId;
-        switch(switchVar) {
-          case 0:
-            break;
-          case 1:
-            break;
-        }
-      }
+    lRoad: function(){
+      var roadsMap = this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].game_info.board.roadsMap;
+      var vertexBegin = this.hexObject.vertices[1];
+      var vertexEnd = this.hexObject.vertices[3];
+      var temp = roadsMap.get(vertexBegin);
+      var road;
+      temp.forEach((edge) => {
+        if(edge[0] == vertexEnd)
+          road = edge;
+      });
+      return road;
+    },
+    rRoad: function(){
+      var roadsMap = this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].game_info.board.roadsMap;
+      var vertexBegin = this.hexObject.vertices[2];
+      var vertexEnd = this.hexObject.vertices[4];
+      var temp = roadsMap.get(vertexBegin);
+      var road;
+      temp.forEach((edge) => {
+        if(edge[0] == vertexEnd)
+          road = edge;
+      });
+      return road;
+    },
+    brRoad: function(){
+      var roadsMap = this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].game_info.board.roadsMap;
+      var vertexBegin = this.hexObject.vertices[4];
+      var vertexEnd = this.hexObject.vertices[5];
+      var temp = roadsMap.get(vertexBegin);
+      var road;
+      temp.forEach((edge) => {
+        if(edge[0] == vertexEnd)
+          road = edge;
+      });
+      return road;
+    },
+    blRoad: function(){
+      var roadsMap = this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].game_info.board.roadsMap;
+      var vertexBegin = this.hexObject.vertices[3];
+      var vertexEnd = this.hexObject.vertices[5];
+      var temp = roadsMap.get(vertexBegin);
+      var road;
+      temp.forEach((edge) => {
+        if(edge[0] == vertexEnd)
+          road = edge;
+      });
+      return road;
+    },
+
+    tSettlement: function(){
+      var vertexList = this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].game_info.board.vertexList;
+      var vertex = vertexList[this.hexObject.vertices[0]];
+      return vertex;
+    },
+
+    tlSettlement: function(){
+      var vertexList = this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].game_info.board.vertexList;
+      var vertex = vertexList[this.hexObject.vertices[1]];
+      return vertex;
+    },
+
+    trSettlement: function(){
+      var vertexList = this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].game_info.board.vertexList;
+      var vertex = vertexList[this.hexObject.vertices[2]];
+      return vertex;
+    },
+
+    blSettlement: function(){
+      var vertexList = this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].game_info.board.vertexList;
+      var vertex = vertexList[this.hexObject.vertices[3]];
+      return vertex;
+    },
+
+    brSettlement: function(){
+      var vertexList = this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].game_info.board.vertexList;
+      var vertex = vertexList[this.hexObject.vertices[4]];
+      return vertex;
+    },
+
+    bSettlement: function(){
+      var vertexList = this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].game_info.board.vertexList;
+      var vertex = vertexList[this.hexObject.vertices[5]];
+      return vertex;
+    },
+    
+
+  },
+  created() {
+  },
+  methods: {
+    assignHexID() {
+      return this.hexObject;
     }
+      
+  }
 })
 </script>
 
@@ -105,15 +210,15 @@ export default Vue.extend({
   background: #ff8800;
 }
 
-.lumber {
+.wood {
   background: rgb(94, 255, 0);
 }
 
-.wool {
+.sheep{
   background: rgb(255, 1, 242);
 }
 
-.grain{
+.wheat{
   background: #ffe700;
 }
 

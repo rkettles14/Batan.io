@@ -1,5 +1,5 @@
 <template>
-        <div v-on:click='selectSettlement'>
+        <div v-on:click='selectSettlement' :class='[settlementOwner, settlmentStatus]'>
         </div>  
 </template>
 
@@ -9,12 +9,52 @@ console.log('bruh');
 
 export default Vue.extend({
     props: {
-        settlementId: Number
+        settlement: Object
     },
     methods: {
         selectSettlement: function(){
             console.log("settlement")
         }
+    },
+    computed: {
+      settlementOwner: function(){
+        var owner = this.settlement.owner;
+        switch(owner){
+          case 0:
+            return 'none';
+            break;
+          case 1:
+            return 'red';
+            break;
+          case 2:
+            return 'white';
+            break;
+          case 3:
+            return 'blue';
+            break;
+          case 4:
+            return 'orange';
+            break;
+        }
+      },
+      settlementStatus: function(){
+        var status = this.settlement.status;
+        switch(status){
+          case 0:
+            return '';
+            break;
+          case 1:
+            return '';
+            break;
+          case 2:
+            return 'city';
+            break;
+          case 3:
+            return 'blocked';
+            break;
+        }
+      }
+
     }
 })
 </script>
@@ -22,7 +62,6 @@ export default Vue.extend({
 <style scoped>
 * {
   border-radius: 3px;
-  background: transparent;
   position: absolute;
   width: 30px;
   height: 30px;
@@ -30,7 +69,41 @@ export default Vue.extend({
   pointer-events: all;
 }
 
-*:hover {
+.none {
+  background-color: transparent;
+}
+
+.red {
+  background-color: red;
+}
+
+.white{
+  background-color: white;
+}
+
+.blue{
+  background-color: blue;
+}
+
+.orange{
+  background-color: orange;
+}
+
+.blocked{
+  background-color: transparent;
+}
+
+.blocked:hover{
+  background-color: transparent;
+  border: 0px;
+}
+
+.city{
+  border: 2px solid gold;
+  transform: rotate(45deg);
+}
+
+.none:hover {
   background: #0000ff;
   border: 2px dashed white;
 }
