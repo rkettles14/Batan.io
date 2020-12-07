@@ -1,6 +1,6 @@
 <template>
   <b-container fluid style="height: 90%">
-    <b-row class="row-1">
+    <b-row class="row-1 no-gutters">
       <b-col cols="8">
         <GameBoard />
       </b-col>
@@ -8,7 +8,7 @@
         <Chat />
       </b-col>
     </b-row>
-    <b-row class="row-2">
+    <b-row class="row-2 no-gutters">
       <b-col cols="5">
         <ResourceCards />
       </b-col>
@@ -36,8 +36,8 @@ export default Vue.extend({
   name: "GameScreen",
   data() {
     return {
-      showDice: false,
-      showActions: true,
+      showDice: true,
+      showActions: false,
       showPurchase: false,
     }
   },
