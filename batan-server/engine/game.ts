@@ -78,29 +78,39 @@ class Player {
     if (addResources) {
       if (resource === resourceType.brick) {
         this.resources.brick += amount;
+        return true;
       } else if (resource === resourceType.ore) {
         this.resources.ore += amount;
+        return true;
       } else if (resource === resourceType.sheep) {
         this.resources.sheep += amount;
+        return true;
       } else if (resource === resourceType.wheat) {
         this.resources.wheat += amount;
+        return true;
       } else if (resource === resourceType.wood) {
         this.resources.wood += amount;
+        return true;
       }
-      console.log(`${player[this.name]} recieved a ${resourceType[resource]}!`)
     } else {
       if (resource === resourceType.brick && this.resources.brick >= amount) {
         this.resources.brick -= amount;
+        return true;
       } else if (resource === resourceType.ore && this.resources.ore >= amount) {
         this.resources.ore -= amount;
+        return true;
       } else if (resource === resourceType.sheep && this.resources.sheep >= amount) {
         this.resources.sheep -= amount;
+        return true;
       } else if (resource === resourceType.wheat && this.resources.wheat >= amount) {
         this.resources.wheat -= amount;
+        return true;
       } else if (resource === resourceType.wood && this.resources.wood >= amount) {
         this.resources.wood -= amount;
+        return true;
+      } else {
+        return false; // Operation failed because player out of the given resource
       }
-      console.log(`${player[this.name]} lost a ${resourceType[resource]}!`)
     }
   }
 
@@ -108,41 +118,44 @@ class Player {
     if (addDevCard) {
       if (devCard === developmentType.knight) {
         this.developmentCards.knight++;
+        return true;
       } else if (devCard === developmentType.monopoly) {
         this.developmentCards.monopoly++;
+        return true;
       } else if (devCard === developmentType.roadBuilder) {
         this.developmentCards.roadBuilder++;
+        return true;
       } else if (devCard === developmentType.victoryPointCard) {
         this.developmentCards.victoryPointCard++;
+        return true;
       } else if (devCard === developmentType.yearOfPlenty) {
         this.developmentCards.yearOfPlenty++;
+        return true;
       }
-      console.log(`${player[this.name]} recieved a ${developmentType[devCard]}!`)
     } else {
       if (devCard === developmentType.knight && this.developmentCards.knight >= 1) {
         this.developmentCards.knight--;
+        return true;
       } else if (devCard === developmentType.monopoly && this.developmentCards.monopoly >= 1) {
         this.developmentCards.monopoly--;
+        return true;
       } else if (developmentType.roadBuilder && this.developmentCards.roadBuilder >= 1) {
         this.developmentCards.roadBuilder--;
+        return true;
       } else if (developmentType.victoryPointCard && this.developmentCards.victoryPointCard >= 1) {
         this.developmentCards.victoryPointCard--;
+        return true;
       } else if (devCard === developmentType.yearOfPlenty && this.developmentCards.yearOfPlenty >= 1) {
         this.developmentCards.yearOfPlenty--;
+        return true;
+      } else {
+        return false; // Operation failed because player out of the given dev card
       }
-      console.log(`${player[this.name]} lost a ${developmentType[devCard]}!`)
     }
-  }
-
-  /**
-   * Temoprary for testing.
-   */
-  printStats() {
-
   }
 }
 
-class Game {
+export default class Game {
   winner: player;
   board: Board;
   players: Player[];
@@ -204,26 +217,38 @@ class Game {
     if (addResources) {
       if (resource === resourceType.brick) {
         this.bank.resources.brick += amount;
+        return true;
       } else if (resource === resourceType.ore) {
         this.bank.resources.ore += amount;
+        return true;
       } else if (resource === resourceType.sheep) {
         this.bank.resources.sheep;
+        return true;
       } else if (resource === resourceType.wheat) {
         this.bank.resources.wheat += amount;
+        return true;
       } else if (resource === resourceType.wood) {
         this.bank.resources.wood += amount;
+        return true;
       }
     } else {
       if (resource === resourceType.brick && this.bank.resources.brick >= amount) {
         this.bank.resources.brick -= amount;
+        return true;
       } else if (resource === resourceType.ore && this.bank.resources.ore >= amount) {
         this.bank.resources.ore -= amount;
+        return true;
       } else if (resource === resourceType.sheep && this.bank.resources.sheep >= amount) {
         this.bank.resources.sheep -= amount;
+        return true;
       } else if (resource === resourceType.wheat && this.bank.resources.wheat >= amount) {
         this.bank.resources.wheat -= amount;
+        return true;
       } else if (resource === resourceType.wood && this.bank.resources.wood >= amount) {
         this.bank.resources.wood -= amount;
+        return true;
+      } else {
+        return false; //Operation failed because bank out of the given resource.
       }
     }
   }
@@ -232,26 +257,39 @@ class Game {
     if (addDevCard) {
       if (devCard === developmentType.knight) {
         this.bank.developmentCards.knight++;
+        return true;
       } else if (devCard === developmentType.monopoly) {
         this.bank.developmentCards.monopoly++;
+        return true;
       } else if (devCard === developmentType.roadBuilder) {
         this.bank.developmentCards.roadBuilder++;
+        return true;
       } else if (devCard === developmentType.victoryPointCard) {
         this.bank.developmentCards.victoryPointCard++;
+        return true;
       } else if (devCard === developmentType.yearOfPlenty) {
         this.bank.developmentCards.yearOfPlenty++;
+        return true;
       }
     } else {
       if (devCard === developmentType.knight && this.bank.developmentCards.knight >= 1) {
         this.bank.developmentCards.knight--;
+        return true;
       } else if (devCard === developmentType.monopoly && this.bank.developmentCards.monopoly >= 1) {
         this.bank.developmentCards.monopoly--;
+        return true;
       } else if (developmentType.roadBuilder && this.bank.developmentCards.roadBuilder >= 1) {
         this.bank.developmentCards.roadBuilder--;
+        return true;
       } else if (developmentType.victoryPointCard && this.bank.developmentCards.victoryPointCard >= 1) {
         this.bank.developmentCards.victoryPointCard--;
+        return true;
       } else if (devCard === developmentType.yearOfPlenty && this.bank.developmentCards.yearOfPlenty >= 1) {
         this.bank.developmentCards.yearOfPlenty--;
+        return true;
+      }
+      else {
+        return false; //Operation failed because bank out of the given dev card.
       }
     }
   }
@@ -290,8 +328,12 @@ class Game {
    * @param amount 
    */
   private giveResources(playerName: player, resource: resourceType, amount: number) {
-    this.players[this.getPlayerIndexByEnum(playerName)].updatePlayerResources(true, resource, amount);
-    this.updateBankResources(false, resource, amount);
+    if (this.updateBankResources(false, resource, amount)) {
+      this.players[this.getPlayerIndexByEnum(playerName)].updatePlayerResources(true, resource, amount);
+      return true;
+    } else {
+      return false; //Operation failed because bank is out of the given resource.
+    }
   }
 
   /**
@@ -301,8 +343,12 @@ class Game {
    * @param amount 
    */
   private takeResources(playerName: player, resource: resourceType, amount: number) {
-    this.players[this.getPlayerIndexByEnum(playerName)].updatePlayerResources(false, resource, amount);
-    this.updateBankResources(true, resource, amount);
+    if (this.players[this.getPlayerIndexByEnum(playerName)].updatePlayerResources(false, resource, amount)) {
+      this.updateBankResources(true, resource, amount);
+      return true;
+    } else {
+      return false; //Operation failed because player is out of the given resource.
+    }
   }
 
   /**
@@ -311,8 +357,12 @@ class Game {
    * @param devCard 
    */
   private giveDevCard(playerName: player, devCard: developmentType) {
-    this.players[this.getPlayerIndexByEnum(playerName)].updateDevCards(true, devCard);
-    this.updateDevCards(false, devCard);
+    if (this.updateDevCards(false, devCard)) {
+      this.players[this.getPlayerIndexByEnum(playerName)].updateDevCards(true, devCard);
+      return true;
+    } else {
+      return false; //Operation failed because bank is out of the given dev card.
+    }
   }
 
   /**
@@ -321,8 +371,12 @@ class Game {
    * @param devCard 
    */
   private takeDevCard(playerName: player, devCard: developmentType) {
-    this.players[this.getPlayerIndexByEnum(playerName)].updateDevCards(false, devCard);
-    this.updateDevCards(true, devCard);
+    if (this.players[this.getPlayerIndexByEnum(playerName)].updateDevCards(false, devCard)) {
+      this.updateDevCards(true, devCard);
+      return true;
+    } else {
+      return false; //Operation failed because player is out of the given dev card.
+    }
   }
 
   /**
@@ -352,8 +406,12 @@ class Game {
     if (player2TotalResources.length > 0) {
       const randomIndex = Math.floor(Math.random() * player2TotalResources.length);
       let randomResource = player2TotalResources[randomIndex];
-      this.players[player1Index].updatePlayerResources(true, randomResource, 1);
-      this.players[player2Index].updatePlayerResources(false, randomResource, 1);
+      if (this.players[player2Index].updatePlayerResources(false, randomResource, 1)) {
+        this.players[player1Index].updatePlayerResources(true, randomResource, 1);
+        return true;
+      }
+    } else {
+      return false; //Operation failed because player2 has no resources.
     }
   }
 
@@ -385,9 +443,12 @@ class Game {
         const randomIndex = Math.floor(Math.random() * playerTotalResources.length);
         let randomResource = playerTotalResources.splice(randomIndex, 1).pop();
         if (randomResource) {
-          this.takeResources(player, randomResource, 1);
+          this.takeResources(player, randomResource, 1); //should always return true.
         }
       }
+      return true;
+    } else {
+      return false; //This should never happen because this function is only called when the player has 7 or more total resources.
     }
   }
 
@@ -416,42 +477,80 @@ class Game {
       const randomIndex = Math.floor(Math.random() * allDevCards.length);
       let randomDevCard = allDevCards[randomIndex];
       this.giveDevCard(owner, randomDevCard);
+      return true;
+    } else {
+      return false; //Operation failed because bank is out of dev cards.
     }
   }
 
-  private moveRobberAndSteal(user: player) {
+  /**
+   * Moves the robber and steals a resource. Returns true if robber placed legally, false otherwise.
+   * @param user 
+   * @param hexId 
+   */
+  moveRobberAndSteal(user: player, hexId: number) {
     //move robber
-    //TODO emit to player who rolled
-    let playerReply: string = this.getUserInput(`${player[user]}, where would you like to place the robber?\n`);
-    let hexId = parseInt(playerReply);
-    let affectedPlayers = this.board.moveRobber(hexId);
-
-    //steal resource
-    if (affectedPlayers.length > 0) {
-      let affectedPlayersString = "";
-      affectedPlayers.forEach(element => {
-        affectedPlayersString.concat(player[element] + " ");
-      })
-      //TODO emit to player who rolled
-      playerReply = this.getUserInput("Who would you like to steal from? " + affectedPlayersString + '\n');
-      let victim = player.none;
-      if (playerReply === "blue") {
-        victim = player.blue;
+    let moveRobberResult = this.board.moveRobber(hexId);
+    if (!moveRobberResult.success) {
+      return {
+        success: false,
+        reason: "Robber destination is invalid."
       }
-      if (playerReply === "orange") {
-        victim = player.orange;
-      }
-      if (playerReply === "red") {
-        victim = player.red;
-      }
-      if (playerReply === "white") {
-        victim = player.white;
-      }
-      this.stealResource(user, victim);
     }
+    let affectedPlayers = moveRobberResult.affectedPlayers;
+
+    // steal from random victim to simplify state/ event management for now..
+    if (affectedPlayers.length > 0) {
+      let victim = affectedPlayers[Math.floor(Math.random() * affectedPlayers.length)];
+      if (this.stealResource(user, victim)) {
+        return {
+          success: true,
+          reason: ""
+        }
+      } else {
+        return {
+          success: true,
+          reason: "Victim has no resources."
+        }
+      }
+    } else {
+      return {
+        success: true,
+        reason: "Robber placed on hex with no settlements or cities on it."
+      };
+    }
+
+
+    // Commented to simplify state/ event management for now..
+    // //steal resource
+    // if (affectedPlayers.length > 0) {
+    //   let affectedPlayersString = "";
+    //   affectedPlayers.forEach(element => {
+    //     affectedPlayersString.concat(player[element] + " ");
+    //   })
+    //   //TODO emit to player who rolled
+    //   playerReply = this.getUserInput("Who would you like to steal from? " + affectedPlayersString + '\n');
+    //   let victim = player.none;
+    //   if (playerReply === "blue") {
+    //     victim = player.blue;
+    //   }
+    //   if (playerReply === "orange") {
+    //     victim = player.orange;
+    //   }
+    //   if (playerReply === "red") {
+    //     victim = player.red;
+    //   }
+    //   if (playerReply === "white") {
+    //     victim = player.white;
+    //   }
+    //   this.stealResource(user, victim);
+    // }
   }
 
-  rollDice() {
+  /**
+   * Represents the game dice being rolled.
+   */
+  private rollDice() {
     const die1 = Math.floor(Math.random() * 6) + 1;
     const die2 = Math.floor(Math.random() * 6) + 1;
     const diceRoll = die1 + die2;
@@ -459,16 +558,10 @@ class Game {
   }
 
   /**
-   * Represents a player rolling the game dice. 
-   * @param user 
-   * @param roll 
+   * Represents a player beginning their turn. Returns the dice roll value.
    */
-  beginTurn(user: player) {
-    const diceRoll = this.rollDice();
-    //emit dice roll for front end animation?
-
-    console.log(`${player[user]} rolled a ${diceRoll}!`);
-
+  beginTurn() {
+    let diceRoll = this.rollDice();
     if (diceRoll === 7) {
       //discard if more than 7
       this.players.forEach((player) => {
@@ -483,24 +576,23 @@ class Game {
             this.takeResources(player.name, this.resourceStringToEnum(resourceAndNumber[0]), parseInt(resourceAndNumber[1]))
           });
           */
-          this.discardRandomResources(player.name, Math.floor(totalResources / 2));
         }
       })
-      this.moveRobberAndSteal(user);
     } else {
       //give resources to players
       this.board.hexList.forEach((hex) => {
         if (hex.value == diceRoll && !hex.hasRobber) {
           hex.vertices.forEach((vertex) => {
             if (this.board.vertexList[vertex].status === vertexStatus.settlement) {
-              this.giveResources(this.board.vertexList[vertex].owner, hex.resourceType, 1);
+              this.giveResources(this.board.vertexList[vertex].owner, hex.resourceType, 1); //This could possibly return false. We ignore because we want the function to continue.
             } else if (this.board.vertexList[vertex].status === vertexStatus.city) {
-              this.giveResources(this.board.vertexList[vertex].owner, hex.resourceType, 2);
+              this.giveResources(this.board.vertexList[vertex].owner, hex.resourceType, 2); //This could possibly return false. We ignore because we want the function to continue.
             }
           });
         }
       });
     }
+    return diceRoll;
   }
 
   /**
@@ -514,15 +606,28 @@ class Game {
     let playerResources = this.players[playerIndex].resources;
     let roadsPlayed = this.players[playerIndex].roadsPlayed;
     if (playerResources.brick >= 1 && playerResources.wood >= 1 && roadsPlayed < 15) {
-      this.takeResources(buyer, resourceType.brick, 1);
-      this.takeResources(buyer, resourceType.wood, 1);
-      this.board.addRoad(startVertexId, endVertexId, buyer);
-      this.players[playerIndex].roadsPlayed++;
-      this.players[playerIndex].longestRoad = this.board.getPlayerLongestRoad(buyer);
-      this.awardLongestRoad();
+      if (this.board.addRoad(startVertexId, endVertexId, buyer)) {
+        this.takeResources(buyer, resourceType.brick, 1);
+        this.takeResources(buyer, resourceType.wood, 1);
+        this.players[playerIndex].roadsPlayed++;
+        this.players[playerIndex].longestRoad = this.board.getPlayerLongestRoad(buyer);
+        this.awardLongestRoad();
+        return {
+          success: true,
+          reason: ""
+        }
+      } else {
+        return {
+          success: false,
+          reason: "Operation failed due to illegal road placement."
+        }
+      }
     }
     else {
-      console.log("You don't have enough resources or you don't have any road pieces left!");
+      return {
+        success: false,
+        reason: "Operaton failed because buyer doesn't have enough resources or is out of road pieces."
+      }
     }
   }
 
@@ -537,31 +642,43 @@ class Game {
     let playerResources = this.players[playerIndex].resources;
     let settlementsPlayed = this.players[playerIndex].settlementsPlayed;
     if (playerResources.brick >= 1 && playerResources.wood >= 1 && playerResources.sheep >= 1 && playerResources.wheat >= 1 && settlementsPlayed < 5) {
-      this.takeResources(buyer, resourceType.brick, 1);
-      this.takeResources(buyer, resourceType.wood, 1);
-      this.takeResources(buyer, resourceType.sheep, 1);
-      this.takeResources(buyer, resourceType.wheat, 1);
-      this.board.addSettlement(vertexId, buyer);
-      this.players[playerIndex].settlementsPlayed++;
+      if (this.board.addSettlement(vertexId, buyer)) {
+        this.takeResources(buyer, resourceType.brick, 1);
+        this.takeResources(buyer, resourceType.wood, 1);
+        this.takeResources(buyer, resourceType.sheep, 1);
+        this.takeResources(buyer, resourceType.wheat, 1);
+        this.players[playerIndex].settlementsPlayed++;
 
-      //if a player lays a settlement along another player's road, recalculate the other player's longest road.
-      let neighbours = this.board.roadsMap.get(vertexId);
-      let neighbourRoadCounts = new Array(4).fill(0);
-      neighbours?.forEach(neighbour => {
-        if (neighbour[1] !== player.none && neighbour[1] !== buyer) {
-          neighbourRoadCounts[neighbour[1]]++;
+        //if a player lays a settlement along another player's road, recalculate the other player's longest road.
+        let neighbours = this.board.roadsMap.get(vertexId);
+        let neighbourRoadCounts = new Array(4).fill(0);
+        neighbours?.forEach(neighbour => {
+          if (neighbour[1] !== player.none && neighbour[1] !== buyer) {
+            neighbourRoadCounts[neighbour[1]]++;
+          }
+        })
+        for (let i = 0; i < neighbourRoadCounts.length; i++) {
+          if (neighbourRoadCounts[i] >= 2) {
+            this.players[this.getPlayerIndexByEnum(i)].longestRoad = this.board.getPlayerLongestRoad(i);
+            this.awardLongestRoad();
+          }
         }
-      })
-      for (let i = 0; i < neighbourRoadCounts.length; i++) {
-        if (neighbourRoadCounts[i] >= 2) {
-          this.players[this.getPlayerIndexByEnum(i)].longestRoad = this.board.getPlayerLongestRoad(i);
-          this.awardLongestRoad();
+        return {
+          success: true,
+          reason: ""
+        }
+      } else {
+        return {
+          success: false,
+          reason: "Operation failed due to illegal settlement placement."
         }
       }
-
     }
     else {
-      console.log("You don't have enough resources or you don't have any settlement pieces left!");
+      return {
+        success: false,
+        reason: "Operation failed because buyer does not have enough resources or is out of settlements."
+      }
     }
   }
 
@@ -576,14 +693,27 @@ class Game {
     let playerResources = this.players[playerIndex].resources;
     let citiesPlayed = this.players[playerIndex].citiesPlayed;
     if (playerResources.wheat >= 2 && playerResources.ore >= 3 && citiesPlayed < 4) {
-      this.takeResources(buyer, resourceType.wheat, 2);
-      this.takeResources(buyer, resourceType.ore, 3);
-      this.board.addCity(vertexId, buyer);
-      this.players[playerIndex].settlementsPlayed--;
-      this.players[playerIndex].citiesPlayed++;
+      if (this.board.addCity(vertexId, buyer)) {
+        this.takeResources(buyer, resourceType.wheat, 2);
+        this.takeResources(buyer, resourceType.ore, 3);
+        this.players[playerIndex].settlementsPlayed--;
+        this.players[playerIndex].citiesPlayed++;
+        return {
+          success: true,
+          reason: ""
+        }
+      } else {
+        return {
+          success: false,
+          reason: "Operation failed due to illegal city placement."
+        }
+      }
     }
     else {
-      console.log("You don't have enough resources or you don't have any city pieces left!");
+      return {
+        success: false,
+        reason: "Operation failed because the buyer does not have enough resources or is out of cities."
+      }
     }
   }
 
@@ -595,73 +725,134 @@ class Game {
     let playerIndex = this.getPlayerIndexByEnum(buyer);
     let playerResources = this.players[playerIndex].resources;
     if (playerResources.wheat >= 1 && playerResources.sheep >= 1 && playerResources.ore >= 1) {
-      this.takeResources(buyer, resourceType.wheat, 1);
-      this.takeResources(buyer, resourceType.sheep, 1);
-      this.takeResources(buyer, resourceType.ore, 1);
-      this.drawRandomDevelopmentCard(buyer);
+      if (this.drawRandomDevelopmentCard(buyer)) {
+        this.takeResources(buyer, resourceType.wheat, 1);
+        this.takeResources(buyer, resourceType.sheep, 1);
+        this.takeResources(buyer, resourceType.ore, 1);
+        return {
+          success: true,
+          reason: ""
+        }
+      } else {
+        return {
+          success: false,
+          reason: "Operation failed because the bank is out of development cards."
+        }
+      }
     }
     else {
-      console.log("You don't have enough resources for this!");
+      return {
+        success: false,
+        reason: "Operation failed because the buyer does not have enough resources"
+      }
     }
   }
 
   /**
-   * Plays a single development card. TODO: make sure only one is played per turn, and not in the same turn as it was purchased
+   * Plays a single development card. Returns true if the player has the correct development card. Otherwise false. 
+   * TODO: make sure only one is played per turn, and not in the same turn as it was purchased
    * @param player 
    * @param devCard 
+   * @param destinationHexId Only supplied if knight is played.
+   * @param monopolyResource Only supplied if monopoly is played.
+   * @param targetVertices 
+   * @param yearOfPlentyResources 
    */
-  playDevelopmentCard(player: player, devCard: developmentType) { //move the robber and steal from a player, add one to your army
-    this.takeDevCard(player, devCard)
-    let playerIndex = this.getPlayerIndexByEnum(player);
-    if (devCard === developmentType.knight) {
-      this.moveRobberAndSteal(player);
-      this.players[playerIndex].armies++;
-      this.awardLargestArmy();
-    }
-    else if (devCard === developmentType.monopoly) { //steal all of a particular resource from the other players
-      //TODO emit to player
-      let playerReply = this.getUserInput("What resource would you like to take?\n");
-      let targetResource = this.resourceStringToEnum(playerReply);
-      let count = 0;
-      this.players.forEach(player => {
-        let amount = player.getPlayerResource(targetResource) ?? 0;
-        count += amount;
-        player.updatePlayerResources(false, targetResource, amount);
-      })
-      this.players[playerIndex].updatePlayerResources(true, targetResource, count);
-    }
-    else if (devCard === developmentType.roadBuilder) { //build two free roads if you have the pieces
-      for (let i = 0; i < 2; i++) {
-        let roadsPlayed = this.players[playerIndex].roadsPlayed;
-        if (roadsPlayed < 15) {
-          //TODO emit to player
-          let playerReply = this.getUserInput("Where would you like to place a road? (start, end)\n");
-          let targetVertices = playerReply.split(',');
-          this.board.addRoad(targetVertices[0], targetVertices[1], player);
-          this.players[playerIndex].roadsPlayed++;
-          this.players[playerIndex].longestRoad = this.board.getPlayerLongestRoad(player);
-          this.awardLongestRoad();
+  playDevelopmentCard(player: player, devCard: developmentType, destinationHexId?: number, monopolyResource?: resourceType, targetVertices?: number[], yearOfPlentyResources?: resourceType[]) {
+    if (this.takeDevCard(player, devCard)) { //if player has the card
+      let playerIndex = this.getPlayerIndexByEnum(player);
+      if (devCard === developmentType.knight && destinationHexId) { //move the robber and steal from a player, add one to your army
+        let result = this.moveRobberAndSteal(player, destinationHexId);
+        if (result.success) {
+          this.players[playerIndex].armies++;
+          this.awardLargestArmy();
+        }
+        return {
+          success: true,
+          reason: result.reason
         }
       }
+      else if (devCard === developmentType.monopoly && monopolyResource) { //steal all of a particular resource from the other players
+        let count = 0;
+        this.players.forEach(player => {
+          let amount = player.getPlayerResource(monopolyResource) ?? 0;
+          count += amount;
+          player.updatePlayerResources(false, monopolyResource, amount);
+        })
+        this.players[playerIndex].updatePlayerResources(true, monopolyResource, count);
+        return {
+          success: true,
+          reason: ""
+        }
+      }
+      else if (devCard === developmentType.roadBuilder && targetVertices) { //build two free roads if you have the pieces
+        let roadsPlayed = this.players[playerIndex].roadsPlayed;
+        let message = "Roads were not placed because user is out of roads or incorrect parameters were provided.";
+        if (roadsPlayed < 15 && targetVertices.length >= 2) {
+          if (this.board.addRoad(targetVertices[0], targetVertices[1], player)) {
+            this.players[playerIndex].roadsPlayed++;
+            roadsPlayed++;
+            this.players[playerIndex].longestRoad = this.board.getPlayerLongestRoad(player);
+            this.awardLongestRoad();
+            message = "Successfully placed first road!";
+          } else {
+            message = "Failed to place first road."
+          }
+        } else {
+          return {
+            success: true,
+            reason: message
+          }
+        }
+        if (roadsPlayed < 15 && targetVertices.length === 4) {
+          if (this.board.addRoad(targetVertices[2], targetVertices[3], player)) {
+            this.players[playerIndex].roadsPlayed++;
+            this.players[playerIndex].longestRoad = this.board.getPlayerLongestRoad(player);
+            this.awardLongestRoad();
+            return {
+              success: true,
+              reason: message + " Successfully placed second road!"
+            }
+          } else {
+            return {
+              success: true,
+              reason: message + " Failed to place second road."
+            }
+          }
+        } else {
+          return {
+            success: true,
+            reason: message + " Second road was not placed because user is out of roads or incorrect parameters were provided."
+          }
+        }
+
+      }
+      else if (devCard === developmentType.victoryPointCard) { //add a victory point
+        this.players[playerIndex].vpDevCardsPlayed++;
+      }
+      else if (devCard === developmentType.yearOfPlenty && yearOfPlentyResources && yearOfPlentyResources.length === 2) { //take any two resource from the bank
+        let firstResource = yearOfPlentyResources[0];
+        let secondResource = yearOfPlentyResources[1];
+        this.giveResources(player, firstResource, 1);
+        this.giveResources(player, secondResource, 1);
+        return {
+          success: true,
+          reason: ""
+        }
+      }
+    } else {
+      return {
+        success: false,
+        reason: "Operation failed because player is out of the given dev card."
+      }
     }
-    else if (devCard === developmentType.victoryPointCard) { //add a victory point
-      this.players[playerIndex].vpDevCardsPlayed++;
-    }
-    else if (devCard === developmentType.yearOfPlenty) { //take any two resource from the bank
-      //TODO emit to user
-      let playerReply = this.getUserInput("What resources would you like? (resource1, resource2)\n");
-      let resources = playerReply.split(',');
-      let firstResource = this.resourceStringToEnum(resources[0]);
-      let secondResource = this.resourceStringToEnum(resources[1]);
-      this.giveResources(player, firstResource, 1);
-      this.giveResources(player, secondResource, 1);
-    }
+
   }
 
   /**
    * Awards the longest road owner. If no one has a road longer than 4, longest road is not awarded.
    */
-  awardLongestRoad() {
+  private awardLongestRoad() {
     let longestRoadLength: number;
     if (this.longestRoadOwner != player.none) {
       longestRoadLength = 4;
@@ -743,16 +934,68 @@ class Game {
       let requiredNumberOfResources = resourceHarborOwned ? 2 : threeForOneHarborOwned ? 3 : 4;
       let playerResourceCount = this.players[playerIndex].getPlayerResource(resourceToBank) ?? 0;
       if (playerResourceCount >= requiredNumberOfResources) {
-        this.takeResources(player, resourceToBank, requiredNumberOfResources);
-        this.giveResources(player, resourceFromBank, 1);
+        if (this.giveResources(player, resourceFromBank, 1)) {
+          this.takeResources(player, resourceToBank, requiredNumberOfResources);
+          return {
+            success: true,
+            reason: ""
+          }
+        } else {
+          return {
+            success: false,
+            reason: "Operation failed because bank is out of that resource."
+          }
+        }
       }
       else {
-        console.log("You don't have enough resources for this!");
+        return {
+          success: false,
+          reason: "Operation failed because the player didn't supply correct resources."
+        }
       }
     }
   }
 
-  private replacer(this: any, key: any, value: any) {
+  /**
+   * Adds a settlement in the setup phase.
+   * @param vertexId 
+   * @param owner 
+   */
+  addSettlementInSetup(vertexId: number, owner: player) {
+    if (this.board.addSettlementInSetup(vertexId, owner)) {
+      return {
+        success: true,
+        reason: ""
+      }
+    } else {
+      return {
+        success: true,
+        reason: "Operation failed due to illegal placement of settlement."
+      }
+    }
+  }
+
+  /**
+   * Adds a road in the setup phase.
+   * @param startVertexId 
+   * @param endVertexId 
+   * @param owner 
+   */
+  addRoadInSetup(startVertexId: number, endVertexId: number, owner: player) {
+    if (this.board.addRoadInSetup(startVertexId, endVertexId, owner)) {
+      return {
+        success: true,
+        reason: ""
+      }
+    } else {
+      return {
+        success: true,
+        reason: "Operation failed due to illegal placement of road."
+      }
+    }
+  }
+
+  replacer(this: any, key: any, value: any) {
     const obj = this[key];
     if (obj instanceof Map) {
       return {
@@ -770,10 +1013,10 @@ class Game {
 
 
   //temporary, only used for testing
-  getUserInput(prompt: string) {
-    var readlineSync = require("readline-sync");
-    return readlineSync.question(prompt);
-  }
+  // getUserInput(prompt: string) {
+  //   var readlineSync = require("readline-sync");
+  //   return readlineSync.question(prompt);
+  // }
 }
 
 {
