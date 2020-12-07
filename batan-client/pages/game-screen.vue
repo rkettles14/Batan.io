@@ -1,5 +1,5 @@
 <template>
-  <b-container fluid style="height: 90%">
+  <b-container fluid>
     <b-row class="row-1 no-gutters">
       <b-col cols="8">
         <GameBoard  />
@@ -73,6 +73,6 @@ export default Vue.extend({
   height: 80%;
 }
 .row-2 {
-  height: 20%;
+  height: 20vh;
 }
 </style>

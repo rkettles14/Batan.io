@@ -1,8 +1,5 @@
 <template>
     <b-container class='board-background' fluid>
-        <ol class ="odd" fluid>
-            <Hex :is-spacer='true'></Hex>
-        </ol>
         <ol class='even' fluid>
             <Hex :is-spacer='true' class='left'></Hex>
             <Hex :is-atmosphere='true'></Hex>
@@ -214,6 +211,7 @@ export default Vue.extend({
   background: black;
   height: 100%;
   width: 100%;
+  padding-bottom: 5rem;
 }
 
 ol.even {
