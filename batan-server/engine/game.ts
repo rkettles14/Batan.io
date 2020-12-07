@@ -142,7 +142,7 @@ class Player {
   }
 }
 
-class Game {
+export default class Game {
   winner: player;
   board: Board;
   players: Player[];
@@ -419,36 +419,44 @@ class Game {
     }
   }
 
-  private moveRobberAndSteal(user: player) {
+  private moveRobberAndSteal(user: player, hexId: number) {
     //move robber
     //TODO emit to player who rolled
-    let playerReply: string = this.getUserInput(`${player[user]}, where would you like to place the robber?\n`);
-    let hexId = parseInt(playerReply);
+    // let playerReply: string = this.getUserInput(`${player[user]}, where would you like to place the robber?\n`);
+    // let hexId = parseInt(playerReply);
     let affectedPlayers = this.board.moveRobber(hexId);
 
-    //steal resource
+    // steal from random victim to simplify state/ event management for now..
     if (affectedPlayers.length > 0) {
-      let affectedPlayersString = "";
-      affectedPlayers.forEach(element => {
-        affectedPlayersString.concat(player[element] + " ");
-      })
-      //TODO emit to player who rolled
-      playerReply = this.getUserInput("Who would you like to steal from? " + affectedPlayersString + '\n');
-      let victim = player.none;
-      if (playerReply === "blue") {
-        victim = player.blue;
-      }
-      if (playerReply === "orange") {
-        victim = player.orange;
-      }
-      if (playerReply === "red") {
-        victim = player.red;
-      }
-      if (playerReply === "white") {
-        victim = player.white;
-      }
+      let victim = affectedPlayers[Math.floor(Math.random() * affectedPlayers.length)];
       this.stealResource(user, victim);
     }
+
+
+    // Commented to simplify state/ event management for now..
+    // //steal resource
+    // if (affectedPlayers.length > 0) {
+    //   let affectedPlayersString = "";
+    //   affectedPlayers.forEach(element => {
+    //     affectedPlayersString.concat(player[element] + " ");
+    //   })
+    //   //TODO emit to player who rolled
+    //   playerReply = this.getUserInput("Who would you like to steal from? " + affectedPlayersString + '\n');
+    //   let victim = player.none;
+    //   if (playerReply === "blue") {
+    //     victim = player.blue;
+    //   }
+    //   if (playerReply === "orange") {
+    //     victim = player.orange;
+    //   }
+    //   if (playerReply === "red") {
+    //     victim = player.red;
+    //   }
+    //   if (playerReply === "white") {
+    //     victim = player.white;
+    //   }
+    //   this.stealResource(user, victim);
+    // }
   }
 
   rollDice() {
@@ -467,8 +475,6 @@ class Game {
     const diceRoll = this.rollDice();
     //emit dice roll for front end animation?
 
-    console.log(`${player[user]} rolled a ${diceRoll}!`);
-
     if (diceRoll === 7) {
       //discard if more than 7
       this.players.forEach((player) => {
@@ -486,7 +492,6 @@ class Game {
           this.discardRandomResources(player.name, Math.floor(totalResources / 2));
         }
       })
-      this.moveRobberAndSteal(user);
     } else {
       //give resources to players
       this.board.hexList.forEach((hex) => {
@@ -501,6 +506,7 @@ class Game {
         }
       });
     }
+    return diceRoll;
   }
 
   /**
@@ -752,6 +758,21 @@ class Game {
     }
   }
 
+  replacer(this: any, key: any, value: any) {
+    const obj = this[key];
+    if (obj instanceof Map) {
+      return {
+        dataType: 'Map',
+        value: Array.from(obj.entries())
+      };
+    } else {
+      return value;
+    }
+  }
+
+  toJsonString() {
+    return JSON.stringify(this, this.replacer);
+  }
 
 
   //temporary, only used for testing

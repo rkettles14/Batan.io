@@ -2,7 +2,7 @@
   <b-container fluid style="height: 90%">
     <b-row class="row-1 no-gutters">
       <b-col cols="8">
-        <GameBoard />
+        <GameBoard  />
       </b-col>
       <b-col cols="4">
         <Chat />

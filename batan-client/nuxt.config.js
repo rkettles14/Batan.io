@@ -78,8 +78,12 @@ export default {
         default: true,
         vuex: {
           mutations: [
-            'test_vuex --> games/vuex_test',
-            'chat/message --> chat/onMessage'
+            'chat/message --> chat/onMessage',
+            'game/created --> games/created',
+            'game/activeGame --> games/active',
+            'game/joined --> games/joined',
+            'game/actionFailed --> games/actionFailed',
+            'game/turnStart --> games/turnStart'
           ]
         }
       },

@@ -2,11 +2,31 @@
   <b-container class="lobby" fluid>
     <b-row class="content" align-v="stretch">
       <b-col class="games" cols="8">
-        <span class="selectors">
-          <b-button variant="success" @click="displayActiveGames()">Active Games</b-button>
-          <b-button variant="success" @click="displayCreateGame()">Create New Game</b-button>
-          <b-button variant="success" @click="displayJoinGame()">Join Game With Code</b-button>
-        </span>
+        <div class="selector-box">
+          <b-button
+            variant="info"
+            class="selector"
+            @click="displayActiveGames()"
+          >
+            Active Games
+          </b-button>
+
+          <b-button
+            variant="info"
+            class="selector"
+            @click="displayCreateGame()"
+          >
+            Create Game
+          </b-button>
+
+          <b-button
+            variant="info"
+            class="selector"
+            @click="displayJoinGame()"
+          >
+            Join Game
+          </b-button>
+        </div>
 
         <div v-show="showActiveGames">
           <ActiveGames />
@@ -80,10 +100,11 @@ export default Vue.extend({
   margin: 0 8px 0 0;
 }
 
-.selectors {
-  display: flex;
-  width: 100%;
-  justify-content: space-between;
-  align-content: space-around;
+.selector-box {
+  margin: 2px;
+}
+
+.selector {
+  margin: 2px 4px;
 }
 </style>
