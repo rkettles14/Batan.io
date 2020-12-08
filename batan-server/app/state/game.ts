@@ -82,7 +82,7 @@ export default {
     */
     if (this.games.has(game_id)) {
       let game = this.games.get(game_id);
-      if (game.game_owner === user_id && !game.started && game.players.size <= 4 && game.players.size >= 2 ) {
+      if (game.game_owner === user_id && !game.started && game.players.size <= 4 && game.players.size >= 1 ) {
 
         // shuffle function lifted from: https://javascript.info/task/shuffle
         function shuffle(array) {
@@ -97,9 +97,11 @@ export default {
         shuffle(game.order);
         return true;
       } else {
+        console.log("not your game to start, game is owned by " + game.game_owner + " and you are " + user_id);
         return false;
       }
     } else {
+      console.log("No game to start");
       return false;
     }
   },
@@ -167,10 +169,10 @@ export default {
         }
         return true;
       } else {
-        console.log("Not in roll phase");
+        console.log("Not in roll phase, actually in phase " + game.turn_phase);
       }
     } else {
-      console.log("Not your turn");
+      console.log("Not your turn, it is player " + game.order[this.whosTurn(game_id)] + " turn and you are " + user_id);
     }
     return false;
   },
@@ -305,6 +307,7 @@ export default {
       game.turn_num += 1;
 
       if (game.turn_num < game.order.length*2) {
+        console.log("In build phase because next turn");
         game.turn_phase = "build";
       } else {
         game.turn_phase = "roll";

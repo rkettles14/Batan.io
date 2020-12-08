@@ -15,7 +15,7 @@
       <b-col cols="3" @click="displayPurchase()" v-if="showActions">
         <PlayerActions/>
       </b-col>
-      <b-col cols="3" @click="displayActions()" v-if="showDice">
+      <b-col cols="3" @click="displayActions()" v-if="this.$store.state.games.active_game.game_info.turn.phase == 'roll'">
         <Dice/>
       </b-col>
       <b-col cols="3" @click="displayDice()" v-if="showPurchase">
@@ -41,6 +41,10 @@ export default Vue.extend({
       showPurchase: false,
     }
   },
+  mounted() {
+    this.$root.socket.emit('game/startGame', {game_id: this.$store.state.games.active_game.game_id});
+  },
+  
   methods: {
 
     displayDice() {
@@ -55,6 +59,7 @@ export default Vue.extend({
       this.showActions = true;
       this.showPurchase = false;
       }, 4000);
+      this.$root.socket.emit('game/rollDice', {game_id: this.$store.state.games.active_game.game_id});
     },
 
     displayPurchase() {
