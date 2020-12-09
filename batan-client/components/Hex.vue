@@ -16,6 +16,10 @@
               <Settlement class= "b" :settlement='bSettlement'></Settlement>
             </div>
 
+            <div v-if="hexObject != undefined && hexObject != null">
+              <ResourceNumber :resource-value='hexObject.value' :has-robber='hexObject.hasRobber'></ResourceNumber>
+            </div>
+
             <Road class='tr' :road-object='trRoad'></Road>
             <Road class='tl' :road-object='tlRoad'></Road>
             <Road class ='l' :road-object='lRoad'></Road>

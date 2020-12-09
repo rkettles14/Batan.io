@@ -1,5 +1,5 @@
 <template>
-        <div v-on:click='selectSettlement' :class='[settlementOwner, settlmentStatus]'>
+        <div v-on:click='selectSettlement' :class='[settlementOwner, settlementStatus]'>
         </div>  
 </template>
 
