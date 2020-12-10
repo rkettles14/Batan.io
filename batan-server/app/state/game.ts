@@ -120,26 +120,24 @@ export default {
         if (game.turn_num < game.order.length) {
           // First round of placement -- player should have 1 settlement + 1 road max
           if (game.gameObj.players[this.whosTurn(game_id)].settlementsPlayed < 1 && game.gameObj.players[this.whosTurn(game_id)].roadsPlayed < 1) {
-            // place settlement first.. hacky workaround since players don't have resources to buy things yet..
-            game.gameObj.board.addSettlement(settlement, player_num);
-            game.gameObj.players[player_num].settlementsPlayed++;
-            game.gameObj.board.addRoad(road.start, road.end, player_num);
-            game.gameObj.players[player_num].roadsPlayed++;
-            game.gameObj.players[player_num].victoryPoints++;
-            return true;
+            // TODO: settlement + road should be atomic
+            if (game.gameObj.addSettlementInSetup(settlement, player_num + 1)) {
+                if (game.gameObj.addRoadInSetup(road.start, road.end, player_num + 1)) {
+                  return true;
+                }
+            }
           } else {
             console.log("Too many settlements/roads placed already");
           }
         } else if (game.turn_num < game.order.length*2) {
           // 2nd round of placement -- player should have 2 settlement + 2 road max
           if (game.gameObj.players[this.whosTurn(game_id)].settlementsPlayed < 2 && game.gameObj.players[this.whosTurn(game_id)].roadsPlayed < 2) {
-            // place settlement first.. hacky workaround since players don't have resources to buy things yet..
-            game.gameObj.board.addSettlement(settlement, player_num);
-            game.gameObj.players[player_num].settlementsPlayed++;
-            game.gameObj.board.addRoad(road.start, road.end, player_num);
-            game.gameObj.players[player_num].roadsPlayed++;
-            game.gameObj.players[player_num].victoryPoints++;
-            return true;
+            // TODO: settlement + road should be atomic
+            if (game.gameObj.addSettlementInSetup(settlement, player_num + 1)) {
+                if (game.gameObj.addRoadInSetup(road.start, road.end, player_num + 1)) {
+                  return true;
+                }
+            }
           } else {
             console.log("Too many settlements/roads placed already");
           }
@@ -181,8 +179,13 @@ export default {
     let game = this.games.get(game_id);
     if (game.order[this.whosTurn(game_id)] === user_id) {
       if (game.turn_phase === "build") {
-        purchaseRoad(start, end, this.whosTurn(game_id));
-        return true;
+        let ret = game.gameObj.purchaseRoad(start, end, this.whosTurn(game_id) + 1);
+        if (ret.success) {
+            return true;
+        } else {
+          console.log(ret.reason);
+          return false;
+        }
       } else {
         console.log("Not in build phase");
       }
@@ -195,12 +198,16 @@ export default {
     /*
     * Player to purchase a settlement at location if possible (determined by engine)
     */
-
     let game = this.games.get(game_id);
     if (game.order[this.whosTurn(game_id)] === user_id) {
       if (game.turn_phase === "build") {
-        game.gameObj.purchaseSettlement(location, this.whosTurn(game_id));
-        return true;
+        let ret = game.gameObj.purchaseSettlement(location, this.whosTurn(game_id) + 1);
+        if (ret.success) {
+            return true;
+        } else {
+          console.log(ret.reason);
+          return false;
+        }
       } else {
         console.log("Not in build phase");
       }
@@ -216,8 +223,13 @@ export default {
     let game = this.games.get(game_id);
     if (game.order[this.whosTurn(game_id)] === user_id) {
       if (game.turn_phase === "build") {
-        game.gameObj.purchaseCity(location, this.whosTurn(game_id));
-        return true;
+        let ret = game.gameObj.purchaseCity(location, this.whosTurn(game_id) + 1);
+        if (ret.success) {
+            return true;
+        } else {
+          console.log(ret.reason);
+          return false;
+        }
       } else {
         console.log("Not in build phase");
       }
@@ -233,8 +245,13 @@ export default {
     let game = this.games.get(game_id);
     if (game.order[this.whosTurn(game_id)] === user_id) {
       if (game.turn_phase === "build") {
-        purchaseDevelopmentCard(this.whosTurn(game_id));
-        return true;
+        let ret = game.gameObj.purchaseDevelopmentCard(this.whosTurn(game_id) + 1);
+        if (ret.success) {
+            return true;
+        } else {
+          console.log(ret.reason);
+          return false;
+        }
       } else {
         console.log("Not in build phase");
       }
@@ -250,7 +267,11 @@ export default {
     let game = this.games.get(game_id);
     if (game.order[this.whosTurn(game_id)] === user_id) {
       if (game.turn_phase === "build") {
-        // Do stuff
+        // TODO: complete implementation
+        // game.gameObj.playDevelopmentCard(this.whosTurn(game_id) + 1, devCard,
+        //       destinationHexId?: number, monopolyResource?: resourceType,
+        //       targetVertices?: number[], yearOfPlentyResources?: resourceType[] );
+
 
       } else {
         console.log("Not in build phase");
@@ -266,9 +287,13 @@ export default {
     let game = this.games.get(game_id);
     if (game.order[this.whosTurn(game_id)] === user_id) {
       if (game.turn_phase === "robber") {
-        // Do stuff
-        game.gameObj.moveRobberAndSteal(this.whosTurn(game_id), location);
-        return true;
+        let ret = game.gameObj.moveRobberAndSteal(this.whosTurn(game_id) + 1, location);
+        if (ret.success) {
+          return true;
+        } else {
+          console.log(ret.reason);
+          return false;
+        }
       } else {
         console.log("Not in build phase");
       }
@@ -302,6 +327,7 @@ export default {
     */
     let game = this.games.get(game_id);
     if (game.turn_num === expected_turn) {
+      calculateVictoryPoints(this.whosTurn(game_id) + 1);
       game.turn_num += 1;
 
       if (game.turn_num < game.order.length*2) {
@@ -348,7 +374,7 @@ export default {
       game_id: game_id,
       turn: {
         type: "normal",
-        player: this.whosTurn(game_id),
+        player: this.whosTurn(game_id) + 1,
         over_at: game.end_turn_time,
         phase: game.turn_phase,
         dice: game.dice
@@ -371,7 +397,7 @@ export default {
     let player = game.gameObj.players[player_num];
     return {
       ...player,
-      sequence_num: player_num
+      sequence_num: player_num + 1
     }
   },
   get_status(game_id) {
@@ -379,7 +405,7 @@ export default {
   },
   get_owner_sequence_num(game_id) {
     let game = this.games.get(game_id);
-    return game.order.indexOf(game.game_owner);
+    return game.order.indexOf(game.game_owner) + 1;
   },
   whosTurn(game_id) {
     /*

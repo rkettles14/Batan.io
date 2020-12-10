@@ -64,7 +64,8 @@ export default Vue.extend({
     return {
       settlementVertex: 0,
       roadStartVert: 0,
-      roadEndVert: 1
+      roadEndVert: 1,
+      dice: 0
     }
   },
   created() {
