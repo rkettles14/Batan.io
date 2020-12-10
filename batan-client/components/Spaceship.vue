@@ -2,20 +2,50 @@
         <div>
           <img :class='orientation' src='@/static/spaceship.png'>
           <p class='tradeType'>
-            3:1 wool
+            <span style='white-space: pre; text-align: center;'>{{trade}}</span>
           </p>
         </div>  
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-console.log('bruh');
+
+enum harborType {
+  none, 
+  threeForOne,
+  sheep,
+  wheat,
+  wood,
+  ore,
+  brick,
+}
 
 export default Vue.extend({
     props: {
-        orientation: String
+        orientation: String,
+        tradingPost: Object
     },
     computed:{
+      trade: function(){
+        switch(this.tradingPost.harbor){
+          case harborType.none:
+            return 'no harbor type';
+          case harborType.threeForOne:
+            return '3:1\r\n?';
+          case harborType.sheep:
+            return '2:1\r\nwool';
+          case harborType.wheat:
+            return '2:1\r\nwheat';
+          case harborType.wood:
+            return '2:1\r\nwood';
+          case harborType.ore:
+            return '2:1\r\nore';
+          case harborType.brick:
+            return '2:1\r\nbrick';
+          default:
+            return "unsupported harbor type";
+        }
+      }
     },
     created(){
        
@@ -37,11 +67,16 @@ img {
 }
 
 .tradeType{
+  text-align: center;
+  line-height: 15px;
+  height: 100%;
+  font-family: 'Space Grotesk', sans-serif;
   width: 70px;
   position: absolute;
   z-index: 699;
-  top: 35px;
-  left: 10px;
+  font-size: 14px;
+  top: 0px;
+  left: -35px;
   transform: rotate(90deg);
 }
 
@@ -71,13 +106,13 @@ img.l{
 
 img.tl{
   transform: rotate(305deg);
-  left: 35px;
+  left: 45px;
   top: 5px;
 }
 
 img.tr {
   top: 35px;
-  left: 30px;
+  left: 40px;
 }
 
 </style>
