@@ -515,7 +515,7 @@ export class Board {
             return false; //already a road here!
         }
 
-        //check if owner has an adjacent settlement or road. If yes, add road.
+        //check if owner has an adjacent settlement. If yes, add road.
         if (this.vertexList[startVertexId].owner === owner) {
             this.setEdge(startVertexId, endVertexId, owner);
             this.setEdge(endVertexId, startVertexId, owner);
