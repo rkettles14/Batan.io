@@ -576,6 +576,7 @@ export default class Game {
             this.takeResources(player.name, this.resourceStringToEnum(resourceAndNumber[0]), parseInt(resourceAndNumber[1]))
           });
           */
+         this.discardRandomResources(player.name, Math.floor(totalResources / 2));
         }
       })
     } else {
