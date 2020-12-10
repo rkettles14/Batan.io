@@ -1,5 +1,8 @@
 <template>
         <li class = 'hex' v-bind:class='[{"atmosphere": isAtmosphere}, {"spacer": isSpacer}]'>
+          <div v-if="isTradingPost">
+              <Spaceship :orientation='tradingPostOrientation'></Spaceship>
+          </div>
           <div v-if="!isAtmosphere && !isSpacer">
             <Settlement class= "t" :settlement='tSettlement'></Settlement>
             <Settlement class= "tl" :settlement='tlSettlement'></Settlement>
@@ -44,6 +47,14 @@ export default Vue.extend({
   props: {
         hexObject: Object,
         hexId: Number,
+        isTradingPost: {
+          type: Boolean,
+          default: false
+        },
+        tradingPostOrientation: {
+          type: String,
+          default: ''
+        },
         isAtmosphere: {
           type: Boolean,
           default: false
