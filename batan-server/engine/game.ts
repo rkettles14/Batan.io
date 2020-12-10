@@ -956,45 +956,24 @@ export default class Game {
     }
   }
 
-  /**
-   * Adds a settlement in the setup phase.
-   * @param vertexId 
-   * @param owner 
-   */
-  addSettlementInSetup(vertexId: number, owner: player) {
-    if (this.board.addSettlementInSetup(vertexId, owner)) {
-      return {
-        success: true,
-        reason: ""
+  setupRound(startVertexId: number, endVertexId: number, owner: player) {
+    let playerIndex = this.getPlayerIndexByEnum(owner);
+    if (this.board.addSettlementInSetup(startVertexId, owner)) {
+      if(this.board.addRoadInSetup(startVertexId, endVertexId, owner)) {
+        this.players[playerIndex].settlementsPlayed++;
+        this.players[playerIndex].roadsPlayed++;
+        return {
+          success: true,
+          reason: ""
+        }
       }
     } else {
       return {
-        success: true,
-        reason: "Operation failed due to illegal placement of settlement."
+        success: false,
+        reason: "Operation failed due to illegal placement of settlement or road."
       }
     }
   }
-
-  /**
-   * Adds a road in the setup phase.
-   * @param startVertexId 
-   * @param endVertexId 
-   * @param owner 
-   */
-  addRoadInSetup(startVertexId: number, endVertexId: number, owner: player) {
-    if (this.board.addRoadInSetup(startVertexId, endVertexId, owner)) {
-      return {
-        success: true,
-        reason: ""
-      }
-    } else {
-      return {
-        success: true,
-        reason: "Operation failed due to illegal placement of road."
-      }
-    }
-  }
-
 
   replacer(this: any, key: any, value: any) {
     const obj = this[key];
