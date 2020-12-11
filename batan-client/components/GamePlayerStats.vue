@@ -1,16 +1,27 @@
 <template>
     <b-container fluid>
-        <h1>Put all of the player stats here</h1>
-        <!--todo Put all of the player resources and who's turn it is here-->
+        <div>
+            <Bank></Bank>
+        </div>
+        <div>
+            <h1>player for loop here</h1>
+        </div>
+
     </b-container>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 export default Vue.extend({
-    name: "GamePlayerStats"
+    name: "GamePlayerStats",
+    computed: {
+        gameObject: function(){
+           return this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].game_info;
+        },
+    }
 });
 </script>
+
 
 <style scoped>
 
