@@ -1,4 +1,3 @@
-import { setNickname } from "./users.methods";
 import { IUserDocument, IUserModel } from "./users.types";
 
 export async function findOneOrCreate(
