@@ -196,7 +196,7 @@ export class Board {
         this.roadsMap.get(w)?.push([v, player.none]);
     }
 
-    private getEdge(v: number, w: number) {
+     getEdge(v: number, w: number) {
         let edges = this.roadsMap.get(v);
         if (!edges) {
             return;
@@ -479,6 +479,7 @@ export class Board {
 
         //check if legal move
         let startVertex = this.roadsMap.get(startVertexId);
+        let endVertex = this.roadsMap.get(endVertexId);
         let isAdjacentRoad = false;
         if (startVertex) {
             for (let i = 0; i < startVertex.length; i++) {
@@ -487,10 +488,20 @@ export class Board {
                     isAdjacentRoad = true;
                 }
             }
+            
+        }
+        if (endVertex) {
+            for (let i = 0; i < endVertex.length; i++) {
+                //check each edge for road belonging to owner
+                if (endVertex[i][1] === owner) {
+                    isAdjacentRoad = true;
+                }
+            }
+            
         }
 
         //check if owner has an adjacent settlement or road. If yes, add road.
-        if (this.vertexList[startVertexId].owner === owner || isAdjacentRoad) {
+        if (this.vertexList[startVertexId].owner === owner || this.vertexList[endVertexId].owner === owner || isAdjacentRoad) {
             this.setEdge(startVertexId, endVertexId, owner);
             this.setEdge(endVertexId, startVertexId, owner);
             return true;
@@ -516,7 +527,7 @@ export class Board {
         }
 
         //check if owner has an adjacent settlement. If yes, add road.
-        if (this.vertexList[startVertexId].owner === owner) {
+        if (this.vertexList[startVertexId].owner === owner || this.vertexList[endVertexId].owner === owner) {
             this.setEdge(startVertexId, endVertexId, owner);
             this.setEdge(endVertexId, startVertexId, owner);
             return true;
@@ -688,7 +699,11 @@ export class Board {
 }
 
 {//test
-    // let board = new Board();
+     let board = new Board();
+     board.addSettlementInSetup(34, 1);
+     board.addRoad(34, 29, 1);
+     board.addRoad(29, 23, 1);
+     //board.addRoad(18, 23, 1);
     // board.addSettlement(0,player.red);
     // board.addRoad(0, 3, player.red);
     // board.addRoad(3, 7, player.red);
