@@ -124,6 +124,9 @@ export default {
     /*
     * Player to place settlement & road (for game setup)
     */
+    if (!this.games.has(game_id)) {
+      return false;
+    }
     let game = this.games.get(game_id);
     if (game.order[this.whosTurn(game_id)] === user_id) {
       if (game.turn_phase === "build") {
@@ -169,6 +172,9 @@ export default {
     /*
     * Player to roll dice if it is start of their turn
     */
+    if (!this.games.has(game_id)) {
+      return false;
+    }
     let game = this.games.get(game_id);
     if (game.order[this.whosTurn(game_id)] === user_id) {
       if (game.turn_phase === "roll") {
@@ -191,6 +197,9 @@ export default {
     /*
     * Player to purchase a road at location if possible (determined by engine)
     */
+    if (!this.games.has(game_id)) {
+      return false;
+    }
     let game = this.games.get(game_id);
     if (game.order[this.whosTurn(game_id)] === user_id) {
       if (game.turn_phase === "build") {
@@ -213,6 +222,10 @@ export default {
     /*
     * Player to purchase a settlement at location if possible (determined by engine)
     */
+    if (!this.games.has(game_id)) {
+      return false;
+    }
+
     let game = this.games.get(game_id);
     if (game.order[this.whosTurn(game_id)] === user_id) {
       if (game.turn_phase === "build") {
@@ -235,6 +248,10 @@ export default {
     /*
     * Player to purchase a city at location if possible (determined by engine)
     */
+    if (!this.games.has(game_id)) {
+      return false;
+    }
+
     let game = this.games.get(game_id);
     if (game.order[this.whosTurn(game_id)] === user_id) {
       if (game.turn_phase === "build") {
@@ -257,6 +274,9 @@ export default {
     /*
     * Player to purchase dev card if possible (determined by engine)
     */
+    if (!this.games.has(game_id)) {
+      return false;
+    }
     let game = this.games.get(game_id);
     if (game.order[this.whosTurn(game_id)] === user_id) {
       if (game.turn_phase === "build") {
@@ -288,6 +308,10 @@ export default {
         yearOfPlentyResources?: resourceType[]
       }
     */
+    if (!this.games.has(game_id)) {
+      return false;
+    }
+
     let game = this.games.get(game_id);
     if (game.order[this.whosTurn(game_id)] === user_id) {
       if (game.turn_phase === "build") {
@@ -316,6 +340,9 @@ export default {
     }
   },
   playTradeWithBank(user_id, game_id, to_bank: resourceType, from_bank: resourceType) {
+    if (!this.games.has(game_id)) {
+      return false;
+    }
 
     let game = this.games.get(game_id);
     if (game.order[this.whosTurn(game_id)] === user_id) {
@@ -339,6 +366,10 @@ export default {
     /*
     * Player to move robber & steal a card
     */
+    if (!this.games.has(game_id)) {
+      return false;
+    }
+
     let game = this.games.get(game_id);
     if (game.order[this.whosTurn(game_id)] === user_id) {
       if (game.turn_phase === "robber") {
@@ -361,6 +392,10 @@ export default {
     /*
     * Player ends their turn (if it is their turn && they are in build phase)
     */
+    if (!this.games.has(game_id)) {
+      return false;
+    }
+
     let game = this.games.get(game_id);
     if (game.order[this.whosTurn(game_id)] === user_id) {
       if (game.turn_phase === "build") {
@@ -380,6 +415,10 @@ export default {
     * This allows for turn timeouts to only incremement the turn if they trigger
     * before their turn is ended
     */
+    if (!this.games.has(game_id)) {
+      return false;
+    }
+
     let game = this.games.get(game_id);
     if (game.turn_num === expected_turn) {
       if (game.turn_num >= 0) {
@@ -406,6 +445,10 @@ export default {
     }
   },
   get_full_game_info(game_id){
+    if (!this.games.has(game_id)) {
+      return false;
+    }
+
     let game = this.games.get(game_id);
 
     let scores = []
@@ -454,6 +497,10 @@ export default {
     return turnStartData;
   },
   get_player_info(game_id, player_num) {
+    if (!this.games.has(game_id)) {
+      return false;
+    }
+
     let game = this.games.get(game_id);
     let player = game.gameObj.players[player_num];
     return {
@@ -469,6 +516,10 @@ export default {
     return "active" // TODO: return something useful..
   },
   get_owner_sequence_num(game_id) {
+    if (!this.games.has(game_id)) {
+      return false;
+    }
+
     let game = this.games.get(game_id);
     return game.order.indexOf(game.game_owner) + 1;
   },
@@ -476,6 +527,10 @@ export default {
     /*
     * Returns the uid of the player who's turn it is currently in game_id
     */
+    if (!this.games.has(game_id)) {
+      return false;
+    }
+
     let game = this.games.get(game_id);
     if (game.turn_num < game.players.size*2) {
       // in init stage (fwd, then backward)
@@ -499,6 +554,10 @@ export default {
 
   },
   cheat_get_cards(user_id, game_id, cards) {
+    if (!this.games.has(game_id)) {
+      return false;
+    }
+
     let game = this.games.get(game_id);
     let cheater = game.order.indexOf(user_id);
     game.gameObj.players[cheater].resources.sheep += cards.sheep;
