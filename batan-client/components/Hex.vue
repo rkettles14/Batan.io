@@ -1,5 +1,5 @@
 <template>
-        <li class = 'hex' v-bind:class='[{"atmosphere": isAtmosphere}, {"spacer": isSpacer}]'>
+        <li class = 'hex' v-bind:class='[{"atmosphere": isAtmosphere}, {"spacer": isSpacer}]' v-on:click=''>
           <div v-if="!isAtmosphere && !isSpacer">
             <Settlement class= "t" :settlement='tSettlement'></Settlement>
             <Settlement class= "tl" :settlement='tlSettlement'></Settlement>
@@ -64,7 +64,14 @@ export default Vue.extend({
         if(edge[0] == vertexEnd)
           road = edge;
       });
-      return road;
+
+      var roadPackage= {
+        road: road,
+        start: vertexBegin,
+        end: vertexEnd
+      }
+      
+      return roadPackage;
     },
     tlRoad: function(){
       var roadsMap = this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].game_info.board.roadsMap;
@@ -76,7 +83,14 @@ export default Vue.extend({
         if(edge[0] == vertexEnd)
           road = edge;
       });
-      return road;
+      
+      var roadPackage= {
+        road: road,
+        start: vertexBegin,
+        end: vertexEnd
+      }
+      
+      return roadPackage;
     },
     lRoad: function(){
       var roadsMap = this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].game_info.board.roadsMap;
@@ -88,7 +102,14 @@ export default Vue.extend({
         if(edge[0] == vertexEnd)
           road = edge;
       });
-      return road;
+
+      var roadPackage= {
+        road: road,
+        start: vertexBegin,
+        end: vertexEnd
+      }
+
+      return roadPackage;
     },
     rRoad: function(){
       var roadsMap = this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].game_info.board.roadsMap;
@@ -100,7 +121,14 @@ export default Vue.extend({
         if(edge[0] == vertexEnd)
           road = edge;
       });
-      return road;
+      
+      var roadPackage= {
+        road: road,
+        start: vertexBegin,
+        end: vertexEnd
+      }
+      
+      return roadPackage;
     },
     brRoad: function(){
       var roadsMap = this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].game_info.board.roadsMap;
@@ -112,7 +140,14 @@ export default Vue.extend({
         if(edge[0] == vertexEnd)
           road = edge;
       });
-      return road;
+      
+      var roadPackage= {
+        road: road,
+        start: vertexBegin,
+        end: vertexEnd
+      }
+      
+      return roadPackage;
     },
     blRoad: function(){
       var roadsMap = this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].game_info.board.roadsMap;
@@ -124,7 +159,14 @@ export default Vue.extend({
         if(edge[0] == vertexEnd)
           road = edge;
       });
-      return road;
+      
+      var roadPackage= {
+        road: road,
+        start: vertexBegin,
+        end: vertexEnd
+      }
+      
+      return roadPackage;
     },
 
     tSettlement: function(){
@@ -170,6 +212,13 @@ export default Vue.extend({
   methods: {
     assignHexID() {
       return this.hexObject;
+    },
+    placeRobber(){
+      var turn = this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].game_info.turn;
+      if(turn.phase == "robber" && turn.type == "normal") {
+        console.log('robber placement attempt');
+        this.$nuxt.$emit("hex/placeRobber", this.hexId);
+      }
     }
       
   }
