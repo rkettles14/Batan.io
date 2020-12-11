@@ -471,11 +471,10 @@ export class Board {
     addRoad(startVertexId: number, endVertexId: number, owner: player) {
         let edge = this.getEdge(startVertexId, endVertexId);
         if (!edge) {
-            return; //edge doesn't exist!
+            return false; //edge doesn't exist!
         }
         if (edge[1] !== player.none) {
-            console.log("already a road!");
-            return; //already a road here!
+            return false; //already a road here!
         }
 
         //check if legal move
@@ -494,12 +493,41 @@ export class Board {
         if (this.vertexList[startVertexId].owner === owner || isAdjacentRoad) {
             this.setEdge(startVertexId, endVertexId, owner);
             this.setEdge(endVertexId, startVertexId, owner);
+            return true;
+        } else {
+            return false; //Operation failed due to illegal road placement
         }
 
     }
 
     /**
-     * Returns the longest road owned b the given player.
+     * Adds a road in the setup phase. Does not check for adjacent roads.
+     * @param startVertexId 
+     * @param endVertexId 
+     * @param owner 
+     */
+    addRoadInSetup(startVertexId: number, endVertexId: number, owner: player) {
+        let edge = this.getEdge(startVertexId, endVertexId);
+        if (!edge) {
+            return false; //edge doesn't exist!
+        }
+        if (edge[1] !== player.none) {
+            return false; //already a road here!
+        }
+
+        //check if owner has an adjacent settlement. If yes, add road.
+        if (this.vertexList[startVertexId].owner === owner) {
+            this.setEdge(startVertexId, endVertexId, owner);
+            this.setEdge(endVertexId, startVertexId, owner);
+            return true;
+        } else {
+            return false; //Operation failed due to illegal road placement
+        }
+
+    }
+
+    /**
+     * Returns the longest road owned by the given player.
      * @param owner
      */
     getPlayerLongestRoad(owner: player) {
@@ -524,9 +552,43 @@ export class Board {
      */
     addSettlement(vertexId: number, owner: player) {
         if (!this.vertexList[vertexId]) {
-            return;
+            return false; //vertex is out of range
         }
-        //TODO other then in setup round, players may not place a settlement without a road attached.
+        let startVertex = this.roadsMap.get(vertexId);
+        let hasAdjacentRoad = false;
+        if (startVertex) {
+            for (let i = 0; i < startVertex.length; i++) {
+                //check each edge for road belonging to owner
+                if (startVertex[i][1] === owner) {
+                    hasAdjacentRoad = true;
+                }
+            }
+        }
+        if (this.vertexList[vertexId].status === vertexStatus.open && hasAdjacentRoad) {
+            this.vertexList[vertexId].status = vertexStatus.settlement;
+            this.vertexList[vertexId].owner = owner;
+            let adjacent = this.roadsMap.get(vertexId);
+            //Set adjacent vertices to "blocked" status.
+            if (adjacent) {
+                for (let i = 0; i < adjacent.length; i++) {
+                    this.vertexList[adjacent[i][0]].status = vertexStatus.blocked;
+                }
+            }
+            return true;
+        } else {
+            return false; //Operation failed because there is no adjacent road or vertex is not open.
+        }
+    }
+
+    /**
+     * Adds a settlement to the game board. This does not check for adjacent roads.
+     * @param vertexId 
+     * @param owner 
+     */
+    addSettlementInSetup(vertexId: number, owner: player) {
+        if (!this.vertexList[vertexId]) {
+            return false; //vertex is out of range.
+        }
         if (this.vertexList[vertexId].status === vertexStatus.open) {
             this.vertexList[vertexId].status = vertexStatus.settlement;
             this.vertexList[vertexId].owner = owner;
@@ -536,8 +598,10 @@ export class Board {
                     this.vertexList[adjacent[i][0]].status = vertexStatus.blocked;
                 }
             }
+            return true;
+        } else {
+            return false; //Operation failed because vertex is not open.
         }
-        return;
     }
 
     /**
@@ -547,10 +611,13 @@ export class Board {
      */
     addCity(indexId: number, owner: player) {
         if (!this.vertexList[indexId]) {
-            return;
+            return false; //vertex is out of range.
         }
         if (this.vertexList[indexId].status === vertexStatus.settlement && this.vertexList[indexId].owner === owner) {
             this.vertexList[indexId].status = vertexStatus.city;
+            return true;
+        } else {
+            return false; //Operation failed because there was not a settlement belonging to the owner at the given index.
         }
     }
 
@@ -558,27 +625,38 @@ export class Board {
      * Moves the robber from its current space to a new one. Returns an array of affected players.
      * @param destinationHex 
      */
-    moveRobber(destinationHex: number){
+    moveRobber(destinationHex: number) {
+        let affectedPlayers: player[] = [];
+        if (!this.hexList[destinationHex]) {
+            return {
+                success: false, //hex out of range
+                affectedPlayers: affectedPlayers
+            }
+        }
         let previousHex = -1;
         this.hexList.forEach((hex) => {
-            if (hex.hasRobber){
+            if (hex.hasRobber) {
                 hex.hasRobber = false;
                 previousHex = this.hexList.indexOf(hex);
             }
         })
 
-        let affectedPlayers: player[] = [];
-        if(previousHex !== destinationHex){
+        if (previousHex !== destinationHex) {
             this.hexList[destinationHex].hasRobber = true;
             this.hexList[destinationHex].vertices.forEach(vertexId => {
-                if(this.vertexList[vertexId].owner !== player.none)
-                affectedPlayers.push(this.vertexList[vertexId].owner);
+                if (this.vertexList[vertexId].owner !== player.none)
+                    affectedPlayers.push(this.vertexList[vertexId].owner);
             });
+            return {
+                success: true, //robber successfully moved.
+                affectedPlayers: affectedPlayers
+            }
+        } else {
+            return {
+                success: false, //must move the robber to a new hex
+                affectedPlayers: affectedPlayers
+            }
         }
-        else{
-            console.log("Must move the robber to a new hex!");
-        }
-        return affectedPlayers;
     }
 
     printBoard() {

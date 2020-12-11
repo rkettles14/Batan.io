@@ -1,5 +1,8 @@
 <template>
-        <li class = 'hex' v-bind:class='[{"atmosphere": isAtmosphere}, {"spacer": isSpacer}]'>
+        <li class = 'hex' v-bind:class='[{"atmosphere": isAtmosphere}, {"spacer": isSpacer}]' v-on:click='placeRobber'>
+          <div v-if="isTradingPost">
+              <Spaceship :orientation='tradingPostOrientation' :trading-post='tradingPost'></Spaceship>
+          </div>
           <div v-if="!isAtmosphere && !isSpacer">
             <Settlement class= "t" :settlement='tSettlement'></Settlement>
             <Settlement class= "tl" :settlement='tlSettlement'></Settlement>
@@ -14,6 +17,10 @@
             </div> 
             <div v-if="hexId == 16 || hexId == 17 || hexId == 18">
               <Settlement class= "b" :settlement='bSettlement'></Settlement>
+            </div>
+
+            <div v-if="hexObject != undefined && hexObject != null">
+              <ResourceNumber :resource-value='hexObject.value' :has-robber='hexObject.hasRobber'></ResourceNumber>
             </div>
 
             <Road class='tr' :road-object='trRoad'></Road>
@@ -40,6 +47,18 @@ export default Vue.extend({
   props: {
         hexObject: Object,
         hexId: Number,
+        isTradingPost: {
+          type: Boolean,
+          default: false
+        },
+        tradingPostOrientation: {
+          type: String,
+          default: ''
+        },
+        tradingPost: {
+          type: Object,
+          default: null
+        },
         isAtmosphere: {
           type: Boolean,
           default: false
@@ -60,7 +79,14 @@ export default Vue.extend({
         if(edge[0] == vertexEnd)
           road = edge;
       });
-      return road;
+
+      var roadPackage= {
+        road: road,
+        start: vertexBegin,
+        end: vertexEnd
+      }
+      
+      return roadPackage;
     },
     tlRoad: function(){
       var roadsMap = this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].game_info.board.roadsMap;
@@ -72,7 +98,14 @@ export default Vue.extend({
         if(edge[0] == vertexEnd)
           road = edge;
       });
-      return road;
+      
+      var roadPackage= {
+        road: road,
+        start: vertexBegin,
+        end: vertexEnd
+      }
+      
+      return roadPackage;
     },
     lRoad: function(){
       var roadsMap = this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].game_info.board.roadsMap;
@@ -84,7 +117,14 @@ export default Vue.extend({
         if(edge[0] == vertexEnd)
           road = edge;
       });
-      return road;
+
+      var roadPackage= {
+        road: road,
+        start: vertexBegin,
+        end: vertexEnd
+      }
+
+      return roadPackage;
     },
     rRoad: function(){
       var roadsMap = this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].game_info.board.roadsMap;
@@ -96,7 +136,14 @@ export default Vue.extend({
         if(edge[0] == vertexEnd)
           road = edge;
       });
-      return road;
+      
+      var roadPackage= {
+        road: road,
+        start: vertexBegin,
+        end: vertexEnd
+      }
+      
+      return roadPackage;
     },
     brRoad: function(){
       var roadsMap = this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].game_info.board.roadsMap;
@@ -108,7 +155,14 @@ export default Vue.extend({
         if(edge[0] == vertexEnd)
           road = edge;
       });
-      return road;
+      
+      var roadPackage= {
+        road: road,
+        start: vertexBegin,
+        end: vertexEnd
+      }
+      
+      return roadPackage;
     },
     blRoad: function(){
       var roadsMap = this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].game_info.board.roadsMap;
@@ -120,7 +174,14 @@ export default Vue.extend({
         if(edge[0] == vertexEnd)
           road = edge;
       });
-      return road;
+      
+      var roadPackage= {
+        road: road,
+        start: vertexBegin,
+        end: vertexEnd
+      }
+      
+      return roadPackage;
     },
 
     tSettlement: function(){
@@ -166,6 +227,13 @@ export default Vue.extend({
   methods: {
     assignHexID() {
       return this.hexObject;
+    },
+    placeRobber(){
+      var turn = this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].game_info.turn;
+      if(turn.phase == "robber" && turn.type == "normal") {
+        console.log('robber placement attempt');
+        this.$nuxt.$emit("hex/placeRobber", this.hexId);
+      }
     }
       
   }
