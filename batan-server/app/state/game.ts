@@ -1,5 +1,6 @@
 // Handles permissions, turns & multiple games & sockets per user
 import Game from '../../engine/game';
+import socketState from './socket';
 import { vertexStatus, player, resourceType, developmentType, harborType } from '../../engine/enums';
 
 
@@ -22,6 +23,11 @@ export default {
       dice: 0,
       end_turn_time: null,
       order: [],
+      id: {
+        id_sub: new Map(),
+        sub_id: new Map(),
+        id_ctr: 0
+      },
       players: new Map(),
       gameObj: new Game
     });
@@ -35,6 +41,9 @@ export default {
     } else {
       this.players.set(user_id, [nextGameID]);
     }
+    let game = this.games.get(nextGameID);
+    game.id.id_sub.set(++game.id.id_ctr, user_id);
+    game.id.sub_id.set(user_id, game.id.id_ctr);
 
     return this.games.get(nextGameID++);
   },
@@ -53,6 +62,8 @@ export default {
         } else {
           this.players.set(user_id, [game.game_id]);
         }
+        game.id.id_sub.set(++game.id.id_ctr, user_id);
+        game.id.sub_id.set(user_id, game.id.id_ctr);
         return true;
       } else {
         return false; // could not add player to game (too many players, game started or player already in game)
@@ -113,6 +124,9 @@ export default {
     /*
     * Player to place settlement & road (for game setup)
     */
+    if (!this.games.has(game_id)) {
+      return false;
+    }
     let game = this.games.get(game_id);
     if (game.order[this.whosTurn(game_id)] === user_id) {
       if (game.turn_phase === "build") {
@@ -120,26 +134,28 @@ export default {
         if (game.turn_num < game.order.length) {
           // First round of placement -- player should have 1 settlement + 1 road max
           if (game.gameObj.players[this.whosTurn(game_id)].settlementsPlayed < 1 && game.gameObj.players[this.whosTurn(game_id)].roadsPlayed < 1) {
-            // place settlement first.. hacky workaround since players don't have resources to buy things yet..
-            game.gameObj.board.addSettlement(settlement, player_num);
-            game.gameObj.players[player_num].settlementsPlayed++;
-            game.gameObj.board.addRoad(road.start, road.end, player_num);
-            game.gameObj.players[player_num].roadsPlayed++;
-            game.gameObj.players[player_num].victoryPoints++;
-            return true;
+            if (settlement == road.start || settlement == road.end) {
+              // TODO: Still uncaught edge cases, but very unlikely through boardgame interface
+              if (game.gameObj.addSettlementInSetup(settlement, player_num + 1)) {
+                if (game.gameObj.addRoadInSetup(road.start, road.end, player_num + 1)) {
+                  return true;
+                }
+              }
+            }
           } else {
             console.log("Too many settlements/roads placed already");
           }
         } else if (game.turn_num < game.order.length*2) {
           // 2nd round of placement -- player should have 2 settlement + 2 road max
           if (game.gameObj.players[this.whosTurn(game_id)].settlementsPlayed < 2 && game.gameObj.players[this.whosTurn(game_id)].roadsPlayed < 2) {
-            // place settlement first.. hacky workaround since players don't have resources to buy things yet..
-            game.gameObj.board.addSettlement(settlement, player_num);
-            game.gameObj.players[player_num].settlementsPlayed++;
-            game.gameObj.board.addRoad(road.start, road.end, player_num);
-            game.gameObj.players[player_num].roadsPlayed++;
-            game.gameObj.players[player_num].victoryPoints++;
-            return true;
+            if (settlement == road.start || settlement == road.end) {
+              // TODO: Still uncaught edge cases, but very unlikely through boardgame interface
+              if (game.gameObj.addSettlementInSetup(settlement, player_num + 1)) {
+                if (game.gameObj.addRoadInSetup(road.start, road.end, player_num + 1)) {
+                  return true;
+                }
+              }
+            }
           } else {
             console.log("Too many settlements/roads placed already");
           }
@@ -156,6 +172,9 @@ export default {
     /*
     * Player to roll dice if it is start of their turn
     */
+    if (!this.games.has(game_id)) {
+      return false;
+    }
     let game = this.games.get(game_id);
     if (game.order[this.whosTurn(game_id)] === user_id) {
       if (game.turn_phase === "roll") {
@@ -178,11 +197,19 @@ export default {
     /*
     * Player to purchase a road at location if possible (determined by engine)
     */
+    if (!this.games.has(game_id)) {
+      return false;
+    }
     let game = this.games.get(game_id);
     if (game.order[this.whosTurn(game_id)] === user_id) {
       if (game.turn_phase === "build") {
-        purchaseRoad(start, end, this.whosTurn(game_id));
-        return true;
+        let ret = game.gameObj.purchaseRoad(start, end, this.whosTurn(game_id) + 1);
+        if (ret.success) {
+            return true;
+        } else {
+          console.log(ret.reason);
+          return false;
+        }
       } else {
         console.log("Not in build phase");
       }
@@ -195,12 +222,20 @@ export default {
     /*
     * Player to purchase a settlement at location if possible (determined by engine)
     */
+    if (!this.games.has(game_id)) {
+      return false;
+    }
 
     let game = this.games.get(game_id);
     if (game.order[this.whosTurn(game_id)] === user_id) {
       if (game.turn_phase === "build") {
-        game.gameObj.purchaseSettlement(location, this.whosTurn(game_id));
-        return true;
+        let ret = game.gameObj.purchaseSettlement(location, this.whosTurn(game_id) + 1);
+        if (ret.success) {
+            return true;
+        } else {
+          console.log(ret.reason);
+          return false;
+        }
       } else {
         console.log("Not in build phase");
       }
@@ -213,11 +248,20 @@ export default {
     /*
     * Player to purchase a city at location if possible (determined by engine)
     */
+    if (!this.games.has(game_id)) {
+      return false;
+    }
+
     let game = this.games.get(game_id);
     if (game.order[this.whosTurn(game_id)] === user_id) {
       if (game.turn_phase === "build") {
-        game.gameObj.purchaseCity(location, this.whosTurn(game_id));
-        return true;
+        let ret = game.gameObj.purchaseCity(location, this.whosTurn(game_id) + 1);
+        if (ret.success) {
+            return true;
+        } else {
+          console.log(ret.reason);
+          return false;
+        }
       } else {
         console.log("Not in build phase");
       }
@@ -230,11 +274,19 @@ export default {
     /*
     * Player to purchase dev card if possible (determined by engine)
     */
+    if (!this.games.has(game_id)) {
+      return false;
+    }
     let game = this.games.get(game_id);
     if (game.order[this.whosTurn(game_id)] === user_id) {
       if (game.turn_phase === "build") {
-        purchaseDevelopmentCard(this.whosTurn(game_id));
-        return true;
+        let ret = game.gameObj.purchaseDevelopmentCard(this.whosTurn(game_id) + 1);
+        if (ret.success) {
+            return true;
+        } else {
+          console.log(ret.reason);
+          return false;
+        }
       } else {
         console.log("Not in build phase");
       }
@@ -243,15 +295,43 @@ export default {
     }
     return false;
   },
-  playDevCard(user_id, game_id, devcard) {
+  playDevCard(user_id, game_id, devcard: developmentType, extra) {
     /*
     * Player to play devcard if possible (determined by engine)
+    * extra is an object containing more info depending on devcard type.
+    * Should only need 1 additional option per dev card.
+    * define the others as undefined, or don't include them
+      {
+        destinationHexId?: number,
+        monopolyResource?: resourceType,
+        targetVertices?: number[],
+        yearOfPlentyResources?: resourceType[]
+      }
     */
+    if (!this.games.has(game_id)) {
+      return false;
+    }
+
     let game = this.games.get(game_id);
     if (game.order[this.whosTurn(game_id)] === user_id) {
       if (game.turn_phase === "build") {
-        // Do stuff
-
+        // game.gameObj.playDevelopmentCard(this.whosTurn(game_id) + 1, devCard,
+        //       destinationHexId?: number, monopolyResource?: resourceType,
+        //       targetVertices?: number[], yearOfPlentyResources?: resourceType[] );
+        let ret = game.gameObj.playDevelopmentCard(
+          this.whosTurn(game_id) + 1,
+          devcard,
+          extra.destinationHexId,
+          extra.monopolyResource,
+          extra.targetVertices,
+          extra.yearOfPlentyResources
+        );
+        if (ret.success) {
+            return true;
+        } else {
+          console.log(ret.reason);
+          return false;
+        }
       } else {
         console.log("Not in build phase");
       }
@@ -259,16 +339,47 @@ export default {
       console.log("Not your turn");
     }
   },
+  playTradeWithBank(user_id, game_id, to_bank: resourceType, from_bank: resourceType) {
+    if (!this.games.has(game_id)) {
+      return false;
+    }
+
+    let game = this.games.get(game_id);
+    if (game.order[this.whosTurn(game_id)] === user_id) {
+      if (game.turn_phase === "build") {
+        let ret = game.gameObj.tradeWithBank(this.whosTurn(game_id) + 1, to_bank, from_bank);
+        if (ret.success) {
+            return true;
+        } else {
+          console.log(ret.reason);
+          return false;
+        }
+      } else {
+        console.log("Not in build phase");
+      }
+    } else {
+      console.log("Not your turn");
+    }
+    return false;
+  },
   playMoveRobber(user_id, game_id, location) {
     /*
     * Player to move robber & steal a card
     */
+    if (!this.games.has(game_id)) {
+      return false;
+    }
+
     let game = this.games.get(game_id);
     if (game.order[this.whosTurn(game_id)] === user_id) {
       if (game.turn_phase === "robber") {
-        // Do stuff
-        game.gameObj.moveRobberAndSteal(this.whosTurn(game_id), location);
-        return true;
+        let ret = game.gameObj.moveRobberAndSteal(this.whosTurn(game_id) + 1, location);
+        if (ret.success) {
+          return true;
+        } else {
+          console.log(ret.reason);
+          return false;
+        }
       } else {
         console.log("Not in build phase");
       }
@@ -281,6 +392,10 @@ export default {
     /*
     * Player ends their turn (if it is their turn && they are in build phase)
     */
+    if (!this.games.has(game_id)) {
+      return false;
+    }
+
     let game = this.games.get(game_id);
     if (game.order[this.whosTurn(game_id)] === user_id) {
       if (game.turn_phase === "build") {
@@ -300,8 +415,15 @@ export default {
     * This allows for turn timeouts to only incremement the turn if they trigger
     * before their turn is ended
     */
+    if (!this.games.has(game_id)) {
+      return false;
+    }
+
     let game = this.games.get(game_id);
     if (game.turn_num === expected_turn) {
+      if (game.turn_num >= 0) {
+        game.gameObj.calculateVictoryPoints(this.whosTurn(game_id) + 1);
+      }
       game.turn_num += 1;
 
       if (game.turn_num < game.order.length*2) {
@@ -323,6 +445,10 @@ export default {
     }
   },
   get_full_game_info(game_id){
+    if (!this.games.has(game_id)) {
+      return false;
+    }
+
     let game = this.games.get(game_id);
 
     let scores = []
@@ -331,6 +457,10 @@ export default {
       let dc = player.developmentCards;
       let p_scores = {
         name: player.name,
+        nick: {
+          alias: game.id.sub_id.get(game.order[player_num]),
+          name: socketState.nicks.get(game.order[player_num])
+        },
         victoryPoints: player.victoryPoints,
         developmentCards: dc.knight + dc.victoryPointCard + dc.roadBuilder + dc.yearOfPlenty + dc.monopoly,
         settlementsPlayed: player.settlementsPlayed,
@@ -348,7 +478,7 @@ export default {
       game_id: game_id,
       turn: {
         type: "normal",
-        player: this.whosTurn(game_id),
+        player: this.whosTurn(game_id) + 1,
         over_at: game.end_turn_time,
         phase: game.turn_phase,
         dice: game.dice
@@ -367,24 +497,40 @@ export default {
     return turnStartData;
   },
   get_player_info(game_id, player_num) {
+    if (!this.games.has(game_id)) {
+      return false;
+    }
+
     let game = this.games.get(game_id);
     let player = game.gameObj.players[player_num];
     return {
       ...player,
-      sequence_num: player_num
+      nick: {
+        alias: game.id.sub_id.get(game.order[player_num]),
+        name: socketState.nicks.get(game.order[player_num])
+      },
+      sequence_num: player_num + 1
     }
   },
   get_status(game_id) {
     return "active" // TODO: return something useful..
   },
   get_owner_sequence_num(game_id) {
+    if (!this.games.has(game_id)) {
+      return false;
+    }
+
     let game = this.games.get(game_id);
-    return game.order.indexOf(game.game_owner);
+    return game.order.indexOf(game.game_owner) + 1;
   },
   whosTurn(game_id) {
     /*
     * Returns the uid of the player who's turn it is currently in game_id
     */
+    if (!this.games.has(game_id)) {
+      return false;
+    }
+
     let game = this.games.get(game_id);
     if (game.turn_num < game.players.size*2) {
       // in init stage (fwd, then backward)
@@ -406,6 +552,20 @@ export default {
     * rm from global available games list
     */
 
+  },
+  cheat_get_cards(user_id, game_id, cards) {
+    if (!this.games.has(game_id)) {
+      return false;
+    }
+
+    let game = this.games.get(game_id);
+    let cheater = game.order.indexOf(user_id);
+    game.gameObj.players[cheater].resources.sheep += cards.sheep;
+    game.gameObj.players[cheater].resources.wheat += cards.wheat;
+    game.gameObj.players[cheater].resources.wood += cards.wood;
+    game.gameObj.players[cheater].resources.ore += cards.ore;
+    game.gameObj.players[cheater].resources.brick += cards.brick;
+    return true;
   }
 
 }

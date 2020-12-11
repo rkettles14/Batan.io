@@ -91,7 +91,7 @@ export default Vue.extend({
           this.$root.socket
           .emit('authenticate', { token: this.$auth.getToken('auth0').split(' ')[1] })
           .on('authenticated', () => {
-            // post-authenticate w/ websocket
+            this.$root.socket.emit('info/addNick', this.$auth.user.nickname);
           })
           .on('unauthorized', (msg) => {
             console.log(`unauthorized: ${JSON.stringify(msg.data)}`);

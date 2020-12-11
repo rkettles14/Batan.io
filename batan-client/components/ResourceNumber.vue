@@ -64,7 +64,7 @@ export default Vue.extend({
     position: absolute;
     font-size: 25px;
     line-height: 30px;
-    border-radius: 25px;
+    border-radius: 30px;
     text-align: center;
     z-index: 200;
     height: 40px;

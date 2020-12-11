@@ -5,7 +5,21 @@
 
 <script lang="ts">
 import Vue from 'vue';
-console.log('bruh');
+
+enum vertexStatus {
+  open,
+  settlement,
+  city,
+  blocked,
+}
+
+enum player {
+  none,
+  red,
+  white,
+  blue,
+  orange,
+}
 
 export default Vue.extend({
     props: {
@@ -13,7 +27,24 @@ export default Vue.extend({
     },
     methods: {
         selectSettlement: function(){
-            console.log("settlement")
+          var vertex = this.settlement.id;
+
+          var turn = this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].game_info.turn;
+
+          if(turn.phase == "build" && turn.type == "normal"){
+            console.log('settlment build attempt');
+            this.$nuxt.$emit('settlement/buySettlement', vertex);
+          }
+          else if(turn.phase =="build" && turn.type == "init"){
+            console.log('settlment place attempt');
+            this.$nuxt.$emit('settlment/placeSettlement', vertex);
+          }
+          else if(turn.phase =="build" && turn.type == "normal" && this.settlement.status == vertexStatus.city)
+          {
+            console.log('city build attempt');
+            this.$nuxt.$emit('settlment/buyCity', vertex);
+          }
+
         }
     },
     computed: {

@@ -12,7 +12,13 @@ function update_game_clients(io, game_id, event, data) {
 
 function send_created_game(io, game_id) {
   let game = gameState.games.get(game_id);
-
+  let nicks = []
+  for (let sub of Array.from(game.id.sub_id.keys())) {
+    nicks.push({
+      alias: game.id.sub_id.get(sub),
+      name: socketState.nicks.get(sub)
+    });
+  }
   socketState.online.forEach((player_info, uid) => {
     let is_owner = (game.game_owner === uid);
     let is_joined = Array.from(game.players.keys()).includes(uid);
@@ -23,7 +29,9 @@ function send_created_game(io, game_id) {
           game_name: game.game_name,
           owner: is_owner,
           joined: is_joined,
-          num_players: game.players.size
+          nicks: nicks,
+          num_players: game.players.size,
+          started: game.started
         });
       });
     }
@@ -38,6 +46,10 @@ function send_active_game(io, game_id) {
 
   game.players.forEach((player_info, uid) => {
     let player_info = gameState.get_player_info(game_id, game.order.indexOf(uid));
+    let alert = false;
+    if (gameState.whosTurn(game_id) + 1 === player_info.name) {
+      alert = true;
+    }
     if (socketState.online.has(uid)) {
       socketState.online.get(uid).forEach((socketid) => {
         io.to(socketid).emit('game/activeGame', {
@@ -47,7 +59,7 @@ function send_active_game(io, game_id) {
           owner: game_owner,
           game_info: game_full_info,
           player_info: player_info,
-          alerts: 0   // TODO: This represents whether to alert player of actions required by them (e.g. it is their turn)
+          alerts: alert
         });
       });
     }
@@ -91,6 +103,7 @@ export default (io, socket) => {
 
   socket.on('game/startGame', (data) => {
     if (gameState.adminStartGame(socket.decoded_token.sub, data.game_id)) {
+      send_created_game(io, data.game_id); // update all that game has started..
       gameState.nextTurn(data.game_id, -1, send_active_game.bind(null, io, data.game_id));
     } else {
       socket.emit('game/actionFailed', {description: "Failed to start game"})
@@ -180,13 +193,52 @@ export default (io, socket) => {
     }
   });
 
+  socket.on('game/tradeBank', (data) => {
+    /*
+    * to_bank & from_bank are resourceType enum
+    */
+    if (gameState.playTradeWithBank(socket.decoded_token.sub, data.game_id, data.to_bank, data.from_bank)) {
+      send_active_game(io, data.game_id);
+    } else {
+      socket.emit('game/actionFailed', {description: "tradeBank failed"});
+    }
+  });
+
+  socket.on('game/playDevCard', (data) => {
+    /*
+    * extra is an object containing more info. Should only need 1 per dev card, define the others as undefined, or don't include them
+      {
+        destinationHexId?: number,
+        monopolyResource?: resourceType,
+        targetVertices?: number[],
+        yearOfPlentyResources?: resourceType[]
+      }
+    */
+    if (gameState.playDevCard(socket.decoded_token.sub, data.game_id, data.devCard, data.extra)
+    )
+      {
+      send_active_game(io, data.game_id);
+    } else {
+      socket.emit('game/actionFailed', {description: "tradeBank failed"});
+    }
+  });
+
+
+
+
   socket.on('game/endTurn', (data) => {
     if (!gameState.playEndTurn(socket.decoded_token.sub, data.game_id, send_active_game.bind(null, io, data.game_id))) {
         socket.emit('game/actionFailed', {description: "It's not your turn!"})
       }
   });
 
-
-
+  // TODO: Wrap in env flag -- only available in dev
+  socket.on('game/cheat', (data) => {
+    if (gameState.cheat_get_cards(socket.decoded_token.sub, data.game_id, data.cards)) {
+      send_active_game(io, data.game_id);
+    } else {
+      socket.emit('game/actionFailed', {description: "cheating failed"});
+    }
+  });
 
 }
