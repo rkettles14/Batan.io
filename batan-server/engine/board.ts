@@ -196,7 +196,7 @@ export class Board {
         this.roadsMap.get(w)?.push([v, player.none]);
     }
 
-     getEdge(v: number, w: number) {
+     private getEdge(v: number, w: number) {
         let edges = this.roadsMap.get(v);
         if (!edges) {
             return;
