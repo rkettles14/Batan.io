@@ -331,7 +331,9 @@ export default {
     */
     let game = this.games.get(game_id);
     if (game.turn_num === expected_turn) {
-      game.gameObj.calculateVictoryPoints(this.whosTurn(game_id) + 1);
+      if (game.turn_num >= 0) {
+        game.gameObj.calculateVictoryPoints(this.whosTurn(game_id) + 1);
+      }
       game.turn_num += 1;
 
       if (game.turn_num < game.order.length*2) {
