@@ -191,6 +191,17 @@ export default (io, socket) => {
     }
   });
 
+  socket.on('game/tradeBank', (data) => {
+    /*
+    * to_bank & from_bank are resourceType enum
+    */
+    if (gameState.playTradeWithBank(socket.decoded_token.sub, data.game_id, data.to_bank, data.from_bank)) {
+      send_active_game(io, data.game_id);
+    } else {
+      socket.emit('game/actionFailed', {description: "tradeBank failed"});
+    }
+  });
+
   socket.on('game/endTurn', (data) => {
     if (!gameState.playEndTurn(socket.decoded_token.sub, data.game_id, send_active_game.bind(null, io, data.game_id))) {
         socket.emit('game/actionFailed', {description: "It's not your turn!"})

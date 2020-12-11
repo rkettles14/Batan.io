@@ -295,6 +295,26 @@ export default {
       console.log("Not your turn");
     }
   },
+  playTradeWithBank(user_id, game_id, to_bank: resourceType, from_bank: resourceType) {
+
+    let game = this.games.get(game_id);
+    if (game.order[this.whosTurn(game_id)] === user_id) {
+      if (game.turn_phase === "build") {
+        let ret = game.gameObj.tradeWithBank(this.whosTurn(game_id) + 1, to_bank, from_bank);
+        if (ret.success) {
+            return true;
+        } else {
+          console.log(ret.reason);
+          return false;
+        }
+      } else {
+        console.log("Not in build phase");
+      }
+    } else {
+      console.log("Not your turn");
+    }
+    return false;
+  },
   playMoveRobber(user_id, game_id, location) {
     /*
     * Player to move robber & steal a card

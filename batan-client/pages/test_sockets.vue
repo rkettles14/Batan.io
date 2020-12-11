@@ -34,6 +34,22 @@
   <b-button @click.prevent="buyCity(0)" size="md" variant="dark">buy city</b-button>
   <b-button @click.prevent="buyRoad(0)" size="md" variant="dark">buy road</b-button>
   <b-button @click.prevent="buyDev(0)" size="md" variant="dark">buy dev</b-button>
+  <br> <br>
+  <b-row>
+    <b-col sm="3">
+      <label>to bank:</label>
+    </b-col>
+    <b-col sm="3">
+      <b-form-input :type="`number`" v-model="tobank"></b-form-input>
+    </b-col>
+    <b-col sm="3">
+      <label>from bank:</label>
+    </b-col>
+    <b-col sm="3">
+      <b-form-input :type="`number`" v-model="frombank"></b-form-input>
+    </b-col>
+  </b-row>
+  <b-button @click.prevent="tradeBank(0)" size="md" variant="dark">Trade w/ bank</b-button>
   <br>  <br>
   <b-button @click.prevent="rollDice(0)" size="md" variant="dark">roll dice</b-button>
   <p>{{ dice }}</p>
@@ -65,7 +81,9 @@ export default Vue.extend({
       settlementVertex: 0,
       roadStartVert: 0,
       roadEndVert: 1,
-      dice: 0
+      dice: 0,
+      tobank: 1,
+      frombank: 2
     }
   },
   created() {
@@ -113,6 +131,9 @@ export default Vue.extend({
           end: Number(this.roadEndVert)
         }
       })
+    },
+    tradeBank(game_id) {
+      this.$root.socket.emit('game/tradeBank', {game_id: game_id, to_bank: Number(this.tobank), from_bank: Number(this.frombank)});
     },
     endTurn(game_id) {
       this.$root.socket.emit('game/endTurn', {game_id: game_id});
