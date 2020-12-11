@@ -699,39 +699,5 @@ export class Board {
 }
 
 {//test
-     let board = new Board();
-     board.addSettlementInSetup(34, 1);
-     board.addRoad(34, 29, 1);
-     board.addRoad(29, 23, 1);
-     //board.addRoad(18, 23, 1);
-    // board.addSettlement(0,player.red);
-    // board.addRoad(0, 3, player.red);
-    // board.addRoad(3, 7, player.red);
-    // board.addRoad(7, 12, player.red);
-    // board.addRoad(0, 4, player.red);
-    // board.addRoad(8, 12, player.red);
-    // board.addRoad(4, 1, player.red);
-    // board.addRoad(1, 5, player.red);
-    // board.addRoad(5, 9, player.red);
-    // board.addRoad(9, 13, player.red);
-    // board.addRoad(4, 8, player.red);
-    // board.addRoad(13, 8, player.red);
-    // board.addRoad(8, 12, player.red);
-    // board.addRoad(12, 17, player.red);
-    // board.addRoad(13, 18, player.red);
-    // board.addRoad(18, 23, player.red);
-    // board.addRoad(17, 23, player.red);
-    // board.printBoard();
-    // let longestRoad = board.getPlayerLongestRoad(player.red);
-    // console.log(longestRoad);
-    // board.addSettlement(8,player.red);
-    // board.addRoad(8, 12, player.red);
-    // board.addRoad(12, 8, player.red);//invalid
-    // board.addRoad(8, 4, player.red);
-    // board.addCity(0, player.blue);
-    // board.addSettlement(16, player.white);
-    // board.addSettlement(21, player.white); //invalid move
-    // board.addSettlement(1, player.orange);
-    // board.addRoad(1, 4, player.orange);
-    // board.printBoard();
+     //let board = new Board();
 }
