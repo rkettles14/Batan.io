@@ -67,6 +67,46 @@
   <br>  <br>
   <b-button @click.prevent="endTurn()" size="md" variant="dark">end turn</b-button>
   <br>  <br>
+
+  <br>  <br>
+  <h3>Cheat Menu (acquire cards) <b-button @click.prevent="cheat_cards()" size="md" variant="dark">Get Cards</b-button></h3>
+  <div class="">
+    <b-row>
+      <b-col sm="2">
+        <label>sheep</label>
+      </b-col>
+      <b-col sm="2">
+        <b-form-input :type="`number`" v-model="cheat_sheep"></b-form-input>
+      </b-col>
+      <b-col sm="2">
+        <label>wheat</label>
+      </b-col>
+      <b-col sm="2">
+        <b-form-input :type="`number`" v-model="cheat_wheat"></b-form-input>
+      </b-col>
+      <b-col sm="2">
+        <label>wood</label>
+      </b-col>
+      <b-col sm="2">
+        <b-form-input :type="`number`" v-model="cheat_wood"></b-form-input>
+      </b-col>
+    </b-row>
+    <b-row>
+      <b-col sm="2">
+        <label>ore</label>
+      </b-col>
+      <b-col sm="2">
+        <b-form-input :type="`number`" v-model="cheat_ore"></b-form-input>
+      </b-col>
+      <b-col sm="2">
+        <label>brick</label>
+      </b-col>
+      <b-col sm="2">
+        <b-form-input :type="`number`" v-model="cheat_brick"></b-form-input>
+      </b-col>
+    </b-row>
+  </div>
+
 </div>
 </template>
 
@@ -83,7 +123,12 @@ export default Vue.extend({
       roadEndVert: 1,
       dice: 0,
       tobank: 1,
-      frombank: 2
+      frombank: 2,
+      cheat_sheep: 5,
+      cheat_wheat: 5,
+      cheat_wood: 5,
+      cheat_ore: 5,
+      cheat_brick: 5,
     }
   },
   created() {
@@ -145,6 +190,18 @@ export default Vue.extend({
     },
     endTurn() {
       this.$root.socket.emit('game/endTurn', {game_id: this.game_id});
+    },
+    cheat_cards() {
+      this.$root.socket.emit('game/cheat', {
+        game_id: this.game_id,
+        cards: {
+          sheep: this.cheat_sheep,
+          wheat: this.cheat_wheat,
+          wood: this.cheat_wood,
+          ore: this.cheat_ore,
+          brick: this.cheat_brick
+        }
+      });
     },
     newGame(game_name) {
       this.$root.socket.emit('game/newGame', {game_name: game_name});

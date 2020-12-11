@@ -224,14 +224,19 @@ export default (io, socket) => {
 
 
 
-
   socket.on('game/endTurn', (data) => {
     if (!gameState.playEndTurn(socket.decoded_token.sub, data.game_id, send_active_game.bind(null, io, data.game_id))) {
         socket.emit('game/actionFailed', {description: "It's not your turn!"})
       }
   });
 
-
-
+  // TODO: Wrap in env flag -- only available in dev
+  socket.on('game/cheat', (data) => {
+    if (gameState.cheat_get_cards(socket.decoded_token.sub, data.game_id, data.cards)) {
+      send_active_game(io, data.game_id);
+    } else {
+      socket.emit('game/actionFailed', {description: "cheating failed"});
+    }
+  });
 
 }
