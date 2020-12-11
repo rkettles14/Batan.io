@@ -12,7 +12,13 @@ function update_game_clients(io, game_id, event, data) {
 
 function send_created_game(io, game_id) {
   let game = gameState.games.get(game_id);
-
+  let nicks = []
+  for (let sub of Array.from(game.id.sub_id.keys())) {
+    nicks.push({
+      alias: game.id.sub_id.get(sub),
+      name: socketState.nicks.get(sub)
+    });
+  }
   socketState.online.forEach((player_info, uid) => {
     let is_owner = (game.game_owner === uid);
     let is_joined = Array.from(game.players.keys()).includes(uid);
@@ -23,6 +29,7 @@ function send_created_game(io, game_id) {
           game_name: game.game_name,
           owner: is_owner,
           joined: is_joined,
+          nicks: nicks,
           num_players: game.players.size
         });
       });
@@ -38,6 +45,10 @@ function send_active_game(io, game_id) {
 
   game.players.forEach((player_info, uid) => {
     let player_info = gameState.get_player_info(game_id, game.order.indexOf(uid));
+    let alert = false;
+    if (gameState.whosTurn(game_id) + 1 === player_info.name) {
+      alert = true;
+    }
     if (socketState.online.has(uid)) {
       socketState.online.get(uid).forEach((socketid) => {
         io.to(socketid).emit('game/activeGame', {
@@ -47,7 +58,7 @@ function send_active_game(io, game_id) {
           owner: game_owner,
           game_info: game_full_info,
           player_info: player_info,
-          alerts: 0   // TODO: This represents whether to alert player of actions required by them (e.g. it is their turn)
+          alerts: alert
         });
       });
     }
