@@ -6,4 +6,8 @@ export default (io, socket) => {
   socket.on('disconnect', (reason) => {
     socketState.rmSocket(socket.decoded_token.sub, socket.id);
   });
+
+  socket.on('info/addNick', (nick) => {
+    socketState.addNick(socket.decoded_token.sub, nick);
+  });
 }

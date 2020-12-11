@@ -1,5 +1,6 @@
 // Handles permissions, turns & multiple games & sockets per user
 import Game from '../../engine/game';
+import socketState from './socket';
 import { vertexStatus, player, resourceType, developmentType, harborType } from '../../engine/enums';
 
 
@@ -22,6 +23,11 @@ export default {
       dice: 0,
       end_turn_time: null,
       order: [],
+      id: {
+        id_sub: new Map(),
+        sub_id: new Map(),
+        id_ctr: 0
+      },
       players: new Map(),
       gameObj: new Game
     });
@@ -35,6 +41,9 @@ export default {
     } else {
       this.players.set(user_id, [nextGameID]);
     }
+    let game = this.games.get(nextGameID);
+    game.id.id_sub.set(++game.id.id_ctr, user_id);
+    game.id.sub_id.set(user_id, game.id.id_ctr);
 
     return this.games.get(nextGameID++);
   },
@@ -53,6 +62,8 @@ export default {
         } else {
           this.players.set(user_id, [game.game_id]);
         }
+        game.id.id_sub.set(++game.id.id_ctr, user_id);
+        game.id.sub_id.set(user_id, game.id.id_ctr);
         return true;
       } else {
         return false; // could not add player to game (too many players, game started or player already in game)
@@ -363,6 +374,10 @@ export default {
       let dc = player.developmentCards;
       let p_scores = {
         name: player.name,
+        nick: {
+          alias: game.id.sub_id.get(game.order[player_num]),
+          name: socketState.nicks.get(game.order[player_num])
+        },
         victoryPoints: player.victoryPoints,
         developmentCards: dc.knight + dc.victoryPointCard + dc.roadBuilder + dc.yearOfPlenty + dc.monopoly,
         settlementsPlayed: player.settlementsPlayed,
@@ -403,6 +418,10 @@ export default {
     let player = game.gameObj.players[player_num];
     return {
       ...player,
+      nick: {
+        alias: game.id.sub_id.get(game.order[player_num]),
+        name: socketState.nicks.get(game.order[player_num])
+      },
       sequence_num: player_num + 1
     }
   },
