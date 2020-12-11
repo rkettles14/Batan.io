@@ -22,18 +22,20 @@
                 </b-button>
             </div>
         </b-form>
-        <div>
+        <div v-show="Object.values($store.state.games.available_games).filter(game => game.joined).length > 0">
             <hr>
             <br>
             <h2>Current Games</h2>
             <ul class="list-container">
-                <!--todo make reactive to all the games that the player
-                    has joined and are active or not started-->
-                <li class="card-item">
+                <li
+                v-for="game in Object.values($store.state.games.available_games).filter(game => game.joined)"
+                :key="game.game_id"
+                class="card-item">
                     <div class="card-sub-item">
-                        <h3>Game Name</h3>
+                        <h3 class="left">{{game.game_name}}</h3>
+                        <h3 class="center">Players {{game.num_players}}/5</h3>
                         <!--todo only display the goto button if the game has been started-->
-                        <b-button variant="success" @click.prevent="gotoGame">Goto Game</b-button>
+                        <b-button variant="success" @click.prevent="goto(game)">Goto Game</b-button>
                     </div>
                     <!--todo show who's the game host-->
                     <!--todo show all of the players that have joined this particular game-->
@@ -66,9 +68,10 @@ export default Vue.extend({
                 window.$nuxt.$router.push("/game-screen");
             });
         },
-        gotoGame() {
-            //todo implement
-            //will require the game id to do so
+        goto(game) {
+            this.$store.commit('game/changeGame', game);
+            this.$store.commit('chat/changeToChatRoom', "" + game.game_id)
+            window.$nuxt.$router.push("/game-screen");
         }
     }
 });
@@ -95,6 +98,14 @@ export default Vue.extend({
     width: 100%;
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: left;
+}
+
+.left {
+    flex-grow: 1
+}
+
+.center {
+    margin-right: 1rem;
 }
 </style>

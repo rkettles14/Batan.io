@@ -576,6 +576,7 @@ export default class Game {
             this.takeResources(player.name, this.resourceStringToEnum(resourceAndNumber[0]), parseInt(resourceAndNumber[1]))
           });
           */
+         this.discardRandomResources(player.name, Math.floor(totalResources / 2));
         }
       })
     } else {
@@ -963,13 +964,15 @@ export default class Game {
    */
   addSettlementInSetup(vertexId: number, owner: player) {
     if (this.board.addSettlementInSetup(vertexId, owner)) {
+      let playerIndex = this.getPlayerIndexByEnum(owner);
+      this.players[playerIndex].settlementsPlayed++;
       return {
         success: true,
         reason: ""
       }
     } else {
       return {
-        success: true,
+        success: false,
         reason: "Operation failed due to illegal placement of settlement."
       }
     }
@@ -983,18 +986,19 @@ export default class Game {
    */
   addRoadInSetup(startVertexId: number, endVertexId: number, owner: player) {
     if (this.board.addRoadInSetup(startVertexId, endVertexId, owner)) {
+      let playerIndex = this.getPlayerIndexByEnum(owner);
+      this.players[playerIndex].roadsPlayed++;
       return {
         success: true,
         reason: ""
       }
     } else {
       return {
-        success: true,
+        success: false,
         reason: "Operation failed due to illegal placement of road."
       }
     }
   }
-
 
   replacer(this: any, key: any, value: any) {
     const obj = this[key];
