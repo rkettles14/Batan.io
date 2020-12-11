@@ -202,6 +202,29 @@ export default (io, socket) => {
     }
   });
 
+  socket.on('game/playDevCard', (data) => {
+    /*
+    * extra is an object containing more info. Should only need 1 per dev card, define the others as undefined, or don't include them
+      {
+        destinationHexId?: number,
+        monopolyResource?: resourceType,
+        targetVertices?: number[],
+        yearOfPlentyResources?: resourceType[]
+      }
+    */
+    if (gameState.playDevCard(socket.decoded_token.sub, data.game_id, data.devCard, data.extra)
+    )
+      {
+      send_active_game(io, data.game_id);
+    } else {
+      socket.emit('game/actionFailed', {description: "tradeBank failed"});
+    }
+  });
+
+
+
+
+
   socket.on('game/endTurn', (data) => {
     if (!gameState.playEndTurn(socket.decoded_token.sub, data.game_id, send_active_game.bind(null, io, data.game_id))) {
         socket.emit('game/actionFailed', {description: "It's not your turn!"})

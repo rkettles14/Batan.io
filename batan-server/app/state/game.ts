@@ -275,19 +275,39 @@ export default {
     }
     return false;
   },
-  playDevCard(user_id, game_id, devcard) {
+  playDevCard(user_id, game_id, devcard: developmentType, extra) {
     /*
     * Player to play devcard if possible (determined by engine)
+    * extra is an object containing more info depending on devcard type.
+    * Should only need 1 additional option per dev card.
+    * define the others as undefined, or don't include them
+      {
+        destinationHexId?: number,
+        monopolyResource?: resourceType,
+        targetVertices?: number[],
+        yearOfPlentyResources?: resourceType[]
+      }
     */
     let game = this.games.get(game_id);
     if (game.order[this.whosTurn(game_id)] === user_id) {
       if (game.turn_phase === "build") {
-        // TODO: complete implementation
         // game.gameObj.playDevelopmentCard(this.whosTurn(game_id) + 1, devCard,
         //       destinationHexId?: number, monopolyResource?: resourceType,
         //       targetVertices?: number[], yearOfPlentyResources?: resourceType[] );
-
-
+        let ret = game.gameObj.playDevelopmentCard(
+          this.whosTurn(game_id) + 1,
+          devcard,
+          extra.destinationHexId,
+          extra.monopolyResource,
+          extra.targetVertices,
+          extra.yearOfPlentyResources
+        );
+        if (ret.success) {
+            return true;
+        } else {
+          console.log(ret.reason);
+          return false;
+        }
       } else {
         console.log("Not in build phase");
       }
