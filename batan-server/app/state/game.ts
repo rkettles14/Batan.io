@@ -120,11 +120,13 @@ export default {
         if (game.turn_num < game.order.length) {
           // First round of placement -- player should have 1 settlement + 1 road max
           if (game.gameObj.players[this.whosTurn(game_id)].settlementsPlayed < 1 && game.gameObj.players[this.whosTurn(game_id)].roadsPlayed < 1) {
-            // TODO: settlement + road should be atomic
-            if (game.gameObj.addSettlementInSetup(settlement, player_num + 1)) {
+            if (settlement == road.start || settlement == road.end) {
+              // TODO: Still uncaught edge cases, but very unlikely through boardgame interface
+              if (game.gameObj.addSettlementInSetup(settlement, player_num + 1)) {
                 if (game.gameObj.addRoadInSetup(road.start, road.end, player_num + 1)) {
                   return true;
                 }
+              }
             }
           } else {
             console.log("Too many settlements/roads placed already");
@@ -132,11 +134,13 @@ export default {
         } else if (game.turn_num < game.order.length*2) {
           // 2nd round of placement -- player should have 2 settlement + 2 road max
           if (game.gameObj.players[this.whosTurn(game_id)].settlementsPlayed < 2 && game.gameObj.players[this.whosTurn(game_id)].roadsPlayed < 2) {
-            // TODO: settlement + road should be atomic
-            if (game.gameObj.addSettlementInSetup(settlement, player_num + 1)) {
+            if (settlement == road.start || settlement == road.end) {
+              // TODO: Still uncaught edge cases, but very unlikely through boardgame interface
+              if (game.gameObj.addSettlementInSetup(settlement, player_num + 1)) {
                 if (game.gameObj.addRoadInSetup(road.start, road.end, player_num + 1)) {
                   return true;
                 }
+              }
             }
           } else {
             console.log("Too many settlements/roads placed already");
@@ -327,7 +331,7 @@ export default {
     */
     let game = this.games.get(game_id);
     if (game.turn_num === expected_turn) {
-      calculateVictoryPoints(this.whosTurn(game_id) + 1);
+      game.gameObj.calculateVictoryPoints(this.whosTurn(game_id) + 1);
       game.turn_num += 1;
 
       if (game.turn_num < game.order.length*2) {
