@@ -30,7 +30,8 @@ function send_created_game(io, game_id) {
           owner: is_owner,
           joined: is_joined,
           nicks: nicks,
-          num_players: game.players.size
+          num_players: game.players.size,
+          started: game.started
         });
       });
     }
@@ -102,6 +103,7 @@ export default (io, socket) => {
 
   socket.on('game/startGame', (data) => {
     if (gameState.adminStartGame(socket.decoded_token.sub, data.game_id)) {
+      send_created_game(io, data.game_id); // update all that game has started..
       gameState.nextTurn(data.game_id, -1, send_active_game.bind(null, io, data.game_id));
     } else {
       socket.emit('game/actionFailed', {description: "Failed to start game"})
@@ -191,13 +193,52 @@ export default (io, socket) => {
     }
   });
 
+  socket.on('game/tradeBank', (data) => {
+    /*
+    * to_bank & from_bank are resourceType enum
+    */
+    if (gameState.playTradeWithBank(socket.decoded_token.sub, data.game_id, data.to_bank, data.from_bank)) {
+      send_active_game(io, data.game_id);
+    } else {
+      socket.emit('game/actionFailed', {description: "tradeBank failed"});
+    }
+  });
+
+  socket.on('game/playDevCard', (data) => {
+    /*
+    * extra is an object containing more info. Should only need 1 per dev card, define the others as undefined, or don't include them
+      {
+        destinationHexId?: number,
+        monopolyResource?: resourceType,
+        targetVertices?: number[],
+        yearOfPlentyResources?: resourceType[]
+      }
+    */
+    if (gameState.playDevCard(socket.decoded_token.sub, data.game_id, data.devCard, data.extra)
+    )
+      {
+      send_active_game(io, data.game_id);
+    } else {
+      socket.emit('game/actionFailed', {description: "tradeBank failed"});
+    }
+  });
+
+
+
+
   socket.on('game/endTurn', (data) => {
     if (!gameState.playEndTurn(socket.decoded_token.sub, data.game_id, send_active_game.bind(null, io, data.game_id))) {
         socket.emit('game/actionFailed', {description: "It's not your turn!"})
       }
   });
 
-
-
+  // TODO: Wrap in env flag -- only available in dev
+  socket.on('game/cheat', (data) => {
+    if (gameState.cheat_get_cards(socket.decoded_token.sub, data.game_id, data.cards)) {
+      send_active_game(io, data.game_id);
+    } else {
+      socket.emit('game/actionFailed', {description: "cheating failed"});
+    }
+  });
 
 }
