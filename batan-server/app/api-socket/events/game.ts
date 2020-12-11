@@ -30,7 +30,8 @@ function send_created_game(io, game_id) {
           owner: is_owner,
           joined: is_joined,
           nicks: nicks,
-          num_players: game.players.size
+          num_players: game.players.size,
+          started: game.started
         });
       });
     }
@@ -102,6 +103,7 @@ export default (io, socket) => {
 
   socket.on('game/startGame', (data) => {
     if (gameState.adminStartGame(socket.decoded_token.sub, data.game_id)) {
+      send_created_game(io, data.game_id); // update all that game has started..
       gameState.nextTurn(data.game_id, -1, send_active_game.bind(null, io, data.game_id));
     } else {
       socket.emit('game/actionFailed', {description: "Failed to start game"})
