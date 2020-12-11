@@ -3,27 +3,27 @@
     <b-container fluid>
       <b-row class="text-center no-gutters" align-v="center">
         <b-col>
-          <div v-on:click="buildRoad" class="purchaseOption">
+          <div v-on:click="buildRoad()" class="purchaseOption">
             <p>Road</p>
           </div>
         </b-col>
         <b-col>
-          <div v-on:click="buildSettlement" class="purchaseOption">
+          <div v-on:click="buildSettlement()" class="purchaseOption">
             <p>Settlement</p>
           </div>
         </b-col>
         <b-col>
-          <div v-on:click="buildCity" class="purchaseOption">
+          <div v-on:click="buildCity()" class="purchaseOption">
             <p>City</p>
           </div>
         </b-col>
         <b-col>
-          <div v-on:click="devCard" class="purchaseOption">
+          <div v-on:click="devCard()" class="purchaseOption">
             <small>Development Card</small>
           </div>
         </b-col>
         <b-col>
-          <div v-on:click="undoPurchase" class="purchaseOption">
+          <div v-on:click="undoPurchase()" class="purchaseOption">
             <p>Undo</p>
           </div>
         </b-col>
@@ -41,37 +41,69 @@ export default Vue.extend({
       buildingSettlement: false,
       buildingCity: false,
       buyingDevCard: false,
+      roadToBuild: null,
+      vertexToBuild: null,
     }
   },
+
+  created() {
+    this.$nuxt.$on('road/placeRoad', (roadStartAndEnd) => {
+      if (this.buildingRoad) {
+        this.roadToBuild = roadStartAndEnd;
+        if (this.vertexToBuild) {
+          console.log('Successfully built road/settlement pair')
+          this.$root.socket.emit('game/playInitPlacement', {
+            game_id: this.$store.state.games.active_game.game_id,
+            settlement: Number(this.vertexToBuild),
+            road: {
+              start: Number(this.roadToBuild.start),
+              end: Number(this.roadToBuild.end),
+            },
+          })
+        } else {
+          console.log('Cant do that, theres no settlement to build along with it')
+        }
+      } else {
+        console.log('Cant do that, we arent in road building mode')
+      }
+    })
+
+    this.$nuxt.$on('settlement/placeSettlement', (vertex) => {
+      console.log("Zach is trying to build a settlement");
+      if (this.buildingSettlement) {
+        this.vertexToBuild = vertex;
+        if (this.roadToBuild) {
+          console.log('Successfully built road/settlement pair')
+          this.$root.socket.emit('game/playInitPlacement', {
+            game_id: this.$store.state.games.active_game.game_id,
+            settlement: Number(this.vertexToBuild),
+            road: {
+              start: Number(this.roadToBuild.start),
+              end: Number(this.roadToBuild.end),
+            },
+          })
+        } else {
+          console.log('Cant do that, theres no road to build along with it')
+        }
+      } else {
+        console.log('Cant do that, we arent in settlement building mode')
+      }
+    })
+  },
+
   mounted() {},
   methods: {
     buildRoad(): void {
-      console.log('Building a road')
-      this.buildRoad = true
-      this.$emit('buildRoad')
+      this.buildingRoad = true
+      this.buildingSettlement = false
+      this.buildingCity = false
+      this.buyingDevCard = false
     },
-
     buildSettlement(): void {
-      console.log('Building a settlement')
-      this.buildSettlement = true
-      this.$emit('buildSettlement')
-    },
-
-    buildCity(): void {
-      console.log('Building a city')
-      this.buildCity = true
-      this.$emit('buildCity')
-    },
-
-    devCard(): void {
-      console.log('Getting more dev cards')
-      this.devCard = true
-      this.$emit('purchaseDevCard')
-    },
-
-    undoPurchase(): void {
-      console.log('Undoing purchase')
-      this.$emit('undoPurchase')
+      this.buildingRoad = false
+      this.buildingSettlement = true
+      this.buildingCity = false
+      this.buyingDevCard = false
     },
   },
 })

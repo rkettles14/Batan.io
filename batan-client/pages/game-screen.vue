@@ -12,13 +12,13 @@
       <b-col cols="5">
         <ResourceCards />
       </b-col>
-      <b-col cols="3" @click="displayPurchase()" v-if="showActions">
+      <b-col cols="3" v-if="showActions">
         <PlayerActions/>
       </b-col>
-      <b-col cols="3" @click="displayActions()" v-if="this.$store.state.games.active_game.game_info.turn.phase == 'roll'">
+      <b-col cols="3" v-if="this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].game_info.turn.phase == 'roll'">
         <Dice/>
       </b-col>
-      <b-col cols="3" @click="displayDice()" v-if="showPurchase">
+      <b-col cols="3" @click="makePurchase()" v-if="this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].game_info.turn.type == 'init'">
         <PurchaseOptions />
       </b-col>
       <b-col cols="4">
@@ -36,36 +36,24 @@ export default Vue.extend({
   name: "GameScreen",
   data() {
     return {
-      showDice: true,
-      showActions: false,
-      showPurchase: false,
+      purchasing: false,
     }
   },
   mounted() {
-    this.$root.socket.emit('game/startGame', {game_id: this.$store.state.games.active_game.game_id});
+    // this.$root.socket.emit('game/startGame', {game_id: this.$store.state.games.active_game.game_id});
+    // TODO: Rather than starting the game, check to see if it was started and prompt the user to wait untill
+    // the game is started if not.
   },
   
   methods: {
-
-    displayDice() {
-      this.showDice = true;
-      this.showActions = false;
-      this.showPurchase = false;
-    },
-
-    displayActions() {
-      setTimeout(() => {
-      this.showDice = false;
-      this.showActions = true;
-      this.showPurchase = false;
-      }, 4000);
-      this.$root.socket.emit('game/rollDice', {game_id: this.$store.state.games.active_game.game_id});
+    makePurchase(){
+      this.purchasing = false;
     },
 
     displayPurchase() {
-      this.showDice = false;
-      this.showActions = false;
-      this.showPurchase = true;
+      let initialMove = this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].game_info.turn.type == 'init' ? true : false;
+      let purchasing = this.purchasing;
+      return initalMove || purchasing;
     },
   }
 });
