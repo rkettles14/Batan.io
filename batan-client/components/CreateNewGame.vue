@@ -25,17 +25,36 @@
 
         </b-form>
         <!--todo only show the div if there are items to be shown-->
-        <div>
+        <div v-show="Object.values($store.state.games.available_games).filter(game => game.owner).length !== 0">
             <hr>
             <br>
             <h2>Games Pending Start</h2>
             <ul class="list-container">
                 <!--todo make reactive to all the games that the player
                     has created but not started-->
-                <li class="card-li">
+                <li
+                v-for="game in Object.values($store.state.games.available_games).filter(game => game.owner)"
+                :key="game.game_id"
+                class="card-li"
+                >
                     <div class="card-sub-item">
-                        <h3>Game Name</h3>
-                        <b-button variant="success" @click.prevent="start">Start Game</b-button>
+                        <h3 class="left">{{game.game_name}}</h3>
+                        <h3 class="center">Players {{game.num_players}}/5</h3>
+                        <!--todo hide this button if the game has been started-->
+                        <b-button
+                            variant="success"
+                            @click.prevent="start(game)"
+                        >
+                        Start Game 
+                        </b-button>
+                        <!--todo show this button when the game has been started-->
+                        <b-button
+                            v-show="false"
+                            variant="success"
+                            @click.prevent="goto(game)"
+                        >
+                        goto Game
+                        </b-button>
                     </div>
                     <!--todo show all of the players that have joined this particular game-->
                 </li>
@@ -71,10 +90,16 @@ export default Vue.extend({
             this.$root.socket.on("game/created", (game) => {
                 this.$data.showOverlay = false;
             });
+            this.$data.name = "";
         },
 
-        start() {
-            //todo implement
+        start(game) {
+            this.$root.socket.emit('game/startGame', game);
+        },
+
+        goto(game) {
+            this.$store.commit('game/changeGame', game);
+            window.$nuxt.$router.push("/game-screen");
         }
     }
 });
@@ -97,10 +122,18 @@ export default Vue.extend({
     display: flex;
 }
 
+.left {
+    flex-grow: 1;
+}
+
+.center {
+    margin: 0 10px;
+}
+
 .card-sub-item {
     width: 100%;
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: left;
 }
 </style>
