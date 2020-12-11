@@ -479,6 +479,7 @@ export class Board {
 
         //check if legal move
         let startVertex = this.roadsMap.get(startVertexId);
+        let endVertex = this.roadsMap.get(endVertexId);
         let isAdjacentRoad = false;
         if (startVertex) {
             for (let i = 0; i < startVertex.length; i++) {
@@ -487,10 +488,20 @@ export class Board {
                     isAdjacentRoad = true;
                 }
             }
+            
+        }
+        if (endVertex) {
+            for (let i = 0; i < endVertex.length; i++) {
+                //check each edge for road belonging to owner
+                if (endVertex[i][1] === owner) {
+                    isAdjacentRoad = true;
+                }
+            }
+            
         }
 
         //check if owner has an adjacent settlement or road. If yes, add road.
-        if (this.vertexList[startVertexId].owner === owner || isAdjacentRoad) {
+        if (this.vertexList[startVertexId].owner === owner || this.vertexList[endVertexId].owner === owner || isAdjacentRoad) {
             this.setEdge(startVertexId, endVertexId, owner);
             this.setEdge(endVertexId, startVertexId, owner);
             return true;
@@ -516,7 +527,7 @@ export class Board {
         }
 
         //check if owner has an adjacent settlement. If yes, add road.
-        if (this.vertexList[startVertexId].owner === owner) {
+        if (this.vertexList[startVertexId].owner === owner || this.vertexList[endVertexId].owner === owner) {
             this.setEdge(startVertexId, endVertexId, owner);
             this.setEdge(endVertexId, startVertexId, owner);
             return true;
@@ -688,35 +699,5 @@ export class Board {
 }
 
 {//test
-    // let board = new Board();
-    // board.addSettlement(0,player.red);
-    // board.addRoad(0, 3, player.red);
-    // board.addRoad(3, 7, player.red);
-    // board.addRoad(7, 12, player.red);
-    // board.addRoad(0, 4, player.red);
-    // board.addRoad(8, 12, player.red);
-    // board.addRoad(4, 1, player.red);
-    // board.addRoad(1, 5, player.red);
-    // board.addRoad(5, 9, player.red);
-    // board.addRoad(9, 13, player.red);
-    // board.addRoad(4, 8, player.red);
-    // board.addRoad(13, 8, player.red);
-    // board.addRoad(8, 12, player.red);
-    // board.addRoad(12, 17, player.red);
-    // board.addRoad(13, 18, player.red);
-    // board.addRoad(18, 23, player.red);
-    // board.addRoad(17, 23, player.red);
-    // board.printBoard();
-    // let longestRoad = board.getPlayerLongestRoad(player.red);
-    // console.log(longestRoad);
-    // board.addSettlement(8,player.red);
-    // board.addRoad(8, 12, player.red);
-    // board.addRoad(12, 8, player.red);//invalid
-    // board.addRoad(8, 4, player.red);
-    // board.addCity(0, player.blue);
-    // board.addSettlement(16, player.white);
-    // board.addSettlement(21, player.white); //invalid move
-    // board.addSettlement(1, player.orange);
-    // board.addRoad(1, 4, player.orange);
-    // board.printBoard();
+     //let board = new Board();
 }
