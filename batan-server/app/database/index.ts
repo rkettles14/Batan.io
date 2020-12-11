@@ -4,12 +4,15 @@ import config from "../config";
 let database: Mongoose.Connection;
 
 export const connect = () => {
-    const uri = `mongodb+srv://${config.db_username}:${config.db_password}@cluster0.5f5vl.mongodb.net/batan`;
     if(database) {
         return;
     }
+    if(config.db_uri === undefined){
+        console.error("Missing database connection string in .env");
+        return;
+    }
 
-    Mongoose.connect(uri, {
+    Mongoose.connect(config.db_uri, {
         useNewUrlParser: true,
         useFindAndModify: true,
         useUnifiedTopology: true,
