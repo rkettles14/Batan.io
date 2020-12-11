@@ -500,21 +500,13 @@ export default {
   },
   cheat_get_cards(user_id, game_id, cards) {
     let game = this.games.get(game_id);
-    if (game.order[this.whosTurn(game_id)] === user_id) {
-      if (game.turn_phase === "build") {
-        game.gameObj.players[this.whosTurn(game_id)].resources.sheep += cards.sheep;
-        game.gameObj.players[this.whosTurn(game_id)].resources.wheat += cards.wheat;
-        game.gameObj.players[this.whosTurn(game_id)].resources.wood += cards.wood;
-        game.gameObj.players[this.whosTurn(game_id)].resources.ore += cards.ore;
-        game.gameObj.players[this.whosTurn(game_id)].resources.brick += cards.brick;
-        return true;
-      } else {
-        console.log("Not in build phase");
-      }
-    } else {
-      console.log("Not your turn");
-    }
-    return false;
+    let cheater = game.order.indexOf(user_id);
+    game.gameObj.players[cheater].resources.sheep += cards.sheep;
+    game.gameObj.players[cheater].resources.wheat += cards.wheat;
+    game.gameObj.players[cheater].resources.wood += cards.wood;
+    game.gameObj.players[cheater].resources.ore += cards.ore;
+    game.gameObj.players[cheater].resources.brick += cards.brick;
+    return true;
   }
 
 }
