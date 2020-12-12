@@ -45,7 +45,7 @@ export default Vue.extend({
     beginPurchasing(): void {
       console.log("purchasing a thing");
       this.purchasing = true;
-      this.$emit('purchasing');
+      this.$nuxt.$emit('playerActions/purchase', this.purchasing);
     },
 
     endPurchasing(): void {
@@ -64,7 +64,7 @@ export default Vue.extend({
 
     endTurn(): void{
         console.log("ending turn");
-        this.$emit('endTurn');
+        this.$root.socket.emit('game/endTurn', {game_id: this.$store.state.games.active_game.game_id});
     }
   },
 })

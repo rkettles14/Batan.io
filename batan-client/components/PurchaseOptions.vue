@@ -40,7 +40,6 @@ export default Vue.extend({
       buildingRoad: false,
       buildingSettlement: false,
       buildingCity: false,
-      buyingDevCard: false,
       roadToBuild: null,
       vertexToBuild: null,
     }
@@ -49,7 +48,7 @@ export default Vue.extend({
   created() {
     this.$nuxt.$on('road/placeRoad', (roadStartAndEnd) => {
       if (this.buildingRoad) {
-        this.roadToBuild = roadStartAndEnd;
+        this.roadToBuild = roadStartAndEnd
         if (this.vertexToBuild) {
           console.log('Successfully built road/settlement pair')
           this.$root.socket.emit('game/playInitPlacement', {
@@ -60,8 +59,11 @@ export default Vue.extend({
               end: Number(this.roadToBuild.end),
             },
           })
+          this.clear()
         } else {
-          console.log('Cant do that, theres no settlement to build along with it')
+          console.log(
+            'Cant do that, theres no settlement to build along with it'
+          )
         }
       } else {
         console.log('Cant do that, we arent in road building mode')
@@ -69,9 +71,9 @@ export default Vue.extend({
     })
 
     this.$nuxt.$on('settlement/placeSettlement', (vertex) => {
-      console.log("Zach is trying to build a settlement");
+      console.log('Zach is trying to build a settlement')
       if (this.buildingSettlement) {
-        this.vertexToBuild = vertex;
+        this.vertexToBuild = vertex
         if (this.roadToBuild) {
           console.log('Successfully built road/settlement pair')
           this.$root.socket.emit('game/playInitPlacement', {
@@ -82,12 +84,47 @@ export default Vue.extend({
               end: Number(this.roadToBuild.end),
             },
           })
+          this.clear()
         } else {
           console.log('Cant do that, theres no road to build along with it')
         }
       } else {
         console.log('Cant do that, we arent in settlement building mode')
       }
+    })
+
+    this.$nuxt.$on('settlement/buySettlement', (vertex) => {
+      if (this.buildingSettlement) {
+        this.vertexToBuild = vertex
+        this.$root.socket.emit('game/buySettlement', {
+          game_id: this.$store.state.games.active_game.game_id,
+          location: Number(this.vertexToBuild),
+        })
+      }
+      this.clear()
+    })
+
+    this.$nuxt.$on('road/buyRoad', (roadStartAndEnd) => {
+      if (this.buildingRoad) {
+        this.roadToBuild = roadStartAndEnd
+        this.$root.socket.emit('game/buyRoad', {
+          game_id: this.$store.state.games.active_game.game_id,
+          start: Number(this.roadToBuild.start),
+          end: Number(this.roadToBuild.end),
+        })
+      }
+      this.clear()
+    })
+
+    this.$nuxt.$on('city/buyCity', (vertex) => {
+      if (this.buildingCity) {
+        this.vertexToBuild = vertex
+        this.$root.socket.emit('game/buyCity', {
+          game_id: this.$store.state.games.active_game.game_id,
+          location: Number(this.vertexToBuild),
+        })
+      }
+      this.clear()
     })
   },
 
@@ -97,13 +134,31 @@ export default Vue.extend({
       this.buildingRoad = true
       this.buildingSettlement = false
       this.buildingCity = false
-      this.buyingDevCard = false
     },
     buildSettlement(): void {
       this.buildingRoad = false
       this.buildingSettlement = true
       this.buildingCity = false
-      this.buyingDevCard = false
+    },
+    buildCity(): void {
+      this.buildingRoad = false
+      this.buildingSettlement = false
+      this.buildingCity = true
+    },
+    devCard(): void{
+      this.clear()
+      this.$nuxt.$emit('purchaseOptions/buyDevCard')
+    },
+    undoPurchase(): void{
+      this.clear()
+      this.$nuxt.$emit('purchaseOptions/undoPurchase')
+    },
+    clear(): void {
+      this.buildingRoad = false
+      this.buildingSettlement = false
+      this.buildingCity = false
+      this.roadToBuild = null
+      this.vertexToBuild = null
     },
   },
 })
