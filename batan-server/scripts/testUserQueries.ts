@@ -13,8 +13,30 @@ import { connect, disconnect } from "../app/database"
     const bob = await db.UserModel.findBySub("auth0");
     console.log(bob);
 
+    // check adding a game
+    await bob.addGame({
+        gameId: 1234,
+        date: Date.now(),
+        gameName: "testymctester",
+        numPlayers: 4,
+        playerWon: true,
+        playerSettlements: 3,
+        playerCities: 1,
+        playerRoads: 15,
+        playerResourceCards: 4,
+        playerVictoryPoints: 10,
+        playerLargestArmy: true,
+        playerLongestRoad: true,
+    });
+
+    // check for removing the user
     const dick = await db.UserModel.findByEmail("dickdickerson@email.com");
     console.log(dick);
+
+    dick.removeAllUserData();
+
+    const dick2 = await db.UserModel.findByEmail("dickdickerson@email.com");
+    console.log(dick2);
 
     // for an existing guy
     const job = await db.UserModel.findOneOrCreate({ sub: "auth1", firstName: "Job", lastName: "Boberson", email: "jobboberson@email.com", nickname: "jobby"});

@@ -15,13 +15,13 @@ export async function findOneOrCreate(
 export async function findByEmail(
     this: IUserModel,
     email: string,
-) : Promise<IUserDocument[]> {
-    return this.find({email: email});
+) : Promise<IUserDocument | null> {
+    return this.findOne({email: email});
 }
 
 export async function findBySub(
     this: IUserModel,
     sub: string,
-) : Promise<IUserDocument[]> {
-    return this.find({sub: sub});
+) : Promise<IUserDocument | null> {
+    return this.findOne({sub: sub});
 }

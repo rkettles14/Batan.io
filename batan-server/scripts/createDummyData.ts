@@ -5,7 +5,9 @@ import { connect, disconnect } from "../app/database"
     const db = connect();
 
     //delete all current data for testing purposes
-    db?.UserModel.deleteMany({});
+    db?.UserModel.deleteMany({}, (err: any) => {
+        console.error(err);
+    });
 
     const users = [
         { sub: "auth0", firstName: "Bob", lastName: "Boberson", email: "bobboberson@email.com", nickname: "bobby", games: []},

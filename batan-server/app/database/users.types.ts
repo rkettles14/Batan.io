@@ -2,7 +2,7 @@ import { Document, Model } from "mongoose";
 
 export interface IGame {
     gameId: number;
-    date: Date;
+    date: number;               //utc date from Date.now() as it will likely be used
     gameName: string;
     numPlayers: number;
     playerWon: boolean;
