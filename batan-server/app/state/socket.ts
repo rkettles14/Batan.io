@@ -1,5 +1,6 @@
 export default {
   online: new Map(),
+  nicks: new Map(),
 
   addSocket(sub, socket_id) {
     if (this.online.has(sub)) {
@@ -23,6 +24,12 @@ export default {
       } else {
         this.online.delete(sub);
       }
+    }
+  },
+
+  addNick(sub, nick) {
+    if (!this.nicks.has(sub)) {
+      this.nicks.set(sub, nick);
     }
   }
 }

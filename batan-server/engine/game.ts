@@ -855,7 +855,7 @@ export default class Game {
    */
   private awardLongestRoad() {
     let longestRoadLength: number;
-    if (this.longestRoadOwner != player.none) {
+    if (this.longestRoadOwner === player.none) {
       longestRoadLength = 4;
     }
     else {
@@ -873,7 +873,7 @@ export default class Game {
    */
   private awardLargestArmy() {
     let largestArmyLength: number;
-    if (this.largestArmyOwner != player.none) {
+    if (this.largestArmyOwner === player.none) {
       largestArmyLength = 2;
     }
     else {
