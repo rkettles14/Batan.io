@@ -1,7 +1,6 @@
 import Mongoose = require("mongoose");
 import config from "../config";
 import { UserModel } from "./users.model"
-import { GameModel } from "./games.model"
 
 let database: Mongoose.Connection;
 
@@ -33,7 +32,6 @@ export const connect = () => {
 
     return {
         UserModel,
-        GameModel,
     };
 }
 
