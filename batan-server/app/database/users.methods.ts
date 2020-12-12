@@ -1,6 +1,5 @@
 import { Document } from "mongoose";
-import { IGame } from "./games.types";
-import { IUserDocument } from "./users.types";
+import { IUserDocument, IGame } from "./users.types";
 
 export async function setNickname(this: IUserDocument, newName: string): Promise<void> {
     console.log(`Changing user ${this.firstName} ${this.lastName}'s nickname to ${newName}`);
