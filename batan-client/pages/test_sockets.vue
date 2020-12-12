@@ -67,10 +67,24 @@
   <br>  <br>
   <b-button @click.prevent="endTurn()" size="md" variant="dark">end turn</b-button>
   <br>  <br>
+  <div class="">
+    <h3>Admin</h3>
+    <b-row>
+      <b-col sm="4">
+        <label>timeout (seconds)</label>
+      </b-col>
+      <b-col sm="2">
+        <b-form-input :type="`number`" v-model="timeout_s"></b-form-input>
+      </b-col>
+      <b-col sm="2">
+        <b-button @click.prevent="set_timeout_length()" size="md" variant="dark">set timeout</b-button>
+      </b-col>
+    </b-row>
+  </div>
 
   <br>  <br>
-  <h3>Cheat Menu (acquire cards) <b-button @click.prevent="cheat_cards()" size="md" variant="dark">Get Cards</b-button></h3>
   <div class="">
+    <h3>Cheat Menu (acquire cards) <b-button @click.prevent="cheat_cards()" size="md" variant="dark">Get Cards</b-button></h3>
     <b-row>
       <b-col sm="2">
         <label>sheep</label>
@@ -129,11 +143,18 @@ export default Vue.extend({
       cheat_wood: 5,
       cheat_ore: 5,
       cheat_brick: 5,
+      timeout_s: 10
     }
   },
   created() {
   },
   methods: {
+    set_timeout_length() {
+      this.$root.socket.emit('game/admin/settimeout', {
+        game_id: this.game_id,
+        timeout: this.timeout_s
+      });
+    },
     moveRobber() {
       this.$root.socket.emit('game/moveRobber', {
         game_id: this.game_id,

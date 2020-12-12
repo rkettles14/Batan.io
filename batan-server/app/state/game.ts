@@ -18,6 +18,7 @@ export default {
       game_name: game_name,
       game_owner: user_id,
       started: false,
+      turn_timeout_length: 180000,
       turn_num: -1,
       turn_phase: "roll",
       dice: 0,
@@ -71,6 +72,22 @@ export default {
     } else {
       return false; // game does not exist
     }
+  },
+  adminSetTimeout(user_id, game_id, timeout_s) {
+    /*
+    * Set timeout to timeout_s (seconds)
+    */
+    if (!this.games.has(game_id)) {
+      return false;
+    }
+    let game = this.games.get(game_id);
+    if (game.game_owner === user_id) {
+      game.turn_timeout_length = timeout_s * 1000;
+      return true;
+    } else {
+      console.log("You are not owner of this game");
+    }
+    return false;
   },
   adminBootPlayer(user_id, game_id, playerIdToBoot) {
     /*
@@ -438,7 +455,7 @@ export default {
       let curr_turn = game.turn_num;
       setTimeout(() => {
         this.nextTurn(game_id, curr_turn, callback);
-      }, 180000);
+      }, game.turn_timeout_length);
 
       game.end_turn_time = end_turn_time.toISOString();
       callback();

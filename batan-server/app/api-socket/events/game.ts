@@ -232,6 +232,15 @@ export default (io, socket) => {
       }
   });
 
+  socket.on('game/admin/settimeout', (data) => {
+    if (gameState.adminSetTimeout(socket.decoded_token.sub, data.game_id, data.timeout)) {
+      socket.emit('game/admin/timeout_set');
+    } else {
+      socket.emit('game/actionFailed', {description: "Setting timeout failed"});
+    }
+  });
+
+
   // TODO: Wrap in env flag -- only available in dev
   socket.on('game/cheat', (data) => {
     if (gameState.cheat_get_cards(socket.decoded_token.sub, data.game_id, data.cards)) {
