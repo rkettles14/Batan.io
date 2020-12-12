@@ -18,6 +18,8 @@ export default {
       game_name: game_name,
       game_owner: user_id,
       started: false,
+      turn_timeout_length: 180000,
+      skip_if_dc: false,
       turn_num: -1,
       turn_phase: "roll",
       dice: 0,
@@ -72,20 +74,68 @@ export default {
       return false; // game does not exist
     }
   },
-  adminBootPlayer(user_id, game_id, playerIdToBoot) {
+  adminSetTimeout(user_id, game_id, timeout_s) {
     /*
-    * Remove a player from unstarted game, or set to skip their turn if game started
+    * Set timeout to timeout_s (seconds)
     */
+    if (!this.games.has(game_id)) {
+      return false;
+    }
+    let game = this.games.get(game_id);
+    if (game.game_owner === user_id) {
+      game.turn_timeout_length = timeout_s * 1000;
+      return true;
+    } else {
+      console.log("You are not owner of this game");
+    }
+    return false;
+  },
+  adminBootPlayer(user_id, game_id, bootee) {
+    /*
+    * Boot player from game (before or after start, but slightly different behaviour)
+    */
+    if (!this.games.has(game_id)) {
+      return false;
+    }
+    let game = this.games.get(game_id);
+    if (game.game_owner === user_id && game.id.id_sub.has(bootee)) {
+
+      if (!game.started) {
+        let bootee_sub = game.id.id_sub.get(bootee);
+        game.players.delete(bootee_sub);
+        if (this.players.has(user_id)){
+          this.players.get(user_id).splice(this.players.get(user_id).indexOf(game.game_id), 1);
+        }
+        game.id.id_sub.delete(bootee);
+        game.id.sub_id.delete(bootee_sub);
+      } else {
+        // TODO: -- Need to verify many other things for this..
+        return false;
+      }
+
+      return true;
+    } else {
+      console.log("You are not owner of this game");
+    }
+    return false;
 
   },
-  adminSetGameRules(user_id, game_id, rule, args) {
+  adminSetSkipDC(user_id, game_id, skip_disconnected_players: boolean) {
     /*
-    * If user_id is a game_id administrator, allow them to set a rule for game_id
-    *   - Set offline players mode to 'skip turn'
-    *   - Remove player from game
-    *   - Set resources for the game (future)
-    *   - etc.
+    * Set skip on disconnect
     */
+    if (!this.games.has(game_id)) {
+      return false;
+    }
+    let game = this.games.get(game_id);
+    if (game.game_owner === user_id) {
+      game.skip_if_dc = skip_disconnected_players;
+      return true;
+    } else {
+      console.log("You are not owner of this game");
+    }
+    return false;
+
   },
   adminStartGame(user_id, game_id) {
     /*
@@ -418,7 +468,7 @@ export default {
     * before their turn is ended
     */
     if (!this.games.has(game_id)) {
-      return false;
+      return;
     }
 
     let game = this.games.get(game_id);
@@ -426,7 +476,21 @@ export default {
       if (game.turn_num >= 0) {
         game.gameObj.calculateVictoryPoints(this.whosTurn(game_id) + 1);
       }
-      game.turn_num += 1;
+
+      if (game.skip_if_dc) {
+        let players_online = [];
+        for (player of game.order) {
+          players_online.push(socketState.online.has(player));
+        }
+        let original_turn_num = game.turn_num;
+        // cycle through all players at most twice until first online player found (need twice in case player goes offline during setup)
+        game.turn_num += 1;
+        while (!players_online[this.whosTurn(game_id)] && game.turn_num - original_turn_num <= game.order.length*2) {
+          game.turn_num += 1;
+        }
+      } else {
+        game.turn_num += 1;
+      }
 
       if (game.turn_num < game.order.length*2) {
         console.log("In build phase because next turn");
@@ -438,10 +502,10 @@ export default {
 
       let end_turn_time = new Date();
       end_turn_time.setSeconds(end_turn_time.getSeconds() + 180)
-
+      let curr_turn = game.turn_num;
       setTimeout(() => {
-        this.nextTurn(game_id, game.turn_num, callback);
-      }, 180000);
+        this.nextTurn(game_id, curr_turn, callback);
+      }, game.turn_timeout_length);
 
       game.end_turn_time = end_turn_time.toISOString();
       callback();
@@ -479,6 +543,10 @@ export default {
     let dc = game.gameObj.bank.developmentCards;
     let turnStartData = {
       game_id: game_id,
+      settings: {
+        turn_timeout_length: game.turn_timeout_length,
+        skip_offline_players: game.skip_if_dc
+      },
       turn: {
         type: "normal",
         player: this.whosTurn(game_id) + 1,
@@ -533,7 +601,6 @@ export default {
     if (!this.games.has(game_id)) {
       return false;
     }
-
     let game = this.games.get(game_id);
     if (game.turn_num < game.players.size*2) {
       // in init stage (fwd, then backward)

@@ -67,10 +67,43 @@
   <br>  <br>
   <b-button @click.prevent="endTurn()" size="md" variant="dark">end turn</b-button>
   <br>  <br>
+  <div class="">
+    <h3>Admin</h3>
+    <b-row>
+      <b-col sm="4">
+        <label>timeout (seconds)</label>
+      </b-col>
+      <b-col sm="2">
+        <b-form-input :type="`number`" v-model="timeout_s"></b-form-input>
+      </b-col>
+      <b-col sm="2">
+        <b-button @click.prevent="set_timeout_length()" size="md" variant="dark">set timeout</b-button>
+      </b-col>
+    </b-row>
+    <b-row>
+      <b-col sm="4">
+        <b-form-checkbox v-model="skip_offline" name="check-button" switch>
+          Skip offline players
+        </b-form-checkbox>
+      </b-col>
+    </b-row>
+    <b-row>
+      <b-col sm="2">
+        <label>Boot player #</label>
+      </b-col>
+      <b-col sm="2">
+        <b-form-input :type="`number`" v-model="toboot_alias"></b-form-input>
+      </b-col>
+      <b-col sm="2">
+        <b-button @click.prevent="boot_player()" size="md" variant="dark">boot</b-button>
+      </b-col>
+    </b-row>
+
+  </div>
 
   <br>  <br>
-  <h3>Cheat Menu (acquire cards) <b-button @click.prevent="cheat_cards()" size="md" variant="dark">Get Cards</b-button></h3>
   <div class="">
+    <h3>Cheat Menu (acquire cards) <b-button @click.prevent="cheat_cards()" size="md" variant="dark">Get Cards</b-button></h3>
     <b-row>
       <b-col sm="2">
         <label>sheep</label>
@@ -129,11 +162,34 @@ export default Vue.extend({
       cheat_wood: 5,
       cheat_ore: 5,
       cheat_brick: 5,
+      timeout_s: 10,
+      skip_offline: false,
+      toboot_alias: 2
     }
   },
   created() {
   },
+  watch: {
+    skip_offline() {
+      this.$root.socket.emit('game/admin/setSkipIfOffline', {
+        game_id: this.game_id,
+        skip: this.skip_offline
+      });
+    }
+  },
   methods: {
+    boot_player() {
+      this.$root.socket.emit('game/admin/boot', {
+        game_id: this.game_id,
+        bootee: Number(this.toboot_alias)
+      });
+    },
+    set_timeout_length() {
+      this.$root.socket.emit('game/admin/settimeout', {
+        game_id: this.game_id,
+        timeout: this.timeout_s
+      });
+    },
     moveRobber() {
       this.$root.socket.emit('game/moveRobber', {
         game_id: this.game_id,
