@@ -435,9 +435,9 @@ export default {
 
       let end_turn_time = new Date();
       end_turn_time.setSeconds(end_turn_time.getSeconds() + 180)
-
+      let curr_turn = game.turn_num;
       setTimeout(() => {
-        this.nextTurn(game_id, game.turn_num, callback);
+        this.nextTurn(game_id, curr_turn, callback);
       }, 180000);
 
       game.end_turn_time = end_turn_time.toISOString();
