@@ -8,6 +8,7 @@
                 <h3>Email: {{$auth.user.email}}</h3>
             </div>
         </div>
+        <b-button @click.prevent="$fetch">Click here to fetch</b-button>
         <hr>
         <b-card>
             <p>If you want us to delete all your information from our records,
@@ -27,7 +28,7 @@
     </b-container>    
 </template>
 
-<script lang="ts">
+<script>
 import Vue from 'vue'
 export default Vue.extend({
     name: "ProfileAccount",
@@ -35,6 +36,11 @@ export default Vue.extend({
         return {
             showOverlay: false,
         };
+    },
+    fetch() {
+        this.$axios.get('http://localhost:3001/api/profile/info').then((response) => {
+            console.log(response);
+        });
     },
     methods: {
         showDelete() {
