@@ -87,6 +87,18 @@
         </b-form-checkbox>
       </b-col>
     </b-row>
+    <b-row>
+      <b-col sm="2">
+        <label>Boot player #</label>
+      </b-col>
+      <b-col sm="2">
+        <b-form-input :type="`number`" v-model="toboot_alias"></b-form-input>
+      </b-col>
+      <b-col sm="2">
+        <b-button @click.prevent="boot_player()" size="md" variant="dark">boot</b-button>
+      </b-col>
+    </b-row>
+
   </div>
 
   <br>  <br>
@@ -151,7 +163,8 @@ export default Vue.extend({
       cheat_ore: 5,
       cheat_brick: 5,
       timeout_s: 10,
-      skip_offline: false
+      skip_offline: false,
+      toboot_alias: 2
     }
   },
   created() {
@@ -165,6 +178,12 @@ export default Vue.extend({
     }
   },
   methods: {
+    boot_player() {
+      this.$root.socket.emit('game/admin/boot', {
+        game_id: this.game_id,
+        bootee: Number(this.toboot_alias)
+      });
+    },
     set_timeout_length() {
       this.$root.socket.emit('game/admin/settimeout', {
         game_id: this.game_id,

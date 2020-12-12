@@ -90,10 +90,34 @@ export default {
     }
     return false;
   },
-  adminBootPlayer(user_id, game_id, playerIdToBoot) {
+  adminBootPlayer(user_id, game_id, bootee) {
     /*
-    * Remove a player from unstarted game, or set to skip their turn if game started
+    * Boot player from game (before or after start, but slightly different behaviour)
     */
+    if (!this.games.has(game_id)) {
+      return false;
+    }
+    let game = this.games.get(game_id);
+    if (game.game_owner === user_id && game.id.id_sub.has(bootee)) {
+
+      if (!game.started) {
+        let bootee_sub = game.id.id_sub.get(bootee);
+        game.players.delete(bootee_sub);
+        if (this.players.has(user_id)){
+          this.players.get(user_id).splice(this.players.get(user_id).indexOf(game.game_id), 1);
+        }
+        game.id.id_sub.delete(bootee);
+        game.id.sub_id.delete(bootee_sub);
+      } else {
+        // TODO: -- Need to verify many other things for this..
+        return false;
+      }
+
+      return true;
+    } else {
+      console.log("You are not owner of this game");
+    }
+    return false;
 
   },
   adminSetSkipDC(user_id, game_id, skip_disconnected_players: boolean) {

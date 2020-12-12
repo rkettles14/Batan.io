@@ -248,6 +248,19 @@ export default (io, socket) => {
     }
   });
 
+  socket.on('game/admin/boot', (data) => {
+    if (gameState.adminBootPlayer(socket.decoded_token.sub, data.game_id, data.bootee)) {
+      if (gameState.games.get(data.game_id).started) {
+        send_active_game(io, data.game_id);   // in case game is started already
+      } else {
+        send_created_game(io, data.game_id);  // in case game not started
+      }
+      socket.emit('game/admin/player_booted');
+    } else {
+      socket.emit('game/actionFailed', {description: "Booting player failed"});
+    }
+  })
+
   // TODO: Wrap in env flag -- only available in dev
   socket.on('game/cheat', (data) => {
     if (gameState.cheat_get_cards(socket.decoded_token.sub, data.game_id, data.cards)) {
