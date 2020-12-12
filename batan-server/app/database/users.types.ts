@@ -1,18 +1,39 @@
 import { Document, Model } from "mongoose";
 
+export interface IGame {
+    gameId: number;
+    date: Date;
+    gameName: string;
+    numPlayers: number;
+    playerWon: boolean;
+    playerSettlements: number;
+    playerCities: number;
+    playerRoads: number;
+    playerResourceCards: number;
+    playerVictoryPoints: number;
+    playerLargestArmy: boolean;
+    playerLongestRoad: boolean;
+};
+
 export interface IUser {
     sub: string;        // The auth unique token
     firstName: string;
     lastName: string;
     email: string;
     nickname: string;
-    //todo add
+    games: [IGame];
 };
 
 export interface IUserDocument extends IUser, Document {
-    sameLastName: (this: IUserDocument) => Promise<Document[]>;
+    setNickname: (this: IUserDocument, name: string) => Promise<void>;
+    removeAllUserData(this: IUserDocument): Promise<void>;
+    addGame(this: IUserDocument, game: IGame): Promise<void>;
 };
 
+/**
+ * This is the interface that you can call from the db object which is
+ *  returned from the connect() function in database/index.ts
+ */
 export interface IUserModel extends Model<IUserDocument> {
     findOneOrCreate: (
         this: IUserModel,

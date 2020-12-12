@@ -43,4 +43,5 @@ export const disconnect = () => {
     }
 
     Mongoose.disconnect();
+    console.log("Disconnected from database");
 }

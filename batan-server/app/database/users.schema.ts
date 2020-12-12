@@ -1,6 +1,7 @@
 import { Schema } from "mongoose";
 import { findByEmail, findOneOrCreate, findBySub } from "./users.statics"
-import { sameLastName } from "./users.methods"
+import { addGame, removeAllUserData, setNickname } from "./users.methods"
+import { IGame } from "./users.types"
 
 const UserSchema = new Schema({
     sub: String,
@@ -8,13 +9,15 @@ const UserSchema = new Schema({
     lastName: String,
     email: String,
     nickname: String,
-    //todo add completed games
+    games: Array,
 });
 
 UserSchema.statics.findOneOrCreate = findOneOrCreate;
 UserSchema.statics.findByEmail = findByEmail;
 UserSchema.statics.findBySub = findBySub;
 
-UserSchema.methods.sameLastName = sameLastName;
+UserSchema.methods.addGame = addGame;
+UserSchema.methods.setNickname = setNickname;
+UserSchema.methods.removeAllUserData = removeAllUserData;
 
 export default UserSchema;
