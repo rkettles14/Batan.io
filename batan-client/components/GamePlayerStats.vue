@@ -4,7 +4,7 @@
             <Bank></Bank>
         </div>
         <div>
-            <h1>player for loop here</h1>
+            <h1>Player stats here</h1>
         </div>
 
     </b-container>
