@@ -47,7 +47,10 @@ export default Vue.extend({
             this.$data.showOverlay = true;
         },
         deleteAccountInformation() {
-            //todo contact server and delete the user's stuff
+            this.$axios.post('http://localhost:3001/api/profile/delete-profile').then((response) => {
+                console.log(response);
+                //todo check the deletion status and log the user out if successful
+            })
         }
     }
 });

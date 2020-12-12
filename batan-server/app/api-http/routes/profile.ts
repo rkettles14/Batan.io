@@ -7,4 +7,9 @@ export default (app: Router) => {
     route.get('/info', function(req: Request, res: Response) {
         res.send({ msg: `testy mctester bigs you adieu`});
     });
+
+    route.post('/delete-profile', function(req: Request, res: Response) {
+        //todo delete the user's information
+        res.send({ status: `//todo confirmation status that everything is deleted`});
+    });
 }
