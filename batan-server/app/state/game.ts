@@ -19,6 +19,7 @@ export default {
       game_owner: user_id,
       started: false,
       turn_timeout_length: 180000,
+      skip_if_dc: false,
       turn_num: -1,
       turn_phase: "roll",
       dice: 0,
@@ -95,14 +96,22 @@ export default {
     */
 
   },
-  adminSetGameRules(user_id, game_id, rule, args) {
+  adminSetSkipDC(user_id, game_id, skip_disconnected_players: boolean) {
     /*
-    * If user_id is a game_id administrator, allow them to set a rule for game_id
-    *   - Set offline players mode to 'skip turn'
-    *   - Remove player from game
-    *   - Set resources for the game (future)
-    *   - etc.
+    * Set skip on disconnect
     */
+    if (!this.games.has(game_id)) {
+      return false;
+    }
+    let game = this.games.get(game_id);
+    if (game.game_owner === user_id) {
+      game.skip_if_dc = skip_disconnected_players;
+      return true;
+    } else {
+      console.log("You are not owner of this game");
+    }
+    return false;
+
   },
   adminStartGame(user_id, game_id) {
     /*
@@ -433,7 +442,7 @@ export default {
     * before their turn is ended
     */
     if (!this.games.has(game_id)) {
-      return false;
+      return;
     }
 
     let game = this.games.get(game_id);
@@ -441,7 +450,21 @@ export default {
       if (game.turn_num >= 0) {
         game.gameObj.calculateVictoryPoints(this.whosTurn(game_id) + 1);
       }
-      game.turn_num += 1;
+
+      if (game.skip_if_dc) {
+        let players_online = [];
+        for (player of game.order) {
+          players_online.push(socketState.online.has(player));
+        }
+        let original_turn_num = game.turn_num;
+        // cycle through all players at most twice until first online player found (need twice in case player goes offline during setup)
+        game.turn_num += 1;
+        while (!players_online[this.whosTurn(game_id)] && game.turn_num - original_turn_num <= game.order.length*2) {
+          game.turn_num += 1;
+        }
+      } else {
+        game.turn_num += 1;
+      }
 
       if (game.turn_num < game.order.length*2) {
         game.turn_phase = "build";
@@ -547,7 +570,6 @@ export default {
     if (!this.games.has(game_id)) {
       return false;
     }
-
     let game = this.games.get(game_id);
     if (game.turn_num < game.players.size*2) {
       // in init stage (fwd, then backward)

@@ -240,6 +240,13 @@ export default (io, socket) => {
     }
   });
 
+  socket.on('game/admin/setSkipIfOffline', (data) => {
+    if (gameState.adminSetSkipDC(socket.decoded_token.sub, data.game_id, data.skip)) {
+      socket.emit('game/admin/skip_offline_set');
+    } else {
+      socket.emit('game/actionFailed', {description: "Setting skip offline players failed"});
+    }
+  });
 
   // TODO: Wrap in env flag -- only available in dev
   socket.on('game/cheat', (data) => {

@@ -80,6 +80,13 @@
         <b-button @click.prevent="set_timeout_length()" size="md" variant="dark">set timeout</b-button>
       </b-col>
     </b-row>
+    <b-row>
+      <b-col sm="4">
+        <b-form-checkbox v-model="skip_offline" name="check-button" switch>
+          Skip offline players
+        </b-form-checkbox>
+      </b-col>
+    </b-row>
   </div>
 
   <br>  <br>
@@ -143,10 +150,19 @@ export default Vue.extend({
       cheat_wood: 5,
       cheat_ore: 5,
       cheat_brick: 5,
-      timeout_s: 10
+      timeout_s: 10,
+      skip_offline: false
     }
   },
   created() {
+  },
+  watch: {
+    skip_offline() {
+      this.$root.socket.emit('game/admin/setSkipIfOffline', {
+        game_id: this.game_id,
+        skip: this.skip_offline
+      });
+    }
   },
   methods: {
     set_timeout_length() {
