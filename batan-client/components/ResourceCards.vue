@@ -6,35 +6,35 @@
           <div v-on:click="addResource(brick)" class="resourceCard" id="brickCell" :style="{background: brick.color}">
               <div class="count">{{brick.count}}</div>
               <h3>Brick</h3>
-              <img src='@/static/brick.png'>
+              <img src='/brick.png'>
               </div>
         </b-col>
         <b-col>
           <div v-on:click="addResource(lumber)" class="resourceCard" id="lumberCell" :style="{background: lumber.color}">
               <div class="count">{{lumber.count}}</div>
               <h3>Lumber</h3>
-              <img src='@/static/tree.png'>
+              <img src='/tree.png'>
               </div>
         </b-col>
         <b-col>
           <div v-on:click="addResource(wool)" class="resourceCard" id="woolCell" :style="{background: wool.color}">
               <div class="count">{{wool.count}}</div>
               <h3>Wool</h3>
-              <img src='@/static/sheep.png'>
+              <img src='/sheep.png'>
               </div>
         </b-col>
         <b-col>
           <div v-on:click="addResource(grain)" class="resourceCard" id="grainCell" :style="{background: grain.color}">
               <div class="count">{{grain.count}}</div>
               <h3>Grain</h3>
-              <img src='@/static/wheat.png'>
+              <img src='/wheat.png'>
               </div>
         </b-col>
         <b-col>
           <div v-on:click="addResource(ore)" class="resourceCard" id="oreCell" :style="{background: ore.color}">
               <div class="count">{{ore.count}}</div>
               <h3>Ore</h3>
-              <img src='@/static/ore.png'>
+              <img src='/ore.png'>
               </div>
         </b-col>
       </b-row>
