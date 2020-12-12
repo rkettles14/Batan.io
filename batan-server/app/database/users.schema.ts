@@ -1,8 +1,9 @@
 import { Schema } from "mongoose";
-import { findOneOrCreate } from "./users.statics"
+import { findByEmail, findOneOrCreate, findBySub } from "./users.statics"
 import { sameLastName } from "./users.methods"
 
 const UserSchema = new Schema({
+    sub: String,
     firstName: String,
     lastName: String,
     email: String,
@@ -11,6 +12,8 @@ const UserSchema = new Schema({
 });
 
 UserSchema.statics.findOneOrCreate = findOneOrCreate;
+UserSchema.statics.findByEmail = findByEmail;
+UserSchema.statics.findBySub = findBySub;
 
 UserSchema.methods.sameLastName = sameLastName;
 

@@ -1,5 +1,7 @@
 import Mongoose = require("mongoose");
 import config from "../config";
+import { UserModel } from "./users.model"
+import { GameModel } from "./games.model"
 
 let database: Mongoose.Connection;
 
@@ -28,6 +30,11 @@ export const connect = () => {
     database.on("error", () => {
         console.log("Error connecting to database");
     });
+
+    return {
+        UserModel,
+        GameModel,
+    };
 }
 
 export const disconnect = () => {
