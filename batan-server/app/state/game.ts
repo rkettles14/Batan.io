@@ -540,6 +540,10 @@ export default {
     let dc = game.gameObj.bank.developmentCards;
     let turnStartData = {
       game_id: game_id,
+      settings: {
+        turn_timeout_length: game.turn_timeout_length,
+        skip_offline_players: game.skip_if_dc
+      },
       turn: {
         type: "normal",
         player: this.whosTurn(game_id) + 1,
