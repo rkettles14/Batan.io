@@ -914,7 +914,7 @@ export default class Game {
 
     this.players[playerIndex].victoryPoints = vp;
     if (vp >= 10) {
-      this.winner === player; //game ends. congrats.
+      this.winner = player; //game ends. congrats.
     }
   }
 
