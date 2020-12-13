@@ -10,10 +10,47 @@ import { UserModel } from '../database/users.model';
 
 let nextGameID = 0;  // TODO: Needs to come from db so new server start doesn't reset old games
 
+interface SocketPlayer {
+  color: number
+}
+
+interface SocketGame {
+  game_id: number,
+  game_name: string,
+  game_owner: string,
+  started: boolean,
+  turn_timeout_length: number,
+  skip_if_dc: boolean,
+  turn_num: number,
+  turn_phase: string,
+  dice: number,
+  end_turn_time: null | string,
+  order: string[],
+  id: {
+    id_sub: Map<number, string>,
+    sub_id: Map<string, number>,
+    id_ctr: number
+  },
+  players: Map<string, SocketPlayer>, //sub token
+  gameObj: Game
+}
+
+interface Road {
+  start: number;
+  end: number;
+}
+
+interface Extra {
+  destinationHexId?: number,
+  monopolyResource?: resourceType,
+  targetVertices?: number[],
+  yearOfPlentyResources?: resourceType[]
+}
+
 export default {
-  players: new Map(),
-  games: new Map(),
-  newGame(user_id, game_name) {
+  players: new Map<string, number[]>(),
+  games: new Map<number, SocketGame>(),
+  newGame(user_id: string, game_name: string) {
     /*
     * Creates a new game owned by user_id
     */
@@ -38,33 +75,41 @@ export default {
       gameObj: new Game
     });
 
-    this.games.get(nextGameID).players.set(user_id, {
+    this.games.get(nextGameID)?.players.set(user_id, {
       color: 0
     });
 
     if (this.players.has(user_id)){
-      this.players.get(user_id).push(nextGameID);
+      this.players.get(user_id)?.push(nextGameID);
     } else {
       this.players.set(user_id, [nextGameID]);
     }
     let game = this.games.get(nextGameID);
+    if(game === undefined){
+      console.error("Game is undefined");
+      return;
+    }
+
     game.id.id_sub.set(++game.id.id_ctr, user_id);
     game.id.sub_id.set(user_id, game.id.id_ctr);
 
     return this.games.get(nextGameID++);
   },
-  joinGame(user_id, game_id) {
+
+  joinGame(user_id: string, game_id: number) {
     /*
     * Adds user_id to game game_id if a spot is available & game has not started
     */
     if (this.games.has(game_id)) {
       let game = this.games.get(game_id);
+      if(game === undefined) return;
+
       if (!game.started && game.players.size < 4 && !game.players.has(user_id)) {
         game.players.set(user_id, {
           color: game.players.size
         });
         if (this.players.has(user_id)){
-          this.players.get(user_id).push(game.game_id);
+          this.players.get(user_id)?.push(game.game_id);
         } else {
           this.players.set(user_id, [game.game_id]);
         }
@@ -78,7 +123,8 @@ export default {
       return false; // game does not exist
     }
   },
-  adminSetTimeout(user_id, game_id, timeout_s) {
+
+  adminSetTimeout(user_id: string, game_id: number, timeout_s: number) {
     /*
     * Set timeout to timeout_s (seconds)
     */
@@ -86,6 +132,8 @@ export default {
       return false;
     }
     let game = this.games.get(game_id);
+    if(game === undefined) return false;
+
     if (game.game_owner === user_id) {
       game.turn_timeout_length = timeout_s * 1000;
       return true;
@@ -94,7 +142,8 @@ export default {
     }
     return false;
   },
-  adminBootPlayer(user_id, game_id, bootee) {
+
+  adminBootPlayer(user_id: string, game_id: number, bootee: number) {
     /*
     * Boot player from game (before or after start, but slightly different behaviour)
     */
@@ -102,13 +151,20 @@ export default {
       return false;
     }
     let game = this.games.get(game_id);
+    if(game === undefined) return false;
+
     if (game.game_owner === user_id && game.id.id_sub.has(bootee)) {
 
       if (!game.started) {
         let bootee_sub = game.id.id_sub.get(bootee);
+        if(bootee_sub === undefined) return false;
+
         game.players.delete(bootee_sub);
         if (this.players.has(user_id)){
-          this.players.get(user_id).splice(this.players.get(user_id).indexOf(game.game_id), 1);
+          let tmp = this.players.get(user_id)?.indexOf(game.game_id);
+          if(tmp === undefined) return false;
+
+          this.players.get(user_id)?.splice(tmp, 1);
         }
         game.id.id_sub.delete(bootee);
         game.id.sub_id.delete(bootee_sub);
@@ -124,7 +180,8 @@ export default {
     return false;
 
   },
-  adminSetSkipDC(user_id, game_id, skip_disconnected_players: boolean) {
+
+  adminSetSkipDC(user_id: string, game_id: number, skip_disconnected_players: boolean) {
     /*
     * Set skip on disconnect
     */
@@ -132,6 +189,8 @@ export default {
       return false;
     }
     let game = this.games.get(game_id);
+    if(game === undefined) return false;
+
     if (game.game_owner === user_id) {
       game.skip_if_dc = skip_disconnected_players;
       return true;
@@ -141,16 +200,20 @@ export default {
     return false;
 
   },
-  adminStartGame(user_id, game_id) {
+
+  adminStartGame(user_id: string, game_id: number) {
     /*
     * Set started to true; shuffle players & begin initial placement before turns
     */
     if (this.games.has(game_id)) {
       let game = this.games.get(game_id);
+      if(game === undefined) return;
+
       if (game.game_owner === user_id && !game.started && game.players.size <= 4 && game.players.size >= 1 ) {
 
         // shuffle function lifted from: https://javascript.info/task/shuffle
-        function shuffle(array) {
+        // @ts-ignore
+        function shuffle(array: any) {
           for (let i = array.length - 1; i > 0; i--) {
             let j = Math.floor(Math.random() * (i + 1));
             [array[i], array[j]] = [array[j], array[i]];
@@ -170,13 +233,15 @@ export default {
       return false;
     }
   },
-  chColor(user_id, game_id, color) {
+
+  chColor(user_id: string, game_id: number, color: string) {
     /* (non-critical)
     *  If game_id has not started, set user_id to color if available
     */
 
   },
-  playInitPlacement(user_id, game_id, settlement, road) {
+
+  playInitPlacement(user_id: string, game_id: number, settlement: number, road: Road) {
     /*
     * Player to place settlement & road (for game setup)
     */
@@ -184,12 +249,15 @@ export default {
       return false;
     }
     let game = this.games.get(game_id);
-    if (game.order[this.whosTurn(game_id)] === user_id) {
+    if(game === undefined) return false;
+
+    let whos_turn = this.whosTurn(game_id) as number;
+    if (game.order[whos_turn] === user_id) {
       if (game.turn_phase === "build") {
-        let player_num = this.whosTurn(game_id);
+        let player_num = this.whosTurn(game_id) as number;
         if (game.turn_num < game.order.length) {
           // First round of placement -- player should have 1 settlement + 1 road max
-          if (game.gameObj.players[this.whosTurn(game_id)].settlementsPlayed < 1 && game.gameObj.players[this.whosTurn(game_id)].roadsPlayed < 1) {
+          if (game.gameObj.players[whos_turn].settlementsPlayed < 1 && game.gameObj.players[whos_turn].roadsPlayed < 1) {
             if (settlement == road.start || settlement == road.end) {
               // TODO: Still uncaught edge cases, but very unlikely through boardgame interface
               if (game.gameObj.addSettlementInSetup(settlement, player_num + 1)) {
@@ -204,7 +272,7 @@ export default {
           }
         } else if (game.turn_num < game.order.length*2) {
           // 2nd round of placement -- player should have 2 settlement + 2 road max
-          if (game.gameObj.players[this.whosTurn(game_id)].settlementsPlayed < 2 && game.gameObj.players[this.whosTurn(game_id)].roadsPlayed < 2) {
+          if (game.gameObj.players[whos_turn].settlementsPlayed < 2 && game.gameObj.players[whos_turn].roadsPlayed < 2) {
             if (settlement == road.start || settlement == road.end) {
               // TODO: Still uncaught edge cases, but very unlikely through boardgame interface
               if (game.gameObj.addSettlementInSetup(settlement, player_num + 1)) {
@@ -226,7 +294,8 @@ export default {
     }
     return false;
   },
-  playRollDice(user_id, game_id) {
+
+  playRollDice(user_id: string, game_id: number) {
     /*
     * Player to roll dice if it is start of their turn
     */
@@ -234,7 +303,10 @@ export default {
       return false;
     }
     let game = this.games.get(game_id);
-    if (game.order[this.whosTurn(game_id)] === user_id) {
+    if(game === undefined) return false;
+
+    const whos_turn = this.whosTurn(game_id) as number;
+    if (game.order[whos_turn] === user_id) {
       if (game.turn_phase === "roll") {
         game.dice = game.gameObj.beginTurn();
         if (game.dice == 7) {
@@ -247,11 +319,12 @@ export default {
         console.log("Not in roll phase, actually in phase " + game.turn_phase);
       }
     } else {
-      console.log("Not your turn, it is player " + game.order[this.whosTurn(game_id)] + " turn and you are " + user_id);
+      console.log("Not your turn, it is player " + game.order[whos_turn] + " turn and you are " + user_id);
     }
     return false;
   },
-  playPurchaseRoad(user_id, game_id, start, end) {
+
+  playPurchaseRoad(user_id: string, game_id: number, start: number, end: number) {
     /*
     * Player to purchase a road at location if possible (determined by engine)
     */
@@ -259,9 +332,12 @@ export default {
       return false;
     }
     let game = this.games.get(game_id);
-    if (game.order[this.whosTurn(game_id)] === user_id) {
+    if(game === undefined) return false;
+
+    const whos_turn = this.whosTurn(game_id) as number;
+    if (game.order[whos_turn] === user_id) {
       if (game.turn_phase === "build") {
-        let ret = game.gameObj.purchaseRoad(start, end, this.whosTurn(game_id) + 1);
+        let ret = game.gameObj.purchaseRoad(start, end, whos_turn + 1);
         if (ret.success) {
           this.calcVic(game_id);
           return true;
@@ -277,7 +353,8 @@ export default {
     }
     return false;
   },
-  playPurchaseSettlement(user_id, game_id, location) {
+
+  playPurchaseSettlement(user_id: string, game_id: number, location: number) {
     /*
     * Player to purchase a settlement at location if possible (determined by engine)
     */
@@ -286,9 +363,12 @@ export default {
     }
 
     let game = this.games.get(game_id);
-    if (game.order[this.whosTurn(game_id)] === user_id) {
+    if(game === undefined) return false;
+
+    const whos_turn = this.whosTurn(game_id) as number;
+    if (game.order[whos_turn] === user_id) {
       if (game.turn_phase === "build") {
-        let ret = game.gameObj.purchaseSettlement(location, this.whosTurn(game_id) + 1);
+        let ret = game.gameObj.purchaseSettlement(location, whos_turn + 1);
         if (ret.success) {
           this.calcVic(game_id);
           return true;
@@ -304,7 +384,8 @@ export default {
     }
     return false;
   },
-  playPurchaseCity(user_id, game_id, location) {
+
+  playPurchaseCity(user_id: string, game_id: number, location: number) {
     /*
     * Player to purchase a city at location if possible (determined by engine)
     */
@@ -313,9 +394,12 @@ export default {
     }
 
     let game = this.games.get(game_id);
-    if (game.order[this.whosTurn(game_id)] === user_id) {
+    if(game === undefined) return false;
+
+    const whos_turn = this.whosTurn(game_id) as number;
+    if (game.order[whos_turn] === user_id) {
       if (game.turn_phase === "build") {
-        let ret = game.gameObj.purchaseCity(location, this.whosTurn(game_id) + 1);
+        let ret = game.gameObj.purchaseCity(location, whos_turn + 1);
         if (ret.success) {
           this.calcVic(game_id);
           return true;
@@ -331,7 +415,8 @@ export default {
     }
     return false;
   },
-  playPurchaseDevCard(user_id, game_id) {
+
+  playPurchaseDevCard(user_id: string, game_id: number) {
     /*
     * Player to purchase dev card if possible (determined by engine)
     */
@@ -339,9 +424,12 @@ export default {
       return false;
     }
     let game = this.games.get(game_id);
-    if (game.order[this.whosTurn(game_id)] === user_id) {
+    if(game === undefined) return false;
+
+    const whos_turn = this.whosTurn(game_id) as number;
+    if (game.order[whos_turn] === user_id) {
       if (game.turn_phase === "build") {
-        let ret = game.gameObj.purchaseDevelopmentCard(this.whosTurn(game_id) + 1);
+        let ret = game.gameObj.purchaseDevelopmentCard(whos_turn + 1);
         if (ret.success) {
             this.calcVic(game_id);
             return true;
@@ -357,7 +445,7 @@ export default {
     }
     return false;
   },
-  playDevCard(user_id, game_id, devcard: developmentType, extra) {
+  playDevCard(user_id: string, game_id: number, devcard: developmentType, extra: Extra) {
     /*
     * Player to play devcard if possible (determined by engine)
     * extra is an object containing more info depending on devcard type.
@@ -375,24 +463,28 @@ export default {
     }
 
     let game = this.games.get(game_id);
-    if (game.order[this.whosTurn(game_id)] === user_id) {
+    if(game === undefined) return false;
+
+    const whos_turn = this.whosTurn(game_id) as number;
+
+    if (game.order[whos_turn] === user_id) {
       if (game.turn_phase === "build") {
-        // game.gameObj.playDevelopmentCard(this.whosTurn(game_id) + 1, devCard,
+        // game.gameObj.playDevelopmentCard(whos_turn + 1, devCard,
         //       destinationHexId?: number, monopolyResource?: resourceType,
         //       targetVertices?: number[], yearOfPlentyResources?: resourceType[] );
         let ret = game.gameObj.playDevelopmentCard(
-          this.whosTurn(game_id) + 1,
+          whos_turn + 1,
           devcard,
           extra.destinationHexId,
           extra.monopolyResource,
           extra.targetVertices,
           extra.yearOfPlentyResources
         );
-        if (ret.success) {
+        if (ret?.success) {
             this.calcVic(game_id);
             return true;
         } else {
-          console.log(ret.reason);
+          console.log(ret?.reason);
           return false;
         }
       } else {
@@ -402,19 +494,24 @@ export default {
       console.log("Not your turn");
     }
   },
-  playTradeWithBank(user_id, game_id, to_bank: resourceType, from_bank: resourceType) {
+
+  playTradeWithBank(user_id: string, game_id: number, to_bank: resourceType, from_bank: resourceType) {
     if (!this.games.has(game_id)) {
       return false;
     }
 
     let game = this.games.get(game_id);
-    if (game.order[this.whosTurn(game_id)] === user_id) {
+    if(game === undefined) return false;
+
+    const whos_turn = this.whosTurn(game_id) as number;
+
+    if (game.order[whos_turn] === user_id) {
       if (game.turn_phase === "build") {
-        let ret = game.gameObj.tradeWithBank(this.whosTurn(game_id) + 1, to_bank, from_bank);
-        if (ret.success) {
+        let ret = game.gameObj.tradeWithBank(whos_turn + 1, to_bank, from_bank);
+        if (ret?.success) {
             return true;
         } else {
-          console.log(ret.reason);
+          console.log(ret?.reason);
           return false;
         }
       } else {
@@ -425,7 +522,8 @@ export default {
     }
     return false;
   },
-  playMoveRobber(user_id, game_id, location) {
+
+  playMoveRobber(user_id: string, game_id: number, location: number) {
     /*
     * Player to move robber & steal a card
     */
@@ -434,9 +532,13 @@ export default {
     }
 
     let game = this.games.get(game_id);
-    if (game.order[this.whosTurn(game_id)] === user_id) {
+    if(game === undefined) return false;
+
+    const whos_turn = this.whosTurn(game_id) as number;
+
+    if (game.order[whos_turn] === user_id) {
       if (game.turn_phase === "robber") {
-        let ret = game.gameObj.moveRobberAndSteal(this.whosTurn(game_id) + 1, location);
+        let ret = game.gameObj.moveRobberAndSteal(whos_turn + 1, location);
         if (ret.success) {
           game.turn_phase = "build";
           return true;
@@ -452,7 +554,8 @@ export default {
     }
     return false;
   },
-  playEndTurn(user_id, game_id, callback) {
+
+  playEndTurn(user_id: string, game_id: number, callback: any) {
     /*
     * Player ends their turn (if it is their turn && they are in build phase)
     */
@@ -461,7 +564,10 @@ export default {
     }
 
     let game = this.games.get(game_id);
-    if (game.order[this.whosTurn(game_id)] === user_id) {
+    if(game === undefined) return false;
+
+    const whos_turn = this.whosTurn(game_id) as number;
+    if (game.order[whos_turn] === user_id) {
       if (game.turn_phase === "build") {
         this.nextTurn(game_id, game.turn_num, callback);
         return true;
@@ -473,7 +579,8 @@ export default {
     }
     return false;
   },
-  nextTurn(game_id, expected_turn, callback) {
+
+  nextTurn(game_id: number, expected_turn: number, callback: any) {
     /*
     * Sets current turn to next player if turn is expected_turn
     * This allows for turn timeouts to only incremement the turn if they trigger
@@ -484,6 +591,8 @@ export default {
     }
 
     let game = this.games.get(game_id);
+    if(game === undefined) return false;
+
     if (game.turn_num === expected_turn) {
       if (game.turn_num >= 0) {
         this.calcVic(game_id);
@@ -494,13 +603,15 @@ export default {
 
       if (game.skip_if_dc) {
         let players_online = [];
-        for (player of game.order) {
-          players_online.push(socketState.online.has(player));
+        for (let p of game.order) {
+          players_online.push(socketState.online.has(p));
         }
         let original_turn_num = game.turn_num;
         // cycle through all players at most twice until first online player found (need twice in case player goes offline during setup)
         game.turn_num += 1;
-        while (!players_online[this.whosTurn(game_id)] && game.turn_num - original_turn_num <= game.order.length*2) {
+
+        const whos_turn = this.whosTurn(game_id) as number;
+        while (!players_online[whos_turn] && game.turn_num - original_turn_num <= game.order.length*2) {
           game.turn_num += 1;
         }
       } else {
@@ -526,21 +637,26 @@ export default {
       callback();
     }
   },
-  calcVic(game_id){
+
+  calcVic(game_id: number){
     if (!this.games.has(game_id)) {
       return;
     }
     let game = this.games.get(game_id);
+    if(game === undefined) return false;
+
     for (let i = 1; i <= game.players.size; i++) {
       game.gameObj.calculateVictoryPoints(i);
     }
   },
-  get_full_game_info(game_id){
+
+  get_full_game_info(game_id: number){
     if (!this.games.has(game_id)) {
       return false;
     }
 
     let game = this.games.get(game_id);
+    if(game === undefined) return false;
 
     let scores = []
     for (let player_num in game.order) {
@@ -565,6 +681,7 @@ export default {
     }
 
     let dc = game.gameObj.bank.developmentCards;
+    const whos_turn = this.whosTurn(game_id) as number;
     let turnStartData = {
       game_id: game_id,
       winner: game.gameObj.winner,
@@ -574,7 +691,7 @@ export default {
       },
       turn: {
         type: "normal",
-        player: this.whosTurn(game_id) + 1,
+        player: whos_turn + 1,
         over_at: game.end_turn_time,
         phase: game.turn_phase,
         dice: game.dice
@@ -592,12 +709,15 @@ export default {
     }
     return turnStartData;
   },
-  get_player_info(game_id, player_num) {
+
+  get_player_info(game_id: number, player_num: number) {
     if (!this.games.has(game_id)) {
       return false;
     }
 
     let game = this.games.get(game_id);
+    if(game === undefined) return false;
+
     let player = game.gameObj.players[player_num];
     return {
       ...player,
@@ -608,25 +728,32 @@ export default {
       sequence_num: player_num + 1
     }
   },
-  get_status(game_id) {
+
+  get_status(game_id: number) {
     return "active" // TODO: return something useful..
   },
-  get_owner_sequence_num(game_id) {
+  get_owner_sequence_num(game_id: number) {
     if (!this.games.has(game_id)) {
       return false;
     }
 
     let game = this.games.get(game_id);
+    if(game === undefined) return false;
+
     return game.order.indexOf(game.game_owner) + 1;
   },
-  whosTurn(game_id) {
+
+  whosTurn(game_id: number) {
     /*
     * Returns the uid of the player who's turn it is currently in game_id
     */
     if (!this.games.has(game_id)) {
       return false;
     }
+
     let game = this.games.get(game_id);
+    if(game === undefined) return false;
+
     if (game.turn_num < game.players.size*2) {
       // in init stage (fwd, then backward)
       let player_num = game.turn_num % game.players.size;
@@ -639,6 +766,7 @@ export default {
       return game.turn_num % game.players.size;
     }
   },
+
   endGame(game_id: number){
     /*
     * Save results to database,
@@ -650,22 +778,24 @@ export default {
    }
 
     const game = this.games.get(game_id);
-    game.players.forEach((sub: string, player: any, map: any) => {
-      let stats: Player = game.gameObj.players[player.color];
+    if(game === undefined) return false;
+
+    game.players.forEach((player: SocketPlayer, sub: string, map: any) => {
+      let stats = game.gameObj.players[player.color] as any;
 
       const db_stats: IGame = {
         gameId: game_id,
         date: Date.now(),
         gameName: game.game_name,
-        numPlayers: game.players.length,
+        numPlayers: game.players.size,
         playerWon: game.gameObj.winner == player.color,
         playerSettlements: stats.settlementsPlayed,
         playerCities: stats.citiesPlayed,
         playerRoads: stats.roadsPlayed,
         playerResourceCards: stats.getTotalResources(),
         playerVictoryPoints: stats.vpDevCardsPlayed,
-        playerLargestArmy: game.largestArmyOwner == player.color,
-        playerLongestRoad: game.longestRoadOwner == player.color,
+        playerLargestArmy: game.gameObj.largestArmyOwner == player.color,
+        playerLongestRoad: game.gameObj.longestRoadOwner == player.color,
       };
 
       connectAndDo(async (db: any) => {
@@ -685,7 +815,7 @@ export default {
    });
   },
 
-  cleanUp(game_id) {
+  cleanUp(game_id: number) {
     /*
     * rm from player's active games list
     * rm from global available games list
@@ -694,17 +824,22 @@ export default {
       return false;
     }
     let game = this.games.get(game_id);
-    Array.from(game.players.keys()).forEach((sub) => {
-      this.players.get(sub).splice(this.players.get(sub).indexOf(game_id), 1);
+    if(game === undefined) return false;
+
+    Array.from(game.players.keys()).forEach((sub: any) => {
+      this.players.get(sub)?.splice(this.players.get(sub)?.indexOf(game_id) as number, 1);
     })
     this.games.delete(game_id);
   },
-  cheat_get_cards(user_id, game_id, cards) {
+
+  cheat_get_cards(user_id: string, game_id: number, cards: any) {
     if (!this.games.has(game_id)) {
       return false;
     }
 
     let game = this.games.get(game_id);
+    if(game === undefined) return false;
+
     let cheater = game.order.indexOf(user_id);
     game.gameObj.players[cheater].resources.sheep += cards.sheep;
     game.gameObj.players[cheater].resources.wheat += cards.wheat;
