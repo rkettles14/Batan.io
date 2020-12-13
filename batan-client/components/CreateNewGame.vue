@@ -6,6 +6,7 @@
                 <label>Game Name:</label>
                 <b-form-input
                     v-model="name"
+                    class = "new-game"
                     type="text"
                     placeholder="Enter Game Name Here"
                     autocomplete="off"
@@ -15,7 +16,7 @@
             <div class="form-element">
                     <b-button
                         type="submit"
-                        variant="success"
+                        class="success"
                     >
                     <b-overlay :show=showOverlay variant="success">
                         Create Game
@@ -42,7 +43,7 @@
                         <h3 class="center">Players {{game.num_players}}/5</h3>
                         <!--todo hide this button if the game has been started-->
                         <b-button
-                            variant="success"
+                            class="success"
                             @click.prevent="start(game)"
                         >
                         Start Game 
@@ -50,7 +51,7 @@
                         <!--todo show this button when the game has been started-->
                         <b-button
                             v-show="false"
-                            variant="success"
+                            class="success"
                             @click.prevent="goto(game)"
                         >
                         goto Game
@@ -106,6 +107,19 @@ export default Vue.extend({
 </script>
 
 <style scoped>
+
+h2 {
+    color: white;
+}
+
+h3 {
+    color: white;
+}
+
+label {
+    color: white;
+}
+
 .form-element {
     margin: 2%;
 }
@@ -115,11 +129,12 @@ export default Vue.extend({
 }
 
 .card-li {
-    border: black 1px solid;
+    border: gray 1px solid;
     border-radius: 5px;
     margin: 5px;
     padding: 1.5rem;
     display: flex;
+    background-color: black;
 }
 
 .left {
@@ -135,5 +150,15 @@ export default Vue.extend({
     display: flex;
     flex-direction: row;
     justify-content: left;
+}
+
+.new-game {
+    background-color: black;
+    color: white;
+}
+
+.success {
+    background-color: #00ffea;
+    color: black;
 }
 </style>

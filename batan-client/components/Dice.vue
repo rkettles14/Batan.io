@@ -92,7 +92,7 @@ export default Vue.extend({
     },
     resetDisplay(): void {
       var c = document.getElementById('dicecanvas') as HTMLCanvasElement
-      this.diceCanvas.fillStyle = 'white'
+      this.diceCanvas.fillStyle = 'black'
       this.diceCanvas.fillRect(0, 0, c.width, c.height)
     },
     displayDice(dice: Dice): void {
@@ -402,7 +402,8 @@ export default Vue.extend({
 <style>
 #dicecanvas {
   border-style: solid;
-  border-color: black;
+  border-color: gray;
+  border-radius: 4px;
 }
 
 h1 {
