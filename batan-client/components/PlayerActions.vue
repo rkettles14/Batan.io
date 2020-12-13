@@ -15,7 +15,7 @@
           </div>
         </b-col>
         <b-col>
-          <div v-on:click="endTurn" class="end">
+          <div v-on:click="endTurn()" class="end">
             <h3>End Turn</h3>
             <img src="@/static/End.png" class="actionIcon">
           </div>

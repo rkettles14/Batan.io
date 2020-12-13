@@ -4,31 +4,31 @@
       <b-row>
         <b-col>
           <div v-on:click="addResource(brick)" class="resourceCard" id="brickCell" :style="{background: brick.color}">
-              <div class="count">{{brick.count}}</div>
+              <div class="count">{{this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].player_info.resources.brick}}</div>
               <h3>Brick</h3>
               </div>
         </b-col>
         <b-col>
           <div v-on:click="addResource(lumber)" class="resourceCard" id="lumberCell" :style="{background: lumber.color}">
-              <div class="count">{{lumber.count}}</div>
+              <div class="count">{{this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].player_info.resources.wood}}</div>
               <h3>Lumber</h3>
               </div>
         </b-col>
         <b-col>
           <div v-on:click="addResource(wool)" class="resourceCard" id="woolCell" :style="{background: wool.color}">
-              <div class="count">{{wool.count}}</div>
+              <div class="count">{{this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].player_info.resources.sheep}}</div>
               <h3>Wool</h3>
               </div>
         </b-col>
         <b-col>
           <div v-on:click="addResource(grain)" class="resourceCard" id="grainCell" :style="{background: grain.color}">
-              <div class="count">{{grain.count}}</div>
+              <div class="count">{{this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].player_info.resources.wheat}}</div>
               <h3>Grain</h3>
               </div>
         </b-col>
         <b-col>
           <div v-on:click="addResource(ore)" class="resourceCard" id="oreCell" :style="{background: ore.color}">
-              <div class="count">{{ore.count}}</div>
+              <div class="count">{{this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].player_info.resources.ore}}</div>
               <h3>Ore</h3>
               </div>
         </b-col>
@@ -65,11 +65,6 @@ export default Vue.extend({
     }
   },
   mounted() {
-  },
-  methods: {
-      addResource(resource: Card): void{
-          resource.count += 1;
-      }
   },
 })
 </script>
