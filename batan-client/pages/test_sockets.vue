@@ -140,6 +140,34 @@
     </b-row>
   </div>
 
+  <br> <br>
+  <div class="">
+    <h3>Adding fake games</h3>
+    <b-row>
+      <b-col>
+        <label>gameId</label>
+        <b-form-input :type="`number`" v-model="fake_game.gameId"></b-form-input>
+      </b-col>
+
+      <b-col>
+        <label>gameName</label>
+        <b-form-input :type="`string`" v-model="fake_game.gameName"></b-form-input>
+      </b-col>
+
+      <b-col>
+        <label>numPlayers</label>
+        <b-form-input :type="`number`" v-model="fake_game.numPlayers"></b-form-input>
+      </b-col>
+
+      <b-col>
+        <label>playerWon</label>
+        <b-form-input :type="`boolean`" v-model="fake_game.playerWon"></b-form-input>
+      </b-col>
+    </b-row>
+
+    <b-button @click.prevent="addUserGame" variant="success">Send that bad boi</b-button>
+  </div>
+
 </div>
 </template>
 
@@ -164,7 +192,21 @@ export default Vue.extend({
       cheat_brick: 5,
       timeout_s: 10,
       skip_offline: false,
-      toboot_alias: 2
+      toboot_alias: 2,
+      fake_game : {
+        gameId: 0,
+        date: 0,
+        gameName: "",
+        numPlayers: 0,
+        playerWon: false,
+        playerSettlements: 0,
+        playerCities: 0,
+        playerRoads: 0,
+        playerResourceCards: 0,
+        playerVictoryPoints: 0,
+        playerLargestArmy: false,
+        playerLongestRoad: false,
+      },
     }
   },
   created() {
@@ -267,6 +309,24 @@ export default Vue.extend({
     },
     startGame() {
       this.$root.socket.emit('game/startGame', {game_id: this.game_id});
+    },
+    addUserGame() {
+      console.log("here");
+      this.$root.socket.emit('test/addGame', {sub: this.$auth.user.sub, game: this.$data.fake_game});
+      this.$data.fake_game = {
+        gameId: 0,
+        date: 0,
+        gameName: "",
+        numPlayers: 0,
+        playerWon: false,
+        playerSettlements: 0,
+        playerCities: 0,
+        playerRoads: 0,
+        playerResourceCards: 0,
+        playerVictoryPoints: 0,
+        playerLargestArmy: false,
+        playerLongestRoad: false,
+      };
     }
   }
 })

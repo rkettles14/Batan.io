@@ -25,3 +25,10 @@ export async function findBySub(
 ) : Promise<IUserDocument | null> {
     return this.findOne({sub: sub});
 }
+
+export async function deleteUser(
+    this: IUserModel,
+    sub: string,
+) : Promise<IUserDocument | null> {
+    return this.findOneAndDelete({sub: sub});
+}

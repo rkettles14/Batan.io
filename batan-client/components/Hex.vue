@@ -1,5 +1,5 @@
 <template>
-        <li class = 'hex' v-bind:class='[{"atmosphere": isAtmosphere}, {"spacer": isSpacer}]' v-on:click='placeRobber'>
+        <li class = 'hex' :title='resourceValue' v-bind:class='[{"atmosphere": isAtmosphere}, {"spacer": isSpacer}]' v-on:click='placeRobber'>
           <div v-if="isTradingPost">
               <Spaceship :orientation='tradingPostOrientation' :trading-post='tradingPost'></Spaceship>
           </div>
@@ -69,6 +69,11 @@ export default Vue.extend({
         }
   },
   computed: {
+    resourceValue: function() {
+      if(this.hexObject == undefined || this.hexObject.value == null) return 'atmosphere';
+      return this.hexObject.value;
+
+    },
     isRobberPhase: function() {
         var phase = this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].game_info.turn.phase;
         return phase == 'robber';
@@ -237,7 +242,10 @@ export default Vue.extend({
       console.log("clicked hex");
       if(turn.phase == "robber" && turn.type == "normal") {
         console.log('robber placement attempt');
-        this.$root.socket.emit("hex/placeRobber", this.hexId);
+        this.$root.socket.emit("game/moveRobber", {
+          game_id: this.$store.state.games.active_game.game_id,
+          location: this.hexId
+        });
       }
     }
       
@@ -257,7 +265,7 @@ export default Vue.extend({
     display: inline-block;
     transition: all 150ms ease-in-out;
     top: 0; bottom: 0; right: 0; left: 0;
-    pointer-events: all;
+    pointer-events: initial;
     z-index: 0;
 }
 .hex:before, .hex:after {

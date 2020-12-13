@@ -1,10 +1,9 @@
-import { connect, disconnect } from "../app/database"
+import { connectAndDo } from "../app/database"
 
 (async () => {
-    const db = connect();
-    db?.UserModel.deleteMany({}, (err: any){
-        console.log(err);
+    connectAndDo(async (db: any) =>{
+        db?.UserModel.deleteMany({}, (err: any) => {
+            console.log(err);
+        });
     });
-
-    disconnect();
 })();

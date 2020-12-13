@@ -1,6 +1,9 @@
 <template>
+<div>
         <div class='resource-value' :class='[assignResourceValue, {"robberPhase": robberPhase}]'>
-        </div>  
+        </div>
+        <img v-if='hasRobber' src='/spacePirate.png'>
+</div>
 </template>
 
 <script lang="ts">
@@ -43,7 +46,7 @@ export default Vue.extend({
                 case 12:
                     return resourceClass + 'twelve';
                 default:
-                    return resourceClass;
+                    return resourceClass + 'empty';
             }
         }
     },
@@ -78,6 +81,16 @@ export default Vue.extend({
     pointer-events: none;
 }
 
+img{
+    position: absolute;
+    transform: rotate(90deg);
+    height: 90px;
+    width: 90px;
+    top: -5px;
+    left: -20px;
+    z-index: 499;
+}
+
 .resource-value::after {
     position: absolute;
     font-size: 20px;
@@ -91,6 +104,16 @@ export default Vue.extend({
 }
 
 .resource-value.robber{
+  opacity: .2;
+  border: 2px dotted;
+
+}
+
+.resource-value.empty {
+    visibility: hidden;
+}
+
+.resource-value.empty.robber.robberPhase{
   opacity: .2;
   border: 2px dotted;
 }
@@ -125,9 +148,14 @@ export default Vue.extend({
 .resource-value.twelve::before { content: "12"; }
 .resource-value.twelve::after { content: "."; }
 
-.resource-value.robberPhase {background-color: violet;}
+.resource-value.robberPhase.empty {
+    border: 3px solid black;
+    opacity: 1;
+    visibility: visible;
+}
+
+.resource-value.robberPhase {background-color: grey;}
 .resource-value.robberPhase::after {content: '';}
 .resource-value.robberPhase::before {content: '';}
-.resource-value.robberPhase::after {content: '';}
 
 </style>

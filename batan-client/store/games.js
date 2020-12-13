@@ -17,6 +17,7 @@ export const state = () => ({
   available_games: {},
   active_games: {},
   active_game: '',
+  alert: false,
   awaiting_game_creation: false,
 });
 
@@ -38,6 +39,13 @@ export const mutations = {
     Vue.set(state.active_games, game.game_id, game);
     if (state.active_game == '') {
       state.active_game = game;
+    }
+    state.alert = false;
+    for(let index of Object.keys(state.active_games)){
+      
+      if(state.active_games[index].alerts == true){
+        state.alert = true;
+      }
     }
   },
   joined(state, game) {

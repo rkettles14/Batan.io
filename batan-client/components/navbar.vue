@@ -3,14 +3,17 @@
     <div class="">
       <NuxtLink to="/lobby" class="brand">
         <img id="logo" src="/batanLogo_noText.png">
-        <h1>Batan</h1>
+        <h1>Batan.io</h1>
       </NuxtLink>
     </div>
     <div v-if="$auth.loggedIn" class="nav-right">
       <b-button :to="'/test_sockets'" variant="light">sock test</b-button>
 
-      <b-dropdown v-if="active_game != ''" variant="light" right :text="active_game.game_name" :options="games">
-        <b-dropdown-item v-for="game in games" :key="game.game_id" @click="gameSelected(game)">{{ game.game_name }}</b-dropdown-item>
+      <div v-if='$store.state.games.alert'><b-icon icon="bell-fill" class="rounded-circle bg-warning p-1" font-scale='2' variant="light"></b-icon></div>
+
+
+      <b-dropdown v-if="active_game != ''" variant="light" :text="active_game.game_name" right :options="games">
+        <b-dropdown-item v-for="game in games" :key="game.game_id" @click="gameSelected(game)">{{ game.game_name }} <span v-if='game.alerts'> 🔔</span> </b-dropdown-item>
       </b-dropdown>
 
       <b-dropdown id="profile-btn" right no-caret class="sm">
@@ -40,6 +43,7 @@ export default Vue.extend({
   },
   data() {
     return {
+      name: String
     }
   },
   computed: {
@@ -48,6 +52,9 @@ export default Vue.extend({
     },
     active_game() {
       return this.$store.state.games.active_game;
+    },
+    active_game_name(){
+      return this.$store.state.games.active_game.game_name;
     }
   },
   methods: {

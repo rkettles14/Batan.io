@@ -38,13 +38,13 @@ export default Vue.extend({
           }
           else if(turn.phase =="build" && turn.type == "init"){
             console.log('settlment place attempt');
-            this.$nuxt.$emit('settlment/placeSettlement', vertex);
+            this.$nuxt.$emit('settlement/placeSettlement', vertex);
           }
           // @ts-ignore explain for some reason this is bugged in nuxt
           else if(turn.phase =="build" && turn.type == "normal" && this.settlement.status == vertexStatus.city)
           {
             console.log('city build attempt');
-            this.$nuxt.$emit('settlment/buyCity', vertex);
+            this.$nuxt.$emit('settlement/buyCity', vertex);
           }
 
         }
