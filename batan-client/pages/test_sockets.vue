@@ -38,7 +38,8 @@
       <b-form-input :type="`number`" v-model="roadEndVert"></b-form-input>
     </b-col>
   </b-row>
-  <b-button @click.prevent="placeStuff()" size="md" variant="dark">place</b-button>
+  <b-button @click.prevent="placeSettle()" size="md" variant="dark">place settlement</b-button>
+  <b-button @click.prevent="placeRoad()" size="md" variant="dark">place road</b-button>
   <b-button @click.prevent="buySettlement()" size="md" variant="dark">buy settle</b-button>
   <b-button @click.prevent="buyCity()" size="md" variant="dark">buy city</b-button>
   <b-button @click.prevent="buyRoad()" size="md" variant="dark">buy road</b-button>
@@ -268,10 +269,15 @@ export default Vue.extend({
         game_id: this.game_id
       })
     },
-    placeStuff() {
-      this.$root.socket.emit('game/playInitPlacement', {
+    placeSettle() {
+      this.$root.socket.emit('game/playInitPlaceSettle', {
         game_id: this.game_id,
-        settlement: Number(this.settlementVertex),
+        settlement: Number(this.settlementVertex)
+      })
+    },
+    placeRoad() {
+      this.$root.socket.emit('game/playInitPlaceRoad', {
+        game_id: this.game_id,
         road: {
           start: Number(this.roadStartVert),
           end: Number(this.roadEndVert)
