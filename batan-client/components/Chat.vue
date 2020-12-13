@@ -25,22 +25,24 @@ export default Vue.extend({
     flex-flow: column;
     justify-items: flex-start;
     border: 2px gray solid;
-    border-radius: 10px;
+    border-radius: 7px;
     height: 100%;
     overflow-x: hidden;
     max-height: 62vh;
+    background-color: black;
 }
 .heading {
     width: 100%;
     text-align: center;
     color: black;
     background-color: #00ffea;
-    border-radius: 5px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
 }
 .display {
     flex-grow: 1;
     max-height: 56vh;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 
 </style>

@@ -20,7 +20,7 @@ export default {
 <style>
 .default-container {
   height: 100vh;
-  background-color: black;
+  background-image: url('/starry_background.png');
 }
 
 * {

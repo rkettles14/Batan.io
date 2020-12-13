@@ -135,12 +135,14 @@ h1 {
 
 nav {
   width: 100%;
-  background-color: slategray;
+  background-color: black;
+  margin-bottom: 3px;
   color: white;
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;
   height: 3em;
+  border-bottom: 2px solid gray;
 }
 
 .nav-right {
