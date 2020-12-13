@@ -120,7 +120,7 @@ export default Vue.extend({
       this.clear()
     })
 
-    this.$nuxt.$on('city/buyCity', (vertex) => {
+    this.$nuxt.$on('settlement/buyCity', (vertex) => {
       if (this.buildingCity) {
         this.vertexToBuild = vertex
         this.$root.socket.emit('game/buyCity', {
