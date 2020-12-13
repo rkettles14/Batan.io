@@ -21,7 +21,7 @@ export interface IUser {
     lastName: string;
     email: string;
     nickname: string;
-    games: [IGame];
+    games: IGame[];
 };
 
 export interface IUserDocument extends IUser, Document {
@@ -54,5 +54,10 @@ export interface IUserModel extends Model<IUserDocument> {
     findByEmail: (
         this: IUserModel,
         email_address: string,
+    ) => Promise<IUserDocument>;
+
+    deleteUser: (
+        this: IUserModel,
+        sub_token: string
     ) => Promise<IUserDocument>;
 };

@@ -8,7 +8,6 @@
                 <h3>Email: {{$auth.user.email}}</h3>
             </div>
         </div>
-        <b-button @click.prevent="$fetch">Click here to fetch</b-button>
         <hr>
         <b-card>
             <p>If you want us to delete all your information from our records,
@@ -35,12 +34,8 @@ export default Vue.extend({
     data() {
         return {
             showOverlay: false,
+            playerStats: null,
         };
-    },
-    fetch() {
-        this.$axios.get('http://localhost:3001/api/profile/info').then((response) => {
-            console.log(response);
-        });
     },
     methods: {
         showDelete() {
@@ -49,7 +44,6 @@ export default Vue.extend({
         deleteAccountInformation() {
             this.$axios.post('http://localhost:3001/api/profile/delete-profile').then((response) => {
                 console.log(response);
-                //todo check the deletion status and log the user out if successful
             })
         }
     }
