@@ -64,6 +64,11 @@ function send_active_game(io, game_id) {
       });
     }
   });
+
+  if (game.gameObj.winner !== 0) {
+    // game is over & has been sent to client with winner.. clean up
+    gameState.cleanUp(game_id);
+  }
 }
 
 export default (io, socket) => {

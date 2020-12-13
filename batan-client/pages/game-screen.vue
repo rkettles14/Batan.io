@@ -94,3 +94,15 @@ export default Vue.extend({
     overflow: hidden;
 }
 </style>
+
+</script>
+
+<style scoped>
+
+.row-1 {
+  height: 80%;
+}
+.row-2 {
+  height: 20vh;
+}
+</style>
