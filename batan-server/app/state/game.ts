@@ -527,7 +527,6 @@ export default {
       return;
     }
     let game = this.games.get(game_id);
-    console.log(game);
     for (let i = 1; i <= game.players.size; i++) {
       game.gameObj.calculateVictoryPoints(i);
     }
@@ -564,6 +563,7 @@ export default {
     let dc = game.gameObj.bank.developmentCards;
     let turnStartData = {
       game_id: game_id,
+      winner: game.gameObj.winner,
       settings: {
         turn_timeout_length: game.turn_timeout_length,
         skip_offline_players: game.skip_if_dc
@@ -639,13 +639,21 @@ export default {
     /*
     * Save results to database,
     * alert players game no longer active,
+    */
+  },
+  cleanUp(game_id) {
+    /*
     * rm from player's active games list
     * rm from global available games list
     */
+    if (!this.games.has(game_id)) {
+      return false;
+    }
     let game = this.games.get(game_id);
-    console.log("Game Over");
-    console.log(game.gameObj)
-
+    Array.from(game.players.keys()).forEach((sub) => {
+      this.players.get(sub).splice(this.players.get(sub).indexOf(game_id), 1);
+    })
+    this.games.delete(game_id);
   },
   cheat_get_cards(user_id, game_id, cards) {
     if (!this.games.has(game_id)) {
