@@ -29,19 +29,25 @@ export default Vue.extend({
         selectSettlement: function(){
           // @ts-ignore explain for some reason this is bugged in nuxt
           var vertex = this.settlement.id;
+          // @ts-ignore explain for some reason this is bugged in nuxt
+          if(this.settlement.status == vertexStatus.blocked){
+            console.log('blocked');
+            return;
+          }
 
           var turn = this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].game_info.turn;
-
-          if(turn.phase == "build" && turn.type == "normal"){
+          // @ts-ignore explain for some reason this is bugged in nuxt  
+          if(turn.phase == "build" && turn.type == "normal" && this.settlement.status == vertexStatus.open){
             console.log('settlment build attempt');
             this.$nuxt.$emit('settlement/buySettlement', vertex);
           }
-          else if(turn.phase =="build" && turn.type == "init"){
+          // @ts-ignore explain for some reason this is bugged in nuxt  
+          else if(turn.phase =="build" && turn.type == "init" && this.settlement.status == vertexStatus.open){
             console.log('settlment place attempt');
             this.$nuxt.$emit('settlement/placeSettlement', vertex);
           }
           // @ts-ignore explain for some reason this is bugged in nuxt
-          else if(turn.phase =="build" && turn.type == "normal" && this.settlement.status == vertexStatus.city)
+          else if(turn.phase =="build" && turn.type == "normal" && this.settlement.status == vertexStatus.settlement)
           {
             console.log('city build attempt');
             this.$nuxt.$emit('settlement/buyCity', vertex);
