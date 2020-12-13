@@ -190,6 +190,7 @@ export default {
               // TODO: Still uncaught edge cases, but very unlikely through boardgame interface
               if (game.gameObj.addSettlementInSetup(settlement, player_num + 1)) {
                 if (game.gameObj.addRoadInSetup(road.start, road.end, player_num + 1)) {
+                  this.calcVic(game_id);
                   return true;
                 }
               }
@@ -204,6 +205,7 @@ export default {
               // TODO: Still uncaught edge cases, but very unlikely through boardgame interface
               if (game.gameObj.addSettlementInSetup(settlement, player_num + 1)) {
                 if (game.gameObj.addRoadInSetup(road.start, road.end, player_num + 1)) {
+                  this.calcVic(game_id);
                   return true;
                 }
               }
@@ -257,7 +259,8 @@ export default {
       if (game.turn_phase === "build") {
         let ret = game.gameObj.purchaseRoad(start, end, this.whosTurn(game_id) + 1);
         if (ret.success) {
-            return true;
+          this.calcVic(game_id);
+          return true;
         } else {
           console.log(ret.reason);
           return false;
@@ -283,7 +286,8 @@ export default {
       if (game.turn_phase === "build") {
         let ret = game.gameObj.purchaseSettlement(location, this.whosTurn(game_id) + 1);
         if (ret.success) {
-            return true;
+          this.calcVic(game_id);
+          return true;
         } else {
           console.log(ret.reason);
           return false;
@@ -309,7 +313,8 @@ export default {
       if (game.turn_phase === "build") {
         let ret = game.gameObj.purchaseCity(location, this.whosTurn(game_id) + 1);
         if (ret.success) {
-            return true;
+          this.calcVic(game_id);
+          return true;
         } else {
           console.log(ret.reason);
           return false;
@@ -334,6 +339,7 @@ export default {
       if (game.turn_phase === "build") {
         let ret = game.gameObj.purchaseDevelopmentCard(this.whosTurn(game_id) + 1);
         if (ret.success) {
+            this.calcVic(game_id);
             return true;
         } else {
           console.log(ret.reason);
@@ -379,6 +385,7 @@ export default {
           extra.yearOfPlentyResources
         );
         if (ret.success) {
+            this.calcVic(game_id);
             return true;
         } else {
           console.log(ret.reason);
@@ -427,13 +434,14 @@ export default {
       if (game.turn_phase === "robber") {
         let ret = game.gameObj.moveRobberAndSteal(this.whosTurn(game_id) + 1, location);
         if (ret.success) {
+          game.turn_phase = "build";
           return true;
         } else {
           console.log(ret.reason);
           return false;
         }
       } else {
-        console.log("Not in build phase");
+        console.log("Not in robber phase");
       }
     } else {
       console.log("Not your turn");
@@ -474,7 +482,10 @@ export default {
     let game = this.games.get(game_id);
     if (game.turn_num === expected_turn) {
       if (game.turn_num >= 0) {
-        game.gameObj.calculateVictoryPoints(this.whosTurn(game_id) + 1);
+        this.calcVic(game_id);
+        if (game.gameObj.winner !== 0) {
+          this.endGame(game_id);
+        }
       }
 
       if (game.skip_if_dc) {
@@ -501,7 +512,7 @@ export default {
       }
 
       let end_turn_time = new Date();
-      end_turn_time.setSeconds(end_turn_time.getSeconds() + 180)
+      end_turn_time.setSeconds(end_turn_time.getSeconds() + game.turn_timeout_length/1000)
       let curr_turn = game.turn_num;
       setTimeout(() => {
         this.nextTurn(game_id, curr_turn, callback);
@@ -509,6 +520,15 @@ export default {
 
       game.end_turn_time = end_turn_time.toISOString();
       callback();
+    }
+  },
+  calcVic(game_id){
+    if (!this.games.has(game_id)) {
+      return;
+    }
+    let game = this.games.get(game_id);
+    for (let i = 1; i <= game.players.size; i++) {
+      game.gameObj.calculateVictoryPoints(i);
     }
   },
   get_full_game_info(game_id){
@@ -543,6 +563,7 @@ export default {
     let dc = game.gameObj.bank.developmentCards;
     let turnStartData = {
       game_id: game_id,
+      winner: game.gameObj.winner,
       settings: {
         turn_timeout_length: game.turn_timeout_length,
         skip_offline_players: game.skip_if_dc
@@ -618,10 +639,21 @@ export default {
     /*
     * Save results to database,
     * alert players game no longer active,
+    */
+  },
+  cleanUp(game_id) {
+    /*
     * rm from player's active games list
     * rm from global available games list
     */
-
+    if (!this.games.has(game_id)) {
+      return false;
+    }
+    let game = this.games.get(game_id);
+    Array.from(game.players.keys()).forEach((sub) => {
+      this.players.get(sub).splice(this.players.get(sub).indexOf(game_id), 1);
+    })
+    this.games.delete(game_id);
   },
   cheat_get_cards(user_id, game_id, cards) {
     if (!this.games.has(game_id)) {
