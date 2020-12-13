@@ -1,16 +1,36 @@
 <template>
     <b-container fluid>
-        <!--todo Query backend for the user's game stats and display here-->
-        <h1>Games Played: {{gameStats.length}}</h1>
-        <h1>Games Won: {{gamesWon}}</h1>
-        <h1>Games Lost: {{gamesLost}}</h1>
-
-        <b-button @click.prevent="getData">Click here to fetch</b-button>
-
+        <h1>Game Statistics</h1>
         <hr>
-        <b-table striped bordered table-variant="secondary" :items="gameStats">
-            <!--todo get all of the games that the user has played-->
-        </b-table>
+        <div class="game-card">
+            <h2>Games Played: {{gameStats.length}}</h2>
+            <h2>Games Won: {{gamesWon}}</h2>
+            <h2>Games Lost: {{gamesLost}}</h2>
+        </div>
+        <hr>
+        <div v-show="gameStats.length == 0">
+            <div class="game-card">
+                <h3>
+                    Looks like you haven't played any games yet.<br>
+                    <small>
+                        Stats will appear here once you've played some games
+                    </small>
+                </h3>
+            </div>
+            <!-- <b-button @click.prevent="getData">Click here to fetch</b-button> -->
+        </div>
+        <div v-show="gameStats.length != 0">
+            <div
+                class="game-card"
+                v-for="game in gameStats"
+                :key="game.date"
+            >
+            <h3>{{game.gameName}}</h3>
+            <h4>Played {{new Date(game.date).toLocaleDateString()}}</h4>
+            <h4>{{game.playerWon ? "You Won!" : "You lost"}}</h4>
+            <!--todo maybe squeeze Rylan's beautiful component here-->
+            </div>
+        </div>
     </b-container>
     
 </template>
@@ -43,8 +63,8 @@ export default Vue.extend({
                 });
             } else {
                 this.$data.gameStats = response.data.games;
-                this.$data.gamesWon = response.data.games.filter(game => game.playerWon);
-                this.$data.gamesLost = response.data.games.filter(game => !game.playerWon);
+                this.$data.gamesWon = response.data.games.filter(game => game.playerWon).length;
+                this.$data.gamesLost = response.data.games.filter(game => !game.playerWon).length;
             }
         });
     }
@@ -56,5 +76,16 @@ export default Vue.extend({
 </script>
 
 <style scoped>
+.stats-table {
+    width: 100%;
+}
+
+.game-card {
+    border: solid slategrey 1px;
+    border-radius: 1rem;
+    padding: 1rem;
+    margin: 0.5rem 0;
+    background-color: #2a2a2a;
+}
 
 </style>
