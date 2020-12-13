@@ -45,9 +45,6 @@ Vue.use(BootstrapVueIcons);
     flex-flow: row;
     margin: 1px;
     padding: 2px;
-    background-color: black;
-    border-bottom: 2px solid gray;
-    border-radius: 0px;
 }
 .user-img {
     float: left;
@@ -57,6 +54,5 @@ Vue.use(BootstrapVueIcons);
 .msg-content {
     flex-grow: 1;
     margin: auto;
-    color: white;
 }
 </style>

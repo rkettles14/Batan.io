@@ -26,7 +26,7 @@ export default Vue.extend({
   height: 8vh;
   width: 3vw;
   border-style: solid;
-  border-color: gray;
+  border-color: black;
 }
 
 .card img {

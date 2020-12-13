@@ -16,7 +16,7 @@
         <b-dropdown-item v-for="game in games" :key="game.game_id" @click="gameSelected(game)">{{ game.game_name }} <span v-if='game.alerts'> 🔔</span> </b-dropdown-item>
       </b-dropdown>
 
-      <b-dropdown id="profile-btn" right no-caret class="sm">
+      <b-dropdown id="profile-btn" right no-caret class="sm" style="background-color: black;">
         <div slot="button-content">
           <img id="profile" class="dropdown" :src="$auth.user.picture">
         </div>
@@ -136,13 +136,11 @@ h1 {
 nav {
   width: 100%;
   background-color: black;
-  margin-bottom: 3px;
   color: white;
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;
   height: 3em;
-  border-bottom: 2px solid gray;
 }
 
 .nav-right {
