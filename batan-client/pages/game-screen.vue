@@ -8,7 +8,7 @@
         <Chat />
       </b-col>
     </b-row>
-    <b-row class="row-2 no-gutters">
+    <b-row class="row-2 no-gutters" align-h="between">
       <b-col cols="5">
         <ResourceCards />
       </b-col>
@@ -87,8 +87,8 @@ export default Vue.extend({
     },
 
     rollDice(){
-      setTimeout(() => {
       this.$root.socket.emit('game/rollDice', {game_id: this.$store.state.games.active_game.game_id});
+      setTimeout(() => {
       this.rolling = false;
       this.displayActions();
       }, 2000);
