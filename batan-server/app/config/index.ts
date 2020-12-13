@@ -22,5 +22,6 @@ export default {
   AUTH0_DOMAIN: process.env.AUTH0_DOMAIN,
   AUTH0_CLIENT_ID: process.env.AUTH0_CLIENT_ID,
   AUTH0_AUDIENCE: process.env.AUTH0_AUDIENCE,
-  AUTH0_JWKS_URI: process.env.AUTH0_JWKS_URI
+  AUTH0_JWKS_URI: process.env.AUTH0_JWKS_URI,
+  db_uri: process.env.db_uri,
 };
