@@ -15,7 +15,7 @@
           </div>
         </b-col>
         <b-col>
-          <div v-on:click="endTurn" class="end">
+          <div v-on:click="endTurn()" class="end">
             <h3>End Turn</h3>
             <img src="@/static/End.png" class="actionIcon">
           </div>
@@ -45,7 +45,7 @@ export default Vue.extend({
     beginPurchasing(): void {
       console.log("purchasing a thing");
       this.purchasing = true;
-      this.$emit('purchasing');
+      this.$nuxt.$emit('playerActions/purchase', this.purchasing);
     },
 
     endPurchasing(): void {
@@ -64,7 +64,7 @@ export default Vue.extend({
 
     endTurn(): void{
         console.log("ending turn");
-        this.$emit('endTurn');
+        this.$root.socket.emit('game/endTurn', {game_id: this.$store.state.games.active_game.game_id});
     }
   },
 })
