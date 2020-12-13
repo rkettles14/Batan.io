@@ -554,7 +554,7 @@ export default class Game {
     const die1 = Math.floor(Math.random() * 6) + 1;
     const die2 = Math.floor(Math.random() * 6) + 1;
     const diceRoll = die1 + die2;
-    return diceRoll;
+    return [diceRoll, die1, die2];
   }
 
   /**
@@ -562,7 +562,7 @@ export default class Game {
    */
   beginTurn() {
     let diceRoll = this.rollDice();
-    if (diceRoll === 7) {
+    if (diceRoll[0] === 7) {
       //discard if more than 7
       this.players.forEach((player) => {
         let totalResources = player.resources.brick + player.resources.ore + player.resources.sheep + player.resources.wheat + player.resources.wood;
@@ -582,7 +582,7 @@ export default class Game {
     } else {
       //give resources to players
       this.board.hexList.forEach((hex) => {
-        if (hex.value == diceRoll && !hex.hasRobber) {
+        if (hex.value == diceRoll[0] && !hex.hasRobber) {
           hex.vertices.forEach((vertex) => {
             if (this.board.vertexList[vertex].status === vertexStatus.settlement) {
               this.giveResources(this.board.vertexList[vertex].owner, hex.resourceType, 1); //This could possibly return false. We ignore because we want the function to continue.
