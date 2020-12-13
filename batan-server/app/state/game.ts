@@ -427,13 +427,14 @@ export default {
       if (game.turn_phase === "robber") {
         let ret = game.gameObj.moveRobberAndSteal(this.whosTurn(game_id) + 1, location);
         if (ret.success) {
+          game.turn_phase = "build";
           return true;
         } else {
           console.log(ret.reason);
           return false;
         }
       } else {
-        console.log("Not in build phase");
+        console.log("Not in robber phase");
       }
     } else {
       console.log("Not your turn");
