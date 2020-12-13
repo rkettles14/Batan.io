@@ -141,6 +141,9 @@
   </div>
 
   <br> <br>
+  <b-button @click.prevent="$store.dispatch('games/manualRmEndedGame', 0)" size="md" variant="dark">rm active game</b-button>
+
+  <br> <br>
   <div class="">
     <h3>Adding fake games</h3>
     <b-row>
