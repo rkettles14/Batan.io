@@ -512,7 +512,7 @@ export default {
       }
 
       let end_turn_time = new Date();
-      end_turn_time.setSeconds(end_turn_time.getSeconds() + 180)
+      end_turn_time.setSeconds(end_turn_time.getSeconds() + game.turn_timeout_length/1000)
       let curr_turn = game.turn_num;
       setTimeout(() => {
         this.nextTurn(game_id, curr_turn, callback);
