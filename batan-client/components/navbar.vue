@@ -2,7 +2,7 @@
   <nav class="navbar">
     <div class="">
       <NuxtLink to="/lobby" class="brand">
-        <img id="logo" src="@/static/icon.png">
+        <img id="logo" src="/batanLogo_noText.png">
         <h1>Batan</h1>
       </NuxtLink>
     </div>

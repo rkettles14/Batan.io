@@ -284,11 +284,11 @@ export default Vue.extend({
 }
 
 .wood {
-  background: rgb(94, 255, 0);
+  background: #5eff00;
 }
 
 .sheep{
-  background: rgb(255, 1, 242);
+  background: #ff01f2;
 }
 
 .wheat{
@@ -296,7 +296,7 @@ export default Vue.extend({
 }
 
 .ore{
-  background: rgb(155, 4, 255);
+  background: #9b04ff;
 }
 
 .empty{
