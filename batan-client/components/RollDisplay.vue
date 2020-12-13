@@ -13,9 +13,9 @@ export default Vue.extend({
           return this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].game_info.turn.dice;
       },
       value1: function(){
-          var diceValue =  this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].game_info.turn.dice - Math.floor(Math.random() * 6) + 1;
-          while(diceValue > 6){
-              diceValue =  this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].game_info.turn.dice - Math.floor(Math.random() * 6) + 1;
+          var diceValue =  this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].game_info.turn.dice - (Math.floor(Math.random() * 6) + 1);
+          while(diceValue > 6 || diceValue < 1){
+              diceValue =  this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].game_info.turn.dice - (Math.floor(Math.random() * 6) + 1);
           }
           return diceValue;
       }, 
