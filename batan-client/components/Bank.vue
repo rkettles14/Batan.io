@@ -42,6 +42,12 @@ export default Vue.extend({
 </script>
 
 <style scoped>
+.row {
+    border: 2px solid black;
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+
 h2 {
   text-align: center;
   font-family: 'Space Grotesk', sans-serif;

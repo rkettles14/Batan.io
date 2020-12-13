@@ -22,7 +22,7 @@
         <PurchaseOptions />
       </b-col>
       <b-col cols="4">
-        <GamePlayerStats />
+        <Scoreboard />
       </b-col>
     </b-row>
   </b-container>
