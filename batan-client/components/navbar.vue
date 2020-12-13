@@ -13,7 +13,7 @@
         <b-dropdown-item v-for="game in games" :key="game.game_id" @click="gameSelected(game)">{{ game.game_name }}</b-dropdown-item>
       </b-dropdown>
 
-      <b-dropdown id="profile-btn" right no-caret class="sm" style="background-color: black;">
+      <b-dropdown id="profile-btn" right no-caret class="sm">
         <div slot="button-content">
           <img id="profile" class="dropdown" :src="$auth.user.picture">
         </div>
@@ -128,7 +128,7 @@ h1 {
 
 nav {
   width: 100%;
-  background-color: black;
+  background-color: slategray;
   color: white;
   display: flex;
   flex-flow: row nowrap;

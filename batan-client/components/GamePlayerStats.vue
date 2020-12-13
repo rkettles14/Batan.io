@@ -60,9 +60,9 @@ export default Vue.extend({
         },
         getBorder(playerNumber: player, turn: player){
             if(playerNumber === turn){
-                return "2px solid #00ffea";
+                return "3px solid #00ffea";
             } else {
-                return "2px solid black";
+                return "2px solid gray";
             }
         },
         getGameOwner(playerNumber: string, ownerNumber: string){
@@ -87,10 +87,12 @@ export default Vue.extend({
 .row {
     margin-top: 2px;
     margin-bottom: 2px;
+    border-radius: 4px;
 }
 
 h2 {
     font-size: 2vh;
+    color: gray;
 }
 
 img {

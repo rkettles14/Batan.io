@@ -43,7 +43,8 @@ export default Vue.extend({
 
 <style scoped>
 .row {
-    border: 2px solid black;
+    border: 2px solid gray;
+    border-radius: 4px;
     margin-top: 2px;
     margin-bottom: 2px;
 }
@@ -51,5 +52,6 @@ export default Vue.extend({
 h2 {
   text-align: center;
   font-family: 'Space Grotesk', sans-serif;
+  color: gray;
 }
 </style>

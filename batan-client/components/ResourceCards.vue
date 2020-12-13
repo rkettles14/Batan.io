@@ -83,7 +83,8 @@ export default Vue.extend({
   margin: -12px;
   height: 20vh;
   border-style: solid;
-  border-color: black;
+  border-color: gray;
+  border-radius: 4px;
 }
 
 .count {
@@ -94,6 +95,7 @@ export default Vue.extend({
     border-top-right-radius: 10px;
     border-bottom-left-radius: 10px;
     margin-left: 5px;
+    margin-top: 1px;
 }
 
 .resourceCard h3 {
