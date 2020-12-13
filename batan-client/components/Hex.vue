@@ -20,7 +20,7 @@
             </div>
 
             <div v-if="hexObject != undefined && hexObject != null">
-              <ResourceNumber :resource-value='hexObject.value' :has-robber='hexObject.hasRobber'></ResourceNumber>
+              <ResourceNumber :resource-value='hexObject.value' :has-robber='hexObject.hasRobber' :robber-phase='isRobberPhase'></ResourceNumber>
             </div>
 
             <Road class='tr' :road-object='trRoad'></Road>
@@ -69,6 +69,10 @@ export default Vue.extend({
         }
   },
   computed: {
+    isRobberPhase: function() {
+        var phase = this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].game_info.turn.phase;
+        return phase == 'robber';
+    },
     trRoad: function(){
       var roadsMap = this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].game_info.board.roadsMap;
       var vertexBegin = this.hexObject.vertices[0];
@@ -230,9 +234,10 @@ export default Vue.extend({
     },
     placeRobber(){
       var turn = this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].game_info.turn;
+      console.log("clicked hex");
       if(turn.phase == "robber" && turn.type == "normal") {
         console.log('robber placement attempt');
-        this.$nuxt.$emit("hex/placeRobber", this.hexId);
+        this.$root.socket.emit("hex/placeRobber", this.hexId);
       }
     }
       
@@ -279,11 +284,11 @@ export default Vue.extend({
 }
 
 .wood {
-  background: rgb(94, 255, 0);
+  background: #5eff00;
 }
 
 .sheep{
-  background: rgb(255, 1, 242);
+  background: #ff01f2;
 }
 
 .wheat{
@@ -291,7 +296,7 @@ export default Vue.extend({
 }
 
 .ore{
-  background: rgb(155, 4, 255);
+  background: #9b04ff;
 }
 
 .empty{

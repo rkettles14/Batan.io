@@ -1,5 +1,5 @@
 <template>
-        <div class='resource-value' :class='assignResourceValue'>
+        <div class='resource-value' :class='[assignResourceValue, {"robberPhase": robberPhase}]'>
         </div>  
 </template>
 
@@ -10,7 +10,8 @@ console.log('bruh');
 export default Vue.extend({
     props: {
         resourceValue: Number,
-        hasRobber: Boolean
+        hasRobber: Boolean,
+        robberPhase: Boolean
     },
     computed: {
         assignResourceValue(){
@@ -74,6 +75,7 @@ export default Vue.extend({
     left: 8px;
     transform: rotate(90deg);
     background-color: white;
+    pointer-events: none;
 }
 
 .resource-value::after {
@@ -122,5 +124,10 @@ export default Vue.extend({
 
 .resource-value.twelve::before { content: "12"; }
 .resource-value.twelve::after { content: "."; }
+
+.resource-value.robberPhase {background-color: violet;}
+.resource-value.robberPhase::after {content: '';}
+.resource-value.robberPhase::before {content: '';}
+.resource-value.robberPhase::after {content: '';}
 
 </style>
