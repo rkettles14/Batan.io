@@ -1,7 +1,11 @@
 // Handles permissions, turns & multiple games & sockets per user
 import Game from '../../engine/game';
+import Player from '../../engine/game';
 import socketState from './socket';
 import { vertexStatus, player, resourceType, developmentType, harborType } from '../../engine/enums';
+import { connectAndDo } from '../database/'
+import { IGame } from '../database/users.types'
+import { UserModel } from '../database/users.model';
 
 
 let nextGameID = 0;  // TODO: Needs to come from db so new server start doesn't reset old games
@@ -635,12 +639,52 @@ export default {
       return game.turn_num % game.players.size;
     }
   },
-  endGame(game_id){
+  endGame(game_id: number){
     /*
     * Save results to database,
     * alert players game no longer active,
     */
+   if(!this.games.has(game_id)){
+     console.log("Trying to end a game that doesn't exist");
+     return;
+   }
+
+    const game = this.games.get(game_id);
+    game.players.forEach((sub: string, player: any, map: any) => {
+      let stats: Player = game.gameObj.players[player.color];
+
+      const db_stats: IGame = {
+        gameId: game_id,
+        date: Date.now(),
+        gameName: game.game_name,
+        numPlayers: game.players.length,
+        playerWon: game.gameObj.winner == player.color,
+        playerSettlements: stats.settlementsPlayed,
+        playerCities: stats.citiesPlayed,
+        playerRoads: stats.roadsPlayed,
+        playerResourceCards: stats.getTotalResources(),
+        playerVictoryPoints: stats.vpDevCardsPlayed,
+        playerLargestArmy: game.largestArmyOwner == player.color,
+        playerLongestRoad: game.longestRoadOwner == player.color,
+      };
+
+      connectAndDo(async (db: any) => {
+        if(db === undefined || db === null){
+          console.log("Unable to connect to database to finish the game");
+          return;
+        }
+        db.UserModel as typeof UserModel;
+        let user = await db.UserModel.findBySub(sub);
+        if(user === null){
+          console.log("User does not exist");
+          return;
+        }
+
+        await user.addGame(db_stats);
+      });
+   });
   },
+
   cleanUp(game_id) {
     /*
     * rm from player's active games list
