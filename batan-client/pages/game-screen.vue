@@ -87,9 +87,10 @@ export default Vue.extend({
     },
 
     rollDice(){
-      this.$root.socket.emit('game/rollDice', {game_id: this.$store.state.games.active_game.game_id});
       setTimeout(() => {
+      this.$root.socket.emit('game/rollDice', {game_id: this.$store.state.games.active_game.game_id});
       this.rolling = false;
+      this.displayActions();
       }, 2000);
     }
   }

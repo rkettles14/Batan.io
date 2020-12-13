@@ -4,22 +4,26 @@
       <b-row class="text-center no-gutters" align-v="center">
         <b-col>
           <div v-on:click="buildRoad()" class="purchaseOption">
-            <p>Road</p>
+            <span class="name">Road</span>
+            <span class="description">1 Tree, 1 Brick</span>
           </div>
         </b-col>
         <b-col>
           <div v-on:click="buildSettlement()" class="purchaseOption">
-            <p>Settlement</p>
+            <span class="name">Settlement</span>
+            <span class="description">1 Tree, 1 Brick, 1 Wool, 1 Grain</span>
           </div>
         </b-col>
         <b-col>
           <div v-on:click="buildCity()" class="purchaseOption">
-            <p>City</p>
+            <span class="name">City</span>
+            <span class="description">2 Grain, 3 Ore</span>
           </div>
         </b-col>
         <b-col>
           <div v-on:click="devCard()" class="purchaseOption">
-            <small>Development Card</small>
+            <span class="name">Dev Card</span>
+            <span class="description">1 Tree, 1 Wool, 1 Ore</span>
           </div>
         </b-col>
         <b-col>
@@ -172,6 +176,22 @@ export default Vue.extend({
   border-color: black;
   height: 10vh;
   width: 5vw;
+}
+
+.purchaseOption .description {
+  display: none;
+}
+
+.purchaseOption:hover .name {
+  display: none;
+}
+
+.purchaseOption:hover .description {
+  display: inline;
+}
+
+.purchaseOption:hover {
+  background: grey;
 }
 
 h1 {

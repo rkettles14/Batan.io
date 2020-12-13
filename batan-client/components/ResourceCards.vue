@@ -3,38 +3,63 @@
     <b-container fluid style="margin-top: 10px;">
       <b-row>
         <b-col>
-          <div v-on:click="addResource(brick)" class="resourceCard" id="brickCell" :style="{background: brick.color}">
+          <div class="resourceCard" id="brickCell" :style="{background: brick.color}">
               <div class="count">{{this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].player_info.resources.brick}}</div>
-              <h3>Brick</h3>
               <img src='/brick.png'>
               </div>
         </b-col>
         <b-col>
-          <div v-on:click="addResource(lumber)" class="resourceCard" id="lumberCell" :style="{background: lumber.color}">
+          <div class="resourceCard" id="lumberCell" :style="{background: lumber.color}">
               <div class="count">{{this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].player_info.resources.wood}}</div>
-              <h3>Lumber</h3>
               <img src='/tree.png'>
               </div>
         </b-col>
         <b-col>
-          <div v-on:click="addResource(wool)" class="resourceCard" id="woolCell" :style="{background: wool.color}">
+          <div class="resourceCard" id="woolCell" :style="{background: wool.color}">
               <div class="count">{{this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].player_info.resources.sheep}}</div>
-              <h3>Wool</h3>
               <img src='/sheep.png'>
               </div>
         </b-col>
         <b-col>
-          <div v-on:click="addResource(grain)" class="resourceCard" id="grainCell" :style="{background: grain.color}">
+          <div class="resourceCard" id="grainCell" :style="{background: grain.color}">
               <div class="count">{{this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].player_info.resources.wheat}}</div>
-              <h3>Grain</h3>
               <img src='/wheat.png'>
               </div>
         </b-col>
         <b-col>
-          <div v-on:click="addResource(ore)" class="resourceCard" id="oreCell" :style="{background: ore.color}">
+          <div class="resourceCard" id="oreCell" :style="{background: ore.color}">
               <div class="count">{{this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].player_info.resources.ore}}</div>
-              <h3>Ore</h3>
               <img src='/ore.png'>
+              </div>
+        </b-col>
+        <b-col>
+          <div class="resourceCard" id="knight" :style="{background: '#c6e2ff'}">
+              <div class="count">{{this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].player_info.developmentCards.knight}}</div>
+              <h3>KNT</h3>
+              </div>
+        </b-col>
+        <b-col>
+          <div class="resourceCard" id="roadBuilder" :style="{background: '#c6e2ff'}">
+              <div class="count">{{this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].player_info.developmentCards.roadBuilder}}</div>
+              <h3>RBD</h3>
+              </div>
+        </b-col>
+        <b-col>
+          <div class="resourceCard" id="yearOfPlenty" :style="{background: '#c6e2ff'}">
+              <div class="count">{{this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].player_info.developmentCards.yearOfPlenty}}</div>
+              <h3>YOP</h3>
+              </div>
+        </b-col>
+        <b-col>
+          <div class="resourceCard" id="monopoly" :style="{background: '#c6e2ff'}">
+              <div class="count">{{this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].player_info.developmentCards.monopoly}}</div>
+              <h3>MON</h3>
+              </div>
+        </b-col>
+        <b-col>
+          <div class="resourceCard" id="victoryPoint" :style="{background: '#c6e2ff'}">
+              <div class="count">{{this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].player_info.developmentCards.victoryPointCard}}</div>
+              <h3>VIC</h3>
               </div>
         </b-col>
       </b-row>
@@ -76,7 +101,7 @@ export default Vue.extend({
 <style>
 .resourceCard {
   margin: -12px;
-  height: 20vh;
+  height: 10vh;
   border-style: solid;
   border-color: black;
 }
@@ -96,7 +121,7 @@ export default Vue.extend({
 }
 
 .resourceCard img {
-  height: 13vh;
+  height: 6.5vh;
   display: block;
   margin: auto;
 }
