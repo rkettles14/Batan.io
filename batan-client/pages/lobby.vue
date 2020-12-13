@@ -106,8 +106,5 @@ export default Vue.extend({
 
 .selector {
   margin: 2px 4px;
-  background-color: #00ffea;
-  color: black;
 }
-
 </style>

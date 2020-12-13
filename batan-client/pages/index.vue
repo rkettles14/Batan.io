@@ -7,13 +7,14 @@
     </b-row>
     <b-row align-v="center" class="logo-container">
       <b-col>
-        <b-img class="center" src="/batanLogo.png"/>
+        <b-img src="@/static/batanLogo.png"/>
       </b-col>
     </b-row>
     <b-row align-v="center">
       <b-col class="d-flex">
         <b-button
-          class="success"
+          class="link"
+          variant="success"
           @click.prevent="login()"
         >
           Sign Un / Login
@@ -50,12 +51,13 @@ Vue.use(BootstrapVue);
 }
 
 .title {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: 'Quicksand', 'Source Sans Pro', -apple-system, BlinkMacSystemFont,
+    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   display: block;
   text-align: center;
-  font-weight: 500;
+  font-weight: 300;
   font-size: 2rem;
-  color: white;
+  color: #35495e;
   letter-spacing: 1px;
 }
 
@@ -63,16 +65,7 @@ Vue.use(BootstrapVue);
   flex-grow: 1;
 }
 
-.success {
+.link {
   margin: 0 auto;
-  background-color: #00ffea;
-  color: black;
-}
-
-.center {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  width: 75%;
 }
 </style>

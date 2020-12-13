@@ -20,7 +20,6 @@ export default {
 <style>
 .default-container {
   height: 100vh;
-  background-image: url('/starry_background.png');
 }
 
 * {
@@ -37,6 +36,5 @@ html {
   -webkit-text-size-adjust: 100%;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  background-image: url('/starry_background.png');
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-        <div class="bank">
+        <div>
             <b-row cols="7">
                 <b-col>
                     <h2>Bank:</h2>
@@ -43,16 +43,13 @@ export default Vue.extend({
 
 <style scoped>
 .row {
-    border: 2px solid gray;
-    border-radius: 4px;
-    margin-top: 4px;
+    border: 2px solid black;
+    margin-top: 2px;
     margin-bottom: 2px;
-    background-color: black;
 }
 
 h2 {
   text-align: center;
   font-family: 'Space Grotesk', sans-serif;
-  color: white;
 }
 </style>
