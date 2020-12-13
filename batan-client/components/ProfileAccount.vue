@@ -9,7 +9,7 @@
             </div>
         </div>
         <hr>
-        <b-card class="delete">
+        <b-card>
             <p>If you want us to delete all your information from our records,
                 press the button below. This action is irreversible, permanent
                 and cannot be undone. By clicking the button, you agree that
@@ -67,23 +67,10 @@ export default Vue.extend({
     flex-direction: column;
     justify-content: center;
     margin-left: 20px;
-    padding: 5px;
-    border-radius: 5px;
-}
-
-h3 {
-    color: white;
 }
 
 .warning-container {
     margin: 1rem;
-}
-
-.delete {
-    background-color: black;
-    color: white;
-    border-radius: 5px;
-    border: 2px solid gray;
 }
 
 .warning {
