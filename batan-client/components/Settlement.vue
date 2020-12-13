@@ -3,7 +3,7 @@
         </div>  
 </template>
 
-<script lang="js">
+<script lang="ts">
 import Vue from 'vue';
 
 enum vertexStatus {
@@ -27,6 +27,7 @@ export default Vue.extend({
     },
     methods: {
         selectSettlement: function(){
+          // @ts-ignore explain for some reason this is bugged in nuxt
           var vertex = this.settlement.id;
 
           var turn = this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].game_info.turn;
@@ -39,6 +40,7 @@ export default Vue.extend({
             console.log('settlment place attempt');
             this.$nuxt.$emit('settlment/placeSettlement', vertex);
           }
+          // @ts-ignore explain for some reason this is bugged in nuxt
           else if(turn.phase =="build" && turn.type == "normal" && this.settlement.status == vertexStatus.city)
           {
             console.log('city build attempt');
