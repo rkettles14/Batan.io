@@ -3,7 +3,7 @@
     <div class="">
       <NuxtLink to="/lobby" class="brand">
         <img id="logo" src="/batanLogo_noText.png">
-        <h1>Batan</h1>
+        <h1>Batan.io</h1>
       </NuxtLink>
     </div>
     <div v-if="$auth.loggedIn" class="nav-right">
