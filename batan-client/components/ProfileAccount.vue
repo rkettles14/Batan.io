@@ -8,7 +8,8 @@
                 <h3>Email: {{$auth.user.email}}</h3>
             </div>
         </div>
-        <b-button @click.prevent="$fetch">Click here to fetch</b-button>
+        <h1>{{$data.playerStats}}</h1>
+        <b-button @click.prevent="getData">Click here to fetch</b-button>
         <hr>
         <b-card>
             <p>If you want us to delete all your information from our records,
@@ -35,21 +36,36 @@ export default Vue.extend({
     data() {
         return {
             showOverlay: false,
+            playerStats: null,
         };
     },
-    fetch() {
-        this.$axios.get('http://localhost:3001/api/profile/info').then((response) => {
-            console.log(response);
-        });
-    },
     methods: {
+        getData() {
+        this.$axios.get('http://localhost:3001/api/profile/info').then((response) => {
+            console.log("Got the user information");
+            if(response.data === ""){
+                console.log("Information was empty. Creating account");
+                console.log(this.$auth.user);
+                const user = {
+                    firstName: this.$auth.user.given_name,
+                    lastName: this.$auth.user.family_name,
+                    nickname: this.$auth.user.nickname,
+                    email: this.$auth.user.email,
+                };
+                console.log(user);
+                this.$axios.post('http://localhost:3001/api/profile/create', user).then((response) => {
+                    console.log(response.data);
+                    this.$data.playerStats = response.data;
+                });
+            }
+        });
+        },
         showDelete() {
             this.$data.showOverlay = true;
         },
         deleteAccountInformation() {
             this.$axios.post('http://localhost:3001/api/profile/delete-profile').then((response) => {
                 console.log(response);
-                //todo check the deletion status and log the user out if successful
             })
         }
     }
