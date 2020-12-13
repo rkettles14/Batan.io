@@ -22,7 +22,7 @@ export default {
       skip_if_dc: false,
       turn_num: -1,
       turn_phase: "roll",
-      dice: 0,
+      dice: [0, 0 ,0],
       end_turn_time: null,
       order: [],
       id: {
@@ -233,7 +233,7 @@ export default {
     if (game.order[this.whosTurn(game_id)] === user_id) {
       if (game.turn_phase === "roll") {
         game.dice = game.gameObj.beginTurn();
-        if (game.dice == 7) {
+        if (game.dice[0] == 7) {
           game.turn_phase = "robber";
         } else {
           game.turn_phase = "build";
@@ -508,7 +508,7 @@ export default {
         game.turn_phase = "build";
       } else {
         game.turn_phase = "roll";
-        game.dice = 0;
+        game.dice = [0, 0, 0];
       }
 
       let end_turn_time = new Date();
