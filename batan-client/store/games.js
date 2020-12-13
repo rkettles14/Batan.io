@@ -29,7 +29,13 @@ export const mutations = {
   },
   created(state, game) {
     // Updates available_games by overwriting game
-    Vue.set(state.available_games, game.game_id, game);
+    if (!game.started) {
+      Vue.set(state.available_games, game.game_id, game);
+    } else {
+      if (Object.keys(state.available_games).includes(String(game.game_id))) {
+        Vue.delete(state.available_games, game.game_id);
+      }
+    }
   },
   active(state, game) {
     // TODO: Permit partial updates -- Challenge: potentially complex w/ Vue reactivity
