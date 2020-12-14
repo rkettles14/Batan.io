@@ -18,14 +18,6 @@
           >
             Create Game
           </b-button>
-
-          <b-button
-            variant="info"
-            class="selector"
-            @click="displayJoinGame()"
-          >
-            Join Game
-          </b-button>
         </div>
 
         <div v-show="showActiveGames">
