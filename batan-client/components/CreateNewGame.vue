@@ -115,6 +115,7 @@ export default Vue.extend({
             this.$root.socket.emit("game/newGame", {game_name: this.$data.name});
             this.$data.showOverlay = true;
             this.$root.socket.on("game/created", (game) => {
+                this.$store.commit("chat/createChatRoom", game.game_id)
                 this.$data.showOverlay = false;
             });
             this.$data.name = "";
@@ -125,7 +126,9 @@ export default Vue.extend({
         },
 
         goto(game) {
-            this.$store.commit('game/changeGame', game);
+            this.$store.commit('games/changeGame', game);
+            this.$store.commit("chat/createChatRoom", this.$store.state.games.active_game.game_id);
+            this.$store.commit("chat/changeToChatRoom", this.$store.state.games.active_game.game_id);
             window.$nuxt.$router.push("/game-screen");
         },
         bootem(game_id, bootee){

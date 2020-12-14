@@ -1,3 +1,5 @@
+import Vue from "vue"
+
 export const state = () => ({
     chats: {
         'lobby': []
@@ -17,14 +19,16 @@ export const mutations = {
         }
     },
     changeToChatRoom(state: any, chatId: string) {
+        console.log("Changing chat")
         if(chatId in state.chats){
             state.currentChatId = chatId;
-            state.currentChat = state.chats[chatId];
+            Vue.set(state, 'currentChat', state.chats[chatId]);
         } else {
             console.log("WARNING - Trying to switch to non existant chat");
         }
     },
     createChatRoom(state: any, chatId: string) {
+        console.log("Creating chat");
         if(chatId in state.chats){
             return;
         }
