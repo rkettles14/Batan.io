@@ -68,7 +68,7 @@ export default Vue.extend({
   },
 })
 </script>
-<style>
+<style scoped>
 .trade {
   text-align: center;
   border-radius: 5px;
