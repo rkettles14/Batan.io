@@ -40,7 +40,7 @@
                 >
                     <div class="card-sub-item">
                         <h3 class="left">{{game.game_name}}</h3>
-                        <h3 class="center">Players {{game.num_players}}/5</h3>
+                        <h3 class="center">Players {{game.num_players}}/4</h3>
                         <!--todo hide this button if the game has been started-->
                         <b-button
                             class="success"
@@ -56,8 +56,25 @@
                         >
                         goto Game
                         </b-button>
+                        
                     </div>
-                    <!--todo show all of the players that have joined this particular game-->
+                    <div>
+                        <ul class="list-container">
+                            <li
+                            class="card-player"
+                            v-for="player in game.nicks"
+                            :key="player.alias">
+                            <h3>{{player.name}} is in the game</h3>
+                            <b-button
+                                v-show="player.name !== $auth.user.nickname"
+                                variant="danger"
+                                @click.prevent="bootem(game.game_id, player.alias)"
+                            >
+                                Boot 'em
+                            </b-button>
+                            </li>
+                        </ul>
+                    </div>
                 </li>
             </ul>
         </div>
@@ -101,6 +118,12 @@ export default Vue.extend({
         goto(game) {
             this.$store.commit('game/changeGame', game);
             window.$nuxt.$router.push("/game-screen");
+        },
+        bootem(game_id, bootee){
+            this.$root.socket.emit('game/admin/boot', {
+                game_id: game_id,
+                bootee: bootee
+            });
         }
     }
 });
@@ -133,6 +156,7 @@ label {
     margin: 5px;
     padding: 1.5rem;
     display: flex;
+    flex-direction: column;
     background-color: black;
 }
 
@@ -149,6 +173,16 @@ label {
     display: flex;
     flex-flow: wrap;
     justify-content: left;
+}
+
+.card-player {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 1rem;
+    border: solid slategrey 1px;
+    border-radius: 1rem;
+    color: snow
 }
 
 .new-game {
