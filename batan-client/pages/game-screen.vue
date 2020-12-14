@@ -12,13 +12,13 @@
             <b-col cols="8">
               <ResourceCards />
             </b-col>
-            <b-col cols="4" v-show="displayActions()">
+            <b-col cols="4" v-show="displayActions() && myTurn()">
               <PlayerActions/>
             </b-col>
-            <b-col cols="4" @click="rollDice()" v-show="displayDice()">
+            <b-col cols="4" v-show="displayDice() && myTurn()">
               <Dice/>
             </b-col>
-            <b-col cols="4" @click="makePurchase()" v-show="displayPurchase()">
+            <b-col cols="4" @click="makePurchase()" v-show="displayPurchase() && myTurn()">
               <PurchaseOptions />
             </b-col>
           </b-row>
@@ -49,11 +49,9 @@ export default Vue.extend({
   name: "GameScreen",
   data() {
     return {
-      purchasing: false,
-      rolling: false,
+      purchasing: false
     }
   },
-
   created() {
     this.$nuxt.$on('playerActions/purchase', (purchasing) => {
       this.purchasing = purchasing;
@@ -65,6 +63,11 @@ export default Vue.extend({
 
     this.$nuxt.$on('purchaseOptions/buyDevCard', () => {
       //TODO: Do the stuff for buying a dev card
+    })
+
+    this.$nuxt.$on('dice/rollDice', () => {
+      console.log('setting rolling to false');
+      this.displayActions();
     })
   },
 
@@ -86,25 +89,16 @@ export default Vue.extend({
     },
 
     displayActions(){
-      let rolling = this.rolling;
       let purchasing = this.purchasing;
-      return (!rolling) && (!purchasing);
+      return (!this.displayDice()) && (!purchasing);
     },
 
     displayDice(){
       let rollPhase = this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].game_info.turn.phase == 'roll' ? true : false;
-      if(rollPhase){
-        this.rolling = true;
-      }
       return rollPhase;
     },
-
-    rollDice(){
-      this.$root.socket.emit('game/rollDice', {game_id: this.$store.state.games.active_game.game_id});
-      setTimeout(() => {
-      this.rolling = false;
-      this.displayActions();
-      }, 2000);
+    myTurn(){
+      return this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].game_info.turn.player == this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].player_info.name ? true : false;
     }
   }
 });
