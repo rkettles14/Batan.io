@@ -234,14 +234,7 @@ export default {
     }
   },
 
-  chColor(user_id: string, game_id: number, color: string) {
-    /* (non-critical)
-    *  If game_id has not started, set user_id to color if available
-    */
-
-  },
-
-  playInitPlacement(user_id: string, game_id: number, settlement: number, road: Road) {
+  playInitPlaceSettle(user_id: string, game_id: number, settlement: number) {
     /*
     * Player to place settlement & road (for game setup)
     */
@@ -256,34 +249,63 @@ export default {
       if (game.turn_phase === "build") {
         let player_num = this.whosTurn(game_id) as number;
         if (game.turn_num < game.order.length) {
-          // First round of placement -- player should have 1 settlement + 1 road max
-          if (game.gameObj.players[whos_turn].settlementsPlayed < 1 && game.gameObj.players[whos_turn].roadsPlayed < 1) {
-            if (settlement == road.start || settlement == road.end) {
+          // First round of placement -- player should have 0 settlements
+          if (game.gameObj.players[this.whosTurn(game_id)].settlementsPlayed <= 0) {
               // TODO: Still uncaught edge cases, but very unlikely through boardgame interface
-              if (game.gameObj.addSettlementInSetup(settlement, player_num + 1)) {
-                if (game.gameObj.addRoadInSetup(road.start, road.end, player_num + 1)) {
-                  this.calcVic(game_id);
-                  return true;
-                }
-              }
+            if (game.gameObj.addSettlementInSetup(settlement, player_num + 1)) {
+              this.calcVic(game_id);
+              return true;
             }
           } else {
-            console.log("Too many settlements/roads placed already");
+            console.log("Too many settlements placed for this turn");
           }
         } else if (game.turn_num < game.order.length*2) {
-          // 2nd round of placement -- player should have 2 settlement + 2 road max
-          if (game.gameObj.players[whos_turn].settlementsPlayed < 2 && game.gameObj.players[whos_turn].roadsPlayed < 2) {
-            if (settlement == road.start || settlement == road.end) {
-              // TODO: Still uncaught edge cases, but very unlikely through boardgame interface
+          // 2nd round of placement -- player should have 1 settlement
+          if (game.gameObj.players[this.whosTurn(game_id)].settlementsPlayed <= 1) {
               if (game.gameObj.addSettlementInSetup(settlement, player_num + 1)) {
-                if (game.gameObj.addRoadInSetup(road.start, road.end, player_num + 1)) {
-                  this.calcVic(game_id);
-                  return true;
-                }
+                this.calcVic(game_id);
+                return true;
               }
+          } else {
+            console.log("Too many settlements placed for this turn");
+          }
+        }
+      } else {
+        console.log("Not in build phase");
+      }
+    } else {
+      console.log("Not your turn");
+    }
+    return false;
+  },
+  playInitPlaceRoad(user_id, game_id, start, end) {
+    /*
+    * Player to place settlement & road (for game setup)
+    */
+    if (!this.games.has(game_id)) {
+      return false;
+    }
+    let game = this.games.get(game_id);
+    if (game.order[this.whosTurn(game_id)] === user_id) {
+      if (game.turn_phase === "build") {
+        let player_num = this.whosTurn(game_id);
+        if (game.turn_num < game.order.length) {
+          // First round of placement -- player should have 1 settlement & be placing 1 road
+          if (game.gameObj.players[this.whosTurn(game_id)].settlementsPlayed <= 1 && game.gameObj.players[this.whosTurn(game_id)].roadsPlayed <= 0) {
+            if (game.gameObj.addRoadInSetup(start, end, player_num + 1)) {
+              return true;
             }
           } else {
-            console.log("Too many settlements/roads placed already");
+            console.log("Too many roads placed for this turn");
+          }
+        } else if (game.turn_num < game.order.length*2) {
+          // 2nd round of placement -- player should have 2 settlement, 1 road & be placing 1 road
+          if (game.gameObj.players[this.whosTurn(game_id)].settlementsPlayed <= 2 && game.gameObj.players[this.whosTurn(game_id)].roadsPlayed <= 1) {
+            if (game.gameObj.addRoadInSetup(start, end, player_num + 1)) {
+              return true;
+            }
+          } else {
+            console.log("Too many roads placed for this turn");
           }
         }
       } else {
@@ -786,7 +808,7 @@ export default {
     if(game === undefined){
       console.log("Game is undefined");
       return false;
-    } 
+    }
 
     for(let entry of Array.from(game.players.entries())){
       const sub = entry[0];

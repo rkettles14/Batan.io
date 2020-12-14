@@ -115,16 +115,27 @@ export default (io, socket) => {
     }
   });
 
-  socket.on('game/playInitPlacement', (data) => {
+  socket.on('game/playInitPlaceRoad', (data) => {
     /*
     *
-    * data.settlement : number (vertex to attempt to place settlement)
     * data.road : {
     *     start: Number (this.roadStartVert),
     *     end: Number (this.roadEndVert)
     * }
     */
-    if (gameState.playInitPlacement(socket.decoded_token.sub, data.game_id, data.settlement, data.road)) {
+    if (gameState.playInitPlaceRoad(socket.decoded_token.sub, data.game_id, data.start, data.end)) {
+      send_active_game(io, data.game_id);
+    } else {
+      socket.emit('game/actionFailed', {description: "Couldn't place road.. reason unknown for now"})
+    }
+  });
+
+  socket.on('game/playInitPlaceSettle', (data) => {
+    /*
+    *
+    * data.settlement : number (vertex to attempt to place settlement)
+    */
+    if (gameState.playInitPlaceSettle(socket.decoded_token.sub, data.game_id, data.settlement)) {
       send_active_game(io, data.game_id);
     } else {
       socket.emit('game/actionFailed', {description: "Couldn't place settlement.. reason unknown for now"})
