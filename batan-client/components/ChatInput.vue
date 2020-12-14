@@ -13,7 +13,7 @@
             />
             <b-button
                 type="submit"
-                class="col nopadding outline-primary h-100"
+                class="col nopadding outline-primary h-100 send"
             ><b-img src="@/static/send.png"
                 class="icon-img"
                 thumbnail center
@@ -101,5 +101,16 @@ export default Vue.extend({
 }
 .input {
     font-size: 12px;
+    background-color: black;
+    color: white;
+    border-top: 2px solid gray;
+    border-bottom: none;
+    border-left: none;
+    border-right: none;
+    border-radius: 0px;
+}
+
+.send {
+    background-color: #00ffea;
 }
 </style>

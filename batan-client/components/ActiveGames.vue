@@ -14,7 +14,7 @@
             >
             <h3 class="left">{{game.game_name}}</h3>
             <h3 class="center">{{game.num_players}}/5 Players</h3>
-            <b-button variant="success" @click.prevent="join(game.game_id)">Join</b-button>
+            <b-button variant="success" class="join" @click.prevent="join(game.game_id)">Join</b-button>
             </li>
         </ul>
     </b-container>
@@ -34,18 +34,27 @@ export default Vue.extend({
 
 <style scoped>
 .list-container {
-    border: black 1px solid;
+    border-right: gray 2px solid;
+    border-left: gray 2px solid;
+    border-top: gray 2px solid;
     border-radius: 5px;
+    background-color: black;
 }
 
 .list-item {
     display: flex;
     flex-direction: row;
     padding: 5px;
-    border-top: black solid 1px;
-    border-bottom: black solid 1px;
+    border-bottom: gray solid 2px;
 }
 
+h2 {
+    color: white;
+}
+
+h3 {
+    color: white;
+}
 
 .left {
     flex-grow: 1;
@@ -53,6 +62,11 @@ export default Vue.extend({
 
 .center {
     margin: 0 5px;
+}
+
+.join {
+    background-color: #00ffea;
+    color: black;
 }
 
 </style>
