@@ -74,8 +74,8 @@ export default Vue.extend({
     },
     gameSelected(game) {
       this.$store.commit('games/changeGame', game);
-      this.$store.commit("chat/createChatRoom", this.$store.state.games.active_game.game_name);
-      this.$store.commit("chat/changeToChatRoom", this.$store.state.games.active_game.game_name);
+      this.$store.commit("chat/createChatRoom", this.$store.state.games.active_game.game_id);
+      this.$store.commit("chat/changeToChatRoom", this.$store.state.games.active_game.game_id);
       this.$router.push({
         path: '/game-screen'
       });
