@@ -8,7 +8,7 @@
               <GameBoard  />
             </b-col>
           </b-row>
-          <b-row class="row-2 no-gutters">
+          <b-row class="row-2 no-gutters controls">
             <b-col cols="8">
               <ResourceCards />
             </b-col>
@@ -112,7 +112,11 @@ export default Vue.extend({
 </script>
 
 <style scoped>
-
+@media screen and (max-width: 1500px){
+  .controls {
+      display: none;
+  }
+}
 .row-1 {
   height: 80%;
 }

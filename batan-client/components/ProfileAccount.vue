@@ -2,11 +2,11 @@
     <b-container fluid>
         <div class="user-container">
             <b-avatar :src="$auth.user.picture" size="10rem"/>
-            <div class="user-info">
+            <b-container class="user-info">
                 <h3>User Name: {{$auth.user.name}}</h3>
                 <h3>Nickname: {{$auth.user.nickname}}</h3>
                 <h3>Email: {{$auth.user.email}}</h3>
-            </div>
+            </b-container>
         </div>
         <hr>
         <b-card class="delete">
@@ -73,6 +73,8 @@ export default Vue.extend({
 
 h3 {
     color: white;
+    font-size: 1.3em;
+
 }
 
 .warning-container {

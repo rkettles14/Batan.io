@@ -1,6 +1,6 @@
 <template>
   <nav class="navbar">
-    <div class="">
+    <div class="nav-left">
       <NuxtLink to="/lobby" class="brand">
         <img id="logo" src="/batanLogo_noText.png">
         <h1>Batan.io</h1>
@@ -8,7 +8,7 @@
     </div>
     <div v-if="$auth.loggedIn" class="nav-right">
 
-      <div v-if='$store.state.games.alert'><b-icon icon="bell-fill" class="rounded-circle bg-warning p-1" font-scale='2' variant="light"></b-icon></div>
+      <div :class='{"hidden": !$store.state.games.alert}'><b-icon icon="bell-fill" class="rounded-circle bg-warning p-1" font-scale='2' variant="light"></b-icon></div>
 
 
       <b-dropdown v-if="active_game != ''" variant="light" :text="active_game.game_name" right :options="games">
@@ -172,6 +172,20 @@ nav {
 
 }
 
+@media (max-width: 600px) {
+  nav{
+    height: 10em;
+    flex-flow: row wrap;
+    justify-content: center;
+  }
+  .nav-left{
+    justify-content: center;
+  }
+  .nav-right{
+    justify-content: center;
+  }
+}
+
 .nav-right > * {
   margin-left: 0.5rem;
   margin-right: 0.5rem;
@@ -194,6 +208,10 @@ a:hover {
 #profile {
   height: 2rem;
   border-radius: 1rem;
+}
+
+.hidden {
+  visibility: hidden;
 }
 
 .brand {

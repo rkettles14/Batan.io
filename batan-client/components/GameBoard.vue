@@ -174,6 +174,12 @@ export default Vue.extend({
   background-size: cover;
 }
 
+@media screen and (max-width: 1500px){
+  .board-background {
+      display: none;
+  }
+}
+
 ol.even {
   position: relative;
   left: 50px;

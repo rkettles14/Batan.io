@@ -46,6 +46,7 @@ export default Vue.extend({
     flex-direction: row;
     padding: 5px;
     border-bottom: gray solid 2px;
+    flex-flow: row wrap;
 }
 
 h2 {
