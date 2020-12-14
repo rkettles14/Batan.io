@@ -4,21 +4,16 @@
       <b-col>
         <b-list-group>
 
-          <b-list-group-item variant="info" button
+          <b-list-group-item class="info" button
             @click="setDisplayToAccount()"
           >
             Account
           </b-list-group-item>
 
-          <b-list-group-item variant="info" button
+          <b-list-group-item class="info" button
             @click="setDisplayToStats()"
           >
             Statistics
-          </b-list-group-item>
-          <b-list-group-item variant="info" button
-            @click="setDisplayToSettings"
-          >
-            Settings
           </b-list-group-item>
         </b-list-group>
 
@@ -78,4 +73,16 @@ export default Vue.extend({
 </script>
 
 <style lang="css" scoped>
+.info {
+  background-color: black;
+  border: 2px solid gray;
+  border-radius: 5px;
+  color: white;
+  margin: 4px;
+}
+
+.info:hover {
+  background-color: lightgray;
+  color: black;
+}
 </style>
