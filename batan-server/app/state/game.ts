@@ -234,11 +234,6 @@ export default {
     }
   },
 
-  chColor(user_id: string, game_id: number, color: string) {
-    /* (non-critical)
-    *  If game_id has not started, set user_id to color if available
-    */
-
   playInitPlaceSettle(user_id: string, game_id: number, settlement: number) {
     /*
     * Player to place settlement & road (for game setup)
@@ -813,7 +808,7 @@ export default {
     if(game === undefined){
       console.log("Game is undefined");
       return false;
-    } 
+    }
 
     for(let entry of Array.from(game.players.entries())){
       const sub = entry[0];
