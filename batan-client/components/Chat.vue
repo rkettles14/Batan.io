@@ -24,18 +24,25 @@ export default Vue.extend({
     display: flex;
     flex-flow: column;
     justify-items: flex-start;
-    border: 1px black solid;
-    border-radius: 5px;
+    border: 2px gray solid;
+    border-radius: 7px;
     height: 100%;
+    overflow-x: hidden;
+    max-height: 62vh;
+    background-color: black;
 }
 .heading {
     width: 100%;
     text-align: center;
-    color: white;
-    background-color: teal;
+    color: black;
+    background-color: #00ffea;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
 }
 .display {
     flex-grow: 1;
+    max-height: 56vh;
+    overflow-y: auto;
 }
 
 </style>

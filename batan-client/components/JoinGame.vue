@@ -5,6 +5,7 @@
             <div class="form-element">
                 <label>Game Code:</label>
                 <b-form-input
+                    class="input"
                     v-model="code"
                     type="text"
                     autocomplete="off"
@@ -14,7 +15,7 @@
             <div class="form-element">
                 <b-button
                     type="submit"
-                    variant="success"
+                    class="success"
                 >
                 <b-overlay :show="showOverlay" variant="success">
                     Join Game
@@ -35,7 +36,7 @@
                         <h3 class="left">{{game.game_name}}</h3>
                         <h3 class="center">Players {{game.num_players}}/5</h3>
                         <!--todo only display the goto button if the game has been started-->
-                        <b-button variant="success" @click.prevent="goto(game)">Goto Game</b-button>
+                        <b-button class="success" @click.prevent="goto(game)">Goto Game</b-button>
                     </div>
                     <!--todo show who's the game host-->
                     <!--todo show all of the players that have joined this particular game-->
@@ -78,6 +79,19 @@ export default Vue.extend({
 </script>
 
 <style scoped>
+
+h2 {
+    color: white;
+}
+
+h3 {
+    color: white;
+}
+
+label {
+    color: white;
+}
+
 .form-element {
     margin: 2%;
 }
@@ -87,11 +101,13 @@ export default Vue.extend({
 }
 
 .card-item {
-    border: black 1px solid;
+    border: gray 1px solid;
     border-radius: 5px;
     margin: 5px;
     padding: 1.5rem;
     display: flex;
+    background-color: black;
+
 }
 
 .card-sub-item {
@@ -107,5 +123,15 @@ export default Vue.extend({
 
 .center {
     margin-right: 1rem;
+}
+
+.success {
+    background-color: #00ffea;
+    color: black;
+}
+
+.input {
+    background-color: black;
+    color: white;
 }
 </style>
