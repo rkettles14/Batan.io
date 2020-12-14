@@ -2,6 +2,7 @@
     <b-container class='board-background' fluid>
         <div style="position: absolute;">
           <Timer></Timer>
+          <AdminControls v-if="isOwner"/>
           <RollDisplay></RollDisplay>
 
         </div>
@@ -127,7 +128,11 @@ export default Vue.extend({
         },
         secondPort: function(){
 
-        }
+        },
+        isOwner: function() {
+         return this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].owner === 
+                this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].player_info.name;
+        },
     },
     created() {
         this.$store.commit("chat/changeToChatRoom", this.$store.state.games.activeGame);

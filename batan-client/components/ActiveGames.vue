@@ -9,11 +9,11 @@
             </li>
             <li
             class="list-item"
-            v-for="game in Object.values($store.state.games.available_games)"
+            v-for="game in Object.values($store.state.games.available_games).filter(game => !game.owner)"
             v-bind:key="game.game_id"
             >
             <h3 class="left">{{game.game_name}}</h3>
-            <h3 class="center">{{game.num_players}}/5 Players</h3>
+            <h3 class="center">{{game.num_players}}/4 Players</h3>
             <b-button variant="success" class="join" @click.prevent="join(game.game_id)">Join</b-button>
             </li>
         </ul>
