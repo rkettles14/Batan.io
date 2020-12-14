@@ -171,6 +171,8 @@
     <b-button @click.prevent="addUserGame" variant="success">Send that bad boi</b-button>
   </div>
 
+  <AdminControls />
+
 </div>
 </template>
 

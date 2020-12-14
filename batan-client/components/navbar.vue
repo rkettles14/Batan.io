@@ -105,6 +105,23 @@ export default Vue.extend({
             this.logout();
           })
       });
+
+      // Make sure that the user has an account in our database
+      this.$axios.get('http://localhost:3001/api/profile/info').then((response) => {
+        if(response.data === ""){
+            const user = {
+                firstName: this.$auth.user.given_name,
+                lastName: this.$auth.user.family_name,
+                nickname: this.$auth.user.nickname,
+                email: this.$auth.user.email,
+            };
+            console.log(user);
+            this.$axios.post('http://localhost:3001/api/profile/create', user).then((response) => {
+              console.log("User Created!");
+              console.log(response.data);
+            });
+        }
+      });
     }
   },
   watch: {
@@ -116,9 +133,6 @@ export default Vue.extend({
 
       // API calls (if needed? this is just an auth test..)
       this.$axios.setToken(this.$auth.getToken('auth0'));
-      this.$axios.get('http://localhost:3001/api/test/hi').then((response) => {
-        console.log(response)
-      });
     }
   }
 });
