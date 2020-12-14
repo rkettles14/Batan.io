@@ -1,5 +1,5 @@
 <template>
-  <b-container v-if="$store.state.games.active_game != ''" fluid>
+  <b-container v-if="$store.state.games.active_game != '' || $auth.loggedIn" fluid>
     <b-row class="row-1 no-gutters">
       <b-col cols="8">
         <b-container fluid>
@@ -53,6 +53,12 @@ export default Vue.extend({
     }
   },
   created() {
+    if (!this.$auth.loggedIn) {
+      this.$router.push({
+        path: '/'
+      });
+    }
+
     this.$nuxt.$on('playerActions/purchase', (purchasing) => {
       this.purchasing = purchasing;
     })
@@ -76,7 +82,7 @@ export default Vue.extend({
     // TODO: Rather than starting the game, check to see if it was started and prompt the user to wait untill
     // the game is started if not.
   },
-  
+
   methods: {
     makePurchase(){
       this.purchasing = false;
@@ -116,7 +122,7 @@ export default Vue.extend({
 }
 .row-2 {
   height: 20vh;
-} 
+}
 .row-3 {
     min-height: 62vh;
     max-height: 62vh;

@@ -1,7 +1,8 @@
 <template>
-  <b-container class="lobby" fluid>
+  <b-container v-if="$auth.loggedIn" class="lobby" fluid>
     <b-row no-gutters class="content"  align-v="stretch">
       <b-col xs='12' s='12' md ='8' lg='8' class="games">
+
         <div class="selector-box">
           <b-button
             variant="info"
@@ -17,14 +18,6 @@
             @click="displayCreateGame()"
           >
             Create Game
-          </b-button>
-
-          <b-button
-            variant="info"
-            class="selector"
-            @click="displayJoinGame()"
-          >
-            Join Game
           </b-button>
         </div>
 
@@ -62,6 +55,11 @@ export default Vue.extend({
   },
 
   created() {
+    if (!this.$auth.loggedIn) {
+      this.$router.push({
+        path: '/'
+      });
+    }
     this.$store.commit("chat/changeToChatRoom", "lobby");
   },
   methods: {

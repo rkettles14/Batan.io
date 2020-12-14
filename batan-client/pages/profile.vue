@@ -1,5 +1,5 @@
 <template>
-  <b-container fluid>
+  <b-container v-if="$auth.loggedIn" fluid>
     <b-row>
       <b-col>
         <b-list-group>
@@ -46,6 +46,13 @@ export default Vue.extend({
       showAccount: true,
       showStats: false,
       showSettings: false
+    }
+  },
+  created() {
+    if (!this.$auth.loggedIn) {
+      this.$router.push({
+        path: '/'
+      });
     }
   },
   mounted() {
