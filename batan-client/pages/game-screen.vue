@@ -1,5 +1,6 @@
 <template>
   <b-container v-if="$store.state.games.active_game != '' && $auth.loggedIn" fluid>
+    <EndGame></EndGame>
     <b-row class="row-1 no-gutters">
       <b-col cols="8">
         <b-container fluid>
