@@ -3,7 +3,7 @@
     <b-container fluid style="margin-top: 10px">
       <b-row>
         <b-col>
-          <div v-on:click="beginTrading" class="trade">
+          <div v-on:click="beginTrading()" class="trade">
             <h3>Trade</h3>
             <img src="@/static/Trade.png" class="actionIcon">
           </div>
@@ -53,9 +53,8 @@ export default Vue.extend({
     },
 
     beginTrading(): void {
-      console.log("trading a thing");
       this.trading = true;
-      this.$emit('trading');
+      this.$nuxt.$emit('playerActions/beginTrade');
     },
 
     endTrading(): void {
