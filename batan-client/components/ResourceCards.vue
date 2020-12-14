@@ -33,33 +33,33 @@
               </div>
         </b-col>
         <b-col>
-          <div class="resourceCard" id="knight" :style="{background: '#c6e2ff'}">
+          <div class="resourceCard" id="knight" :style="{background: '#ffffff'}">
               <div class="count">{{this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].player_info.developmentCards.knight}}</div>
-              <h3>KNT</h3>
+              <img src='/army.png'>
               </div>
         </b-col>
         <b-col>
-          <div class="resourceCard" id="roadBuilder" :style="{background: '#c6e2ff'}">
+          <div class="resourceCard" id="roadBuilder" :style="{background: '#ffffff'}">
               <div class="count">{{this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].player_info.developmentCards.roadBuilder}}</div>
-              <h3>RBD</h3>
+              <img src='/roadBuilder.png'>
               </div>
         </b-col>
         <b-col>
-          <div class="resourceCard" id="yearOfPlenty" :style="{background: '#c6e2ff'}">
+          <div class="resourceCard" id="yearOfPlenty" :style="{background: '#ffffff'}">
               <div class="count">{{this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].player_info.developmentCards.yearOfPlenty}}</div>
-              <h3>YOP</h3>
+              <img src='/yearOfPlenty.png'>
               </div>
         </b-col>
         <b-col>
-          <div class="resourceCard" id="monopoly" :style="{background: '#c6e2ff'}">
+          <div class="resourceCard" id="monopoly" :style="{background: '#ffffff'}">
               <div class="count">{{this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].player_info.developmentCards.monopoly}}</div>
-              <h3>MON</h3>
+              <img src='/monopoly.png'>
               </div>
         </b-col>
         <b-col>
-          <div class="resourceCard" id="victoryPoint" :style="{background: '#c6e2ff'}">
+          <div class="resourceCard" id="victoryPoint" :style="{background: '#ffffff'}">
               <div class="count">{{this.$store.state.games.active_games[this.$store.state.games.active_game.game_id].player_info.developmentCards.victoryPointCard}}</div>
-              <h3>VIC</h3>
+              <img src='/victoryPoint.png'>
               </div>
         </b-col>
       </b-row>
@@ -101,9 +101,11 @@ export default Vue.extend({
 <style>
 .resourceCard {
   margin: -12px;
-  height: 10vh;
+  height: 11vh;
   border-style: solid;
-  border-color: black;
+  border-color: gray;
+  border-radius: 4px;
+  padding: 3px;
 }
 
 .count {
@@ -114,6 +116,8 @@ export default Vue.extend({
     border-top-right-radius: 10px;
     border-bottom-left-radius: 10px;
     margin-left: 5px;
+    margin-top: 1px;
+    margin-bottom: 3px;
 }
 
 .resourceCard h3 {
@@ -121,9 +125,10 @@ export default Vue.extend({
 }
 
 .resourceCard img {
-  height: 6.5vh;
+  height: 70%;
   display: block;
   margin: auto;
+  max-width: 4vw;
 }
 
 h1 {

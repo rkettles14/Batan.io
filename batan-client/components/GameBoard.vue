@@ -169,7 +169,6 @@ export default Vue.extend({
   width: 100%;
   padding-bottom: 5rem;
   background-size: cover;
-  background-image: url('https://images.wallpaperscraft.com/image/stars_galaxy_milky_way_starry_sky_night_sky_119125_3840x2160.jpg');
 }
 
 ol.even {
