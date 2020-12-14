@@ -5,30 +5,31 @@
         <b-col>
           <div v-on:click="buildRoad()" class="purchaseOption">
             <span class="name">Road</span>
-            <span class="description">1 Tree, 1 Brick</span>
+            <span class="description">1 Tree<br> 1 Brick</span>
           </div>
         </b-col>
         <b-col>
           <div v-on:click="buildSettlement()" class="purchaseOption">
             <span class="name">Settlement</span>
-            <span class="description">1 Tree, 1 Brick, 1 Wool, 1 Grain</span>
+            <span class="description">1 Tree<br> 1 Brick<br> 1 Wool<br> 1 Grain</span>
           </div>
         </b-col>
         <b-col>
           <div v-on:click="buildCity()" class="purchaseOption">
             <span class="name">City</span>
-            <span class="description">2 Grain, 3 Ore</span>
+            <span class="description">2 Grain<br> 3 Ore</span>
           </div>
         </b-col>
         <b-col>
           <div v-on:click="devCard()" class="purchaseOption">
             <span class="name">Dev Card</span>
-            <span class="description">1 Tree, 1 Wool, 1 Ore</span>
+            <span class="description">1 Tree<br> 1 Wool<br> 1 Ore</span>
           </div>
         </b-col>
         <b-col>
           <div v-on:click="undoPurchase()" class="purchaseOption">
-            <p>Undo</p>
+            <span class="name">Undo</span>
+            <span class="description">Undo</span>
           </div>
         </b-col>
       </b-row>
@@ -120,7 +121,7 @@ export default Vue.extend({
       this.clear()
     })
 
-    this.$nuxt.$on('city/buyCity', (vertex) => {
+    this.$nuxt.$on('settlement/buyCity', (vertex) => {
       if (this.buildingCity) {
         this.vertexToBuild = vertex
         this.$root.socket.emit('game/buyCity', {
@@ -168,14 +169,23 @@ export default Vue.extend({
 })
 </script>
 <style>
+.name {
+  color: white;
+}
+
+.description {
+  color: black;
+}
+
 .purchaseOption {
   text-align: center;
   border-radius: 5px;
   border-style: solid;
-  border-width: 1px;
-  border-color: black;
+  border-width: 2px;
+  border-color: gray;
+  background-color: black;
   height: 10vh;
-  width: 5vw;
+  margin-right: 5px;
 }
 
 .purchaseOption .description {
@@ -191,7 +201,7 @@ export default Vue.extend({
 }
 
 .purchaseOption:hover {
-  background: grey;
+  background: #00ffea;
 }
 
 h1 {

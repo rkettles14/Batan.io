@@ -1,6 +1,7 @@
 <template>
     <b-container class='board-background' fluid>
         <Timer></Timer>
+        <RollDisplay></RollDisplay>
         <ol class='even' fluid>
             <Hex :is-spacer='true' class='left'></Hex>
             <Hex :is-atmosphere='true' :is-trading-post='true' trading-post-orientation='br' :trading-post='boardObject.vertexList[0]'></Hex>
@@ -168,7 +169,6 @@ export default Vue.extend({
   width: 100%;
   padding-bottom: 5rem;
   background-size: cover;
-  background-image: url('https://images.wallpaperscraft.com/image/stars_galaxy_milky_way_starry_sky_night_sky_119125_3840x2160.jpg');
 }
 
 ol.even {
