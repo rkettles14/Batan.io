@@ -2,8 +2,8 @@
     <b-container class='board-background' fluid>
         <div style="position: absolute;">
           <Timer></Timer>
-          <AdminControls v-if="isOwner"/>
           <RollDisplay></RollDisplay>
+          <AdminControls v-if="isOwner"/>
 
         </div>
         <ol class='even' fluid>
