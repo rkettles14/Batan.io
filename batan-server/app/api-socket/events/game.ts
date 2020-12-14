@@ -239,6 +239,7 @@ export default (io, socket) => {
 
   socket.on('game/admin/settimeout', (data) => {
     if (gameState.adminSetTimeout(socket.decoded_token.sub, data.game_id, data.timeout)) {
+      console.log("Setting timeout to " + data.timeout);
       send_active_game(io, data.game_id);
     } else {
       socket.emit('game/actionFailed', {description: "Setting timeout failed"});
@@ -247,6 +248,7 @@ export default (io, socket) => {
 
   socket.on('game/admin/setSkipIfOffline', (data) => {
     if (gameState.adminSetSkipDC(socket.decoded_token.sub, data.game_id, data.skip)) {
+      console.log("Setting skip to " + data.skip);
       send_active_game(io, data.game_id);
     } else {
       socket.emit('game/actionFailed', {description: "Setting skip offline players failed"});
