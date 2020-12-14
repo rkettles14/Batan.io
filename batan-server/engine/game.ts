@@ -25,6 +25,7 @@ class Player {
   armies: number;
   vpDevCardsPlayed: number;
 
+
   constructor(name: player) {
     this.name = name;
     this.victoryPoints = 0;
@@ -66,6 +67,13 @@ class Player {
     } else if (resource === resourceType.wood) {
       return this.resources.wood;
     }
+  }
+
+  /**
+   * Accumulates the total number of resources that the user has at the end of the game
+   */
+  getTotalResources() {
+    return Object.values(this.resources).reduce((accum, current) => accum + current);
   }
 
   /**
@@ -906,7 +914,7 @@ export default class Game {
 
     this.players[playerIndex].victoryPoints = vp;
     if (vp >= 10) {
-      this.winner === player; //game ends. congrats.
+      this.winner = player; //game ends. congrats.
     }
   }
 

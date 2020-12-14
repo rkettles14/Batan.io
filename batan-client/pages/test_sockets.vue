@@ -1,7 +1,7 @@
 <!-- For testing sockets & APIs only.. delete before production -->
 
 <template lang="html">
-<div class="">
+<div v-if="$auth.loggedIn" class="">
   <b-button @click.prevent="newGame('game name here')" size="md" variant="dark">New game</b-button>
   <b-button @click.prevent="joinGame()" size="md" variant="dark">Join game</b-button>
   <b-button @click.prevent="startGame()" size="md" variant="dark">Start game</b-button>
@@ -172,6 +172,8 @@
     <b-button @click.prevent="addUserGame" variant="success">Send that bad boi</b-button>
   </div>
 
+  <AdminControls />
+
 </div>
 </template>
 
@@ -214,6 +216,11 @@ export default Vue.extend({
     }
   },
   created() {
+    if (!this.$auth.loggedIn) {
+      this.$router.push({
+        path: '/'
+      });
+    }
   },
   watch: {
     skip_offline() {

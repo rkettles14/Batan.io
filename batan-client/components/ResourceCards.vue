@@ -278,7 +278,7 @@ export default Vue.extend({
   },
 })
 </script>
-<style>
+<style scoped>
 .resourceCard {
   margin: -12px;
   height: 11vh;

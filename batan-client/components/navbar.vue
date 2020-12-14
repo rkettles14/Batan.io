@@ -1,15 +1,14 @@
 <template>
   <nav class="navbar">
-    <div class="">
+    <div class="nav-left">
       <NuxtLink to="/lobby" class="brand">
         <img id="logo" src="/batanLogo_noText.png">
         <h1>Batan.io</h1>
       </NuxtLink>
     </div>
     <div v-if="$auth.loggedIn" class="nav-right">
-      <b-button :to="'/test_sockets'" variant="light">sock test</b-button>
 
-      <div v-if='$store.state.games.alert'><b-icon icon="bell-fill" class="rounded-circle bg-warning p-1" font-scale='2' variant="light"></b-icon></div>
+      <div :class='{"hidden": !$store.state.games.alert}'><b-icon icon="bell-fill" class="rounded-circle bg-warning p-1" font-scale='2' variant="light"></b-icon></div>
 
 
       <b-dropdown v-if="active_game != ''" variant="light" :text="active_game.game_name" right :options="games">
@@ -105,6 +104,23 @@ export default Vue.extend({
             this.logout();
           })
       });
+
+      // Make sure that the user has an account in our database
+      this.$axios.get('http://localhost:3001/api/profile/info').then((response) => {
+        if(response.data === ""){
+            const user = {
+                firstName: this.$auth.user.given_name,
+                lastName: this.$auth.user.family_name,
+                nickname: this.$auth.user.nickname,
+                email: this.$auth.user.email,
+            };
+            console.log(user);
+            this.$axios.post('http://localhost:3001/api/profile/create', user).then((response) => {
+              console.log("User Created!");
+              console.log(response.data);
+            });
+        }
+      });
     }
   },
   watch: {
@@ -116,9 +132,6 @@ export default Vue.extend({
 
       // API calls (if needed? this is just an auth test..)
       this.$axios.setToken(this.$auth.getToken('auth0'));
-      this.$axios.get('http://localhost:3001/api/test/hi').then((response) => {
-        console.log(response)
-      });
     }
   }
 });
@@ -159,6 +172,20 @@ nav {
 
 }
 
+@media (max-width: 600px) {
+  nav{
+    height: 10em;
+    flex-flow: row wrap;
+    justify-content: center;
+  }
+  .nav-left{
+    justify-content: center;
+  }
+  .nav-right{
+    justify-content: center;
+  }
+}
+
 .nav-right > * {
   margin-left: 0.5rem;
   margin-right: 0.5rem;
@@ -181,6 +208,10 @@ a:hover {
 #profile {
   height: 2rem;
   border-radius: 1rem;
+}
+
+.hidden {
+  visibility: hidden;
 }
 
 .brand {

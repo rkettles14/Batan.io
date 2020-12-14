@@ -38,7 +38,7 @@ function send_created_game(io, game_id) {
   });
 }
 
-function send_active_game(io, game_id) {
+async function send_active_game(io, game_id) {
   let game = gameState.games.get(game_id);
   let game_full_info = gameState.get_full_game_info(game_id);
   let game_status = gameState.get_status(game_id);
@@ -67,7 +67,7 @@ function send_active_game(io, game_id) {
 
   if (game.gameObj.winner !== 0) {
     // game is over & has been sent to client with winner.. clean up
-    gameState.cleanUp(game_id);
+    await gameState.cleanUp(game_id);
   }
 }
 

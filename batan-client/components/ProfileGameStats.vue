@@ -80,12 +80,17 @@ export default Vue.extend({
     width: 100%;
 }
 
+h1 {
+    color: white;
+}
+
 .game-card {
     border: solid slategrey 1px;
     border-radius: 1rem;
     padding: 1rem;
     margin: 0.5rem 0;
-    background-color: #2a2a2a;
+    background-color: black;
+    color: white;
 }
 
 </style>

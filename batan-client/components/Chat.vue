@@ -1,5 +1,5 @@
 <template>
-    <b-container class="chat-container" fluid>
+    <b-container class="chat-container">
         <b-row>
             <span class="heading" variant="secondary">Chat</span>
         </b-row>
@@ -26,9 +26,9 @@ export default Vue.extend({
     justify-items: flex-start;
     border: 2px gray solid;
     border-radius: 7px;
-    height: 100%;
+    height: 60vh;
     overflow-x: hidden;
-    max-height: 62vh;
+    max-height: 60vh;
     background-color: black;
 }
 .heading {

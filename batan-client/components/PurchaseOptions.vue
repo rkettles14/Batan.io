@@ -156,7 +156,7 @@ export default Vue.extend({
   },
 })
 </script>
-<style>
+<style scoped>
 .name {
   color: white;
 }

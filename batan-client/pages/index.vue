@@ -1,5 +1,5 @@
 <template>
-  <b-container fluid class="container">
+  <b-container v-if="!$auth.loggedIn" fluid class="container">
     <b-row align-v="center">
       <b-col>
         <span class="title">Welcome to Batan.io! Create an account to play or sign in!</span>
@@ -38,12 +38,19 @@ export default Vue.extend({
       // how to access the auth
       // this.$auth.loginWith('auth0');
     }
+  },
+  created() {
+    if (this.$auth.loggedIn) {
+      this.$router.push({
+        path: '/lobby'
+      });
+    }
   }
 });
 Vue.use(BootstrapVue);
 </script>
 
-<style>
+<style scoped>
 .container {
   margin: 0 auto;
   min-height: calc(100vh - 3rem);

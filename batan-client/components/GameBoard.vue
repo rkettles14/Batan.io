@@ -1,7 +1,10 @@
 <template>
     <b-container class='board-background' fluid>
-        <Timer></Timer>
-        <RollDisplay></RollDisplay>
+        <div style="position: absolute;">
+          <Timer></Timer>
+          <RollDisplay></RollDisplay>
+
+        </div>
         <ol class='even' fluid>
             <Hex :is-spacer='true' class='left'></Hex>
             <Hex :is-atmosphere='true' :is-trading-post='true' trading-post-orientation='br' :trading-post='boardObject.vertexList[0]'></Hex>
@@ -169,6 +172,12 @@ export default Vue.extend({
   width: 100%;
   padding-bottom: 5rem;
   background-size: cover;
+}
+
+@media screen and (max-width: 1500px){
+  .board-background {
+      display: none;
+  }
 }
 
 ol.even {

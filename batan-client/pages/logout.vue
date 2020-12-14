@@ -10,7 +10,11 @@ export default {
   auth: false,
   components: {},
   created() {
-    
+    if (!this.$auth.loggedIn) {
+      this.$router.push({
+        path: '/'
+      });
+    }
   }
 }
 </script>

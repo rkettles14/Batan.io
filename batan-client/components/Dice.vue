@@ -26,7 +26,7 @@ export default Vue.extend({
   },
 })
 </script>
-<style>
+<style scoped>
 .dice {
   text-align: center;
   height: 20vh;
