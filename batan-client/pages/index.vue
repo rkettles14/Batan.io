@@ -43,7 +43,7 @@ export default Vue.extend({
 Vue.use(BootstrapVue);
 </script>
 
-<style>
+<style scoped>
 .container {
   margin: 0 auto;
   min-height: calc(100vh - 3rem);
