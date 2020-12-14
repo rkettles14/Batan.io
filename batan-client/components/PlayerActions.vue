@@ -74,35 +74,39 @@ export default Vue.extend({
   text-align: center;
   border-radius: 5px;
   border-style: solid;
-  border-color: black;
+  border-color: gray;
+  background-color: black;
   margin: -12px;
-  height: 20vh;
+  height: 15vh;
 }
 
 .purchase {
   text-align: center;
   border-radius: 5px;
   border-style: solid;
-  border-color: black;
+  border-color: gray;
+  background-color: black;
   margin: -12px;
-  height: 20vh;
+  height: 15vh;
 }
 
 .end {
   text-align: center;
   border-radius: 5px;
   border-style: solid;
-  border-color: black;
+  border-color: gray;
+  background-color: black;
   margin: -12px;
-  height: 20vh;
+  height: 15vh;
 }
 
 .actionIcon {
-    width: 75%;
-    height: 75%;
+    width: 70%;
+    height: 70%;
 }
 
-h1 {
+h3 {
   font-family: 'Space Grotesk', sans-serif;
+  color: white;
 }
 </style>
