@@ -1,6 +1,6 @@
 <template>
-  <b-container fluid>
-    <b-row>
+  <b-container v-if="$store.state.games.active_game != ''" fluid>
+    <b-row class="row-1 no-gutters">
       <b-col cols="8">
         <b-container fluid>
           <b-row class="row-1 no-gutters">
