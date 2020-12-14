@@ -90,10 +90,9 @@ export default Vue.extend({
 
     this.$nuxt.$on('settlement/buySettlement', (vertex) => {
       if (this.buildingSettlement) {
-        this.vertexToBuild = vertex
         this.$root.socket.emit('game/buySettlement', {
           game_id: this.$store.state.games.active_game.game_id,
-          location: Number(this.vertexToBuild),
+          location: Number(vertex),
         })
       }
       this.clear()
@@ -101,11 +100,10 @@ export default Vue.extend({
 
     this.$nuxt.$on('road/buyRoad', (roadStartAndEnd) => {
       if (this.buildingRoad) {
-        this.roadToBuild = roadStartAndEnd
         this.$root.socket.emit('game/buyRoad', {
           game_id: this.$store.state.games.active_game.game_id,
-          start: Number(this.roadStartAndEnd.start),
-          end: Number(this.roadStartAndEnd.end),
+          start: Number(roadStartAndEnd.start),
+          end: Number(roadStartAndEnd.end),
         })
       }
       this.clear()
@@ -113,10 +111,9 @@ export default Vue.extend({
 
     this.$nuxt.$on('settlement/buyCity', (vertex) => {
       if (this.buildingCity) {
-        this.vertexToBuild = vertex
         this.$root.socket.emit('game/buyCity', {
           game_id: this.$store.state.games.active_game.game_id,
-          location: Number(this.vertexToBuild),
+          location: Number(vertex),
         })
       }
       this.clear()
