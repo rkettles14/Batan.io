@@ -3,7 +3,7 @@ import Game from '../../engine/game';
 import Player from '../../engine/game';
 import socketState from './socket';
 import { vertexStatus, player, resourceType, developmentType, harborType } from '../../engine/enums';
-import { connectAndDo } from '../database/'
+import { getDbConnection } from '../database/'
 import { IGame } from '../database/users.types'
 import { UserModel } from '../database/users.model';
 
@@ -559,7 +559,10 @@ export default {
     /*
     * Player ends their turn (if it is their turn && they are in build phase)
     */
+    console.log("Ending the turn");
+
     if (!this.games.has(game_id)) {
+      console.error("Game not found");
       return false;
     }
 
@@ -568,7 +571,9 @@ export default {
 
     const whos_turn = this.whosTurn(game_id) as number;
     if (game.order[whos_turn] === user_id) {
+      console.log("Still Player's turn");
       if (game.turn_phase === "build") {
+        console.log("Changing turns");
         this.nextTurn(game_id, game.turn_num, callback);
         return true;
       } else {
@@ -587,6 +592,7 @@ export default {
     * before their turn is ended
     */
     if (!this.games.has(game_id)) {
+      console.log("Game doesn't exist")
       return;
     }
 
@@ -596,9 +602,6 @@ export default {
     if (game.turn_num === expected_turn) {
       if (game.turn_num >= 0) {
         this.calcVic(game_id);
-        if (game.gameObj.winner !== 0) {
-          this.endGame(game_id);
-        }
       }
 
       if (game.skip_if_dc) {
@@ -622,6 +625,7 @@ export default {
         console.log("In build phase because next turn");
         game.turn_phase = "build";
       } else {
+        console.log("Rolling phase")
         game.turn_phase = "roll";
         game.dice = [0, 0, 0];
       }
@@ -767,20 +771,26 @@ export default {
     }
   },
 
-  endGame(game_id: number){
+  async endGame(game_id: number){
     /*
     * Save results to database,
     * alert players game no longer active,
     */
+   console.log("Ending Game");
    if(!this.games.has(game_id)){
      console.log("Trying to end a game that doesn't exist");
      return;
    }
 
     const game = this.games.get(game_id);
-    if(game === undefined) return false;
+    if(game === undefined){
+      console.log("Game is undefined");
+      return false;
+    } 
 
-    game.players.forEach((player: SocketPlayer, sub: string, map: any) => {
+    for(let entry of Array.from(game.players.entries())){
+      const sub = entry[0];
+      const player = entry[1];
       let stats = game.gameObj.players[player.color] as any;
 
       const db_stats: IGame = {
@@ -798,28 +808,25 @@ export default {
         playerLongestRoad: game.gameObj.longestRoadOwner == player.color,
       };
 
-      connectAndDo(async (db: any) => {
-        if(db === undefined || db === null){
-          console.log("Unable to connect to database to finish the game");
-          return;
-        }
-        db.UserModel as typeof UserModel;
-        let user = await db.UserModel.findBySub(sub);
-        if(user === null){
-          console.log("User does not exist");
-          return;
-        }
+      const db = getDbConnection();
+      let user = await db.UserModel.findBySub(sub);
+      if(user === null){
+        console.log("User does not exist");
+        return;
+      }
 
-        await user.addGame(db_stats);
-      });
-   });
+      await user.addGame(db_stats);
+      console.log("Added");
+    }
   },
 
-  cleanUp(game_id: number) {
+  async cleanUp(game_id: number) {
     /*
     * rm from player's active games list
     * rm from global available games list
     */
+    await this.endGame(game_id);
+    console.log("Cleaning up");
     if (!this.games.has(game_id)) {
       return false;
     }
