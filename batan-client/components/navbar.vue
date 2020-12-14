@@ -9,7 +9,7 @@
     <div v-if="$auth.loggedIn" class="nav-right">
       <b-button :to="'/test_sockets'" variant="light">sock test</b-button>
 
-      <div :class='{"hidden": $store.state.games.alert}'><b-icon icon="bell-fill" class="rounded-circle bg-warning p-1" font-scale='2' variant="light"></b-icon></div>
+      <div :class='{"hidden": !$store.state.games.alert}'><b-icon icon="bell-fill" class="rounded-circle bg-warning p-1" font-scale='2' variant="light"></b-icon></div>
 
 
       <b-dropdown v-if="active_game != ''" variant="light" :text="active_game.game_name" right :options="games">
