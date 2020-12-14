@@ -202,12 +202,15 @@ export default Vue.extend({
   methods: {
     tradeBrickIfNecessary() {
       if (this.trading) {
+        console.log("we are in fact trading");
         if (this.selectedFromSelf) {
+          console.log("looks like we can trade now!");
             this.$root.socket.emit('game/tradeBank', {
-              game_id: this.game_id,
+              game_id: this.$store.state.games.active_game.game_id,
               to_bank: Number(this.selectedFromSelf),
               from_bank: Number(5),
             })
+          this.selectedFromSelf = null;
         }
         else{
           this.selectedFromSelf = 5;
@@ -217,12 +220,15 @@ export default Vue.extend({
     },
     tradeLumberIfNecessary() {
       if (this.trading) {
+        console.log("we are in fact trading");
         if (this.selectedFromSelf) {
+          console.log("looks like we can trade now!");
             this.$root.socket.emit('game/tradeBank', {
-              game_id: this.game_id,
+              game_id: this.$store.state.games.active_game.game_id,
               to_bank: Number(this.selectedFromSelf),
               from_bank: Number(3),
             })
+      this.selectedFromSelf = null;
         }
         else{
           this.selectedFromSelf = 3;
@@ -232,12 +238,15 @@ export default Vue.extend({
     },
     tradeWoolIfNecessary() {
       if (this.trading) {
+        console.log("we are in fact trading");
         if (this.selectedFromSelf) {
+          console.log("looks like we can trade now!");
             this.$root.socket.emit('game/tradeBank', {
-              game_id: this.game_id,
+              game_id: this.$store.state.games.active_game.game_id,
               to_bank: Number(this.selectedFromSelf),
               from_bank: Number(1),
             })
+          this.selectedFromSelf = null;
         }
         else{
           this.selectedFromSelf = 1;
@@ -247,12 +256,15 @@ export default Vue.extend({
     },
     tradeGrainIfNecessary() {
       if (this.trading) {
+        console.log("we are in fact trading");
         if (this.selectedFromSelf) {
+          console.log("looks like we can trade now!");
             this.$root.socket.emit('game/tradeBank', {
-              game_id: this.game_id,
+              game_id: this.$store.state.games.active_game.game_id,
               to_bank: Number(this.selectedFromSelf),
               from_bank: Number(2),
             })
+          this.selectedFromSelf = null;
         }
         else{
           this.selectedFromSelf = 2;
@@ -262,12 +274,15 @@ export default Vue.extend({
     },
     tradeOreIfNecessary() {
       if (this.trading) {
+        console.log("we are in fact trading");
         if (this.selectedFromSelf) {
+          console.log("looks like we can trade now!");
             this.$root.socket.emit('game/tradeBank', {
-              game_id: this.game_id,
+              game_id: this.$store.state.games.active_game.game_id,
               to_bank: Number(this.selectedFromSelf),
               from_bank: Number(4),
             })
+          this.selectedFromSelf = null;
         }
         else{
           this.selectedFromSelf = 4;
