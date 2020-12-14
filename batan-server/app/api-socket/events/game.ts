@@ -123,7 +123,7 @@ export default (io, socket) => {
     *     end: Number (this.roadEndVert)
     * }
     */
-    if (gameState.playInitPlaceRoad(socket.decoded_token.sub, data.game_id, data.road.start, data.road.end)) {
+    if (gameState.playInitPlaceRoad(socket.decoded_token.sub, data.game_id, data.start, data.end)) {
       send_active_game(io, data.game_id);
     } else {
       socket.emit('game/actionFailed', {description: "Couldn't place road.. reason unknown for now"})
