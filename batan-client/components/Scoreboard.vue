@@ -1,6 +1,6 @@
 <template>
     <b-container fluid>
-        <div>
+        <div class="bank">
             <Bank></Bank>
         </div>
         <div>
@@ -9,3 +9,10 @@
 
     </b-container>
 </template>
+<style scoped>
+@media screen and (max-width: 1500px){
+  .bank {
+      display: none;
+  }
+}
+</style>

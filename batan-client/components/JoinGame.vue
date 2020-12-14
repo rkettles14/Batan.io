@@ -113,7 +113,7 @@ label {
 .card-sub-item {
     width: 100%;
     display: flex;
-    flex-direction: row;
+    flex-flow: row wrap;
     justify-content: left;
 }
 
