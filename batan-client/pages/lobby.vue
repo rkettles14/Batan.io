@@ -1,5 +1,5 @@
 <template>
-  <b-container class="lobby" fluid>
+  <b-container v-if="$auth.loggedIn" class="lobby" fluid>
     <b-row class="content" align-v="stretch">
       <b-col class="games" cols="8">
         <div class="selector-box">
@@ -62,6 +62,11 @@ export default Vue.extend({
   },
 
   created() {
+    if (!this.$auth.loggedIn) {
+      this.$router.push({
+        path: '/'
+      });
+    }
     this.$store.commit("chat/changeToChatRoom", "lobby");
   },
   methods: {

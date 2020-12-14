@@ -1,5 +1,5 @@
 <template>
-  <b-container fluid class="container">
+  <b-container v-if="!$auth.loggedIn" fluid class="container">
     <b-row align-v="center">
       <b-col>
         <span class="title">Welcome to Batan.io! Create an account to play or sign in!</span>
@@ -37,6 +37,13 @@ export default Vue.extend({
       // todo the below line is giving me a warning. Figure out
       // how to access the auth
       // this.$auth.loginWith('auth0');
+    }
+  },
+  created() {
+    if (this.$auth.loggedIn) {
+      this.$router.push({
+        path: '/lobby'
+      });
     }
   }
 });
