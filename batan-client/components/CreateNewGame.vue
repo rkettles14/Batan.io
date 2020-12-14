@@ -25,8 +25,8 @@
             </div>
 
         </b-form>
-        <!--todo only show the div if there are items to be shown-->
-        <div v-show="Object.values($store.state.games.available_games).filter(game => game.owner).length !== 0">
+        <div v-show="Object.values($store.state.games.available_games).filter(game => game.owner).length !== 0
+                    || Object.values($store.state.games.active_games).filter(game => game.owner === game.player_info.name && game.status === 'active').length !== 0">
             <hr>
             <br>
             <h2>Games Pending Start</h2>
@@ -48,15 +48,6 @@
                         >
                         Start Game 
                         </b-button>
-                        <!--todo show this button when the game has been started-->
-                        <b-button
-                            v-show="false"
-                            class="success"
-                            @click.prevent="goto(game)"
-                        >
-                        goto Game
-                        </b-button>
-                        
                     </div>
                     <div>
                         <ul class="list-container">
@@ -74,6 +65,24 @@
                             </b-button>
                             </li>
                         </ul>
+                    </div>
+                </li>
+                <li
+                    v-for="game in Object.values($store.state.games.active_games).filter(game => game.owner === game.player_info.name && game.status === 'active')"
+                    :key="game.game_id"
+                    class="card-li"
+                >
+                    <div class="card-sub-item">
+                        <h3 class="left">{{game.game_name}} is currently running</h3>
+                        <h3 class="center">Players {{game.game_info.score.length}}/4</h3>
+
+                        <b-button
+                            class="success"
+                            @click.prevent="goto(game)"
+                        >
+                        goto Game
+                        </b-button>
+                        
                     </div>
                 </li>
             </ul>
